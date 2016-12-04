@@ -1,0 +1,20 @@
+$small: 960px;
+$large: 1280px;
+
+@mixin small {
+  @media (max-width: #{$small - 1px}) {
+    @content;
+  }
+}
+
+@mixin medium {
+  @media (min-width: #{$small}) and (max-width: #{$large - 1px}) {
+    @content;
+  }
+}
+
+@mixin large {
+  @media (min-width: #{$large}) {
+    @content;
+  }
+}
