@@ -8,10 +8,14 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $stateParams) {
+function controller($http, $stateParams, wikidata) {
   let vm = this;
 
   const id = $stateParams.id;
+  wikidata.getById(id).then(data => {
+    console.log(data[Object.keys(data)[0]]);
+    vm.monument = data[Object.keys(data)[0]];
+  });
 }
 
 export default () => {

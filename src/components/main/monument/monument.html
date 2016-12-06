@@ -1,5 +1,20 @@
-<md-content layout="column" layout-gt-sm="row" layout-align="start stretch" flex>
+<md-content layout="column" layout-align="start stretch" flex>
+  <h2 class="md-display-2">{{$ctrl.monument.labels.pl}}</h2>
+  <h4 class="md-headline muted">{{$ctrl.monument.labels.en}}</h4>
+  <div>
+    <div ng-repeat="claim in $ctrl.monument.claims">
+      <span>{{claim.property.pl}}:</span>
+      <span ng-repeat="value in claim.values">
+        <span ng-if="value.value_type === 'wikibase-item'">{{value.value.pl || value.value.en}}</span>
+        <span ng-if="value.value_type === 'string'">{{value.value}}</span>
+        <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
+        <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
+        <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
+      </span>
+    </div>
+  </div>
+
   <pre>
-    {{$ctrl.data | json}}
+{{$ctrl.monument | json}}
   </pre>
 </md-content>
