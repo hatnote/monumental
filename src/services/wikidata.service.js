@@ -37,7 +37,7 @@ const wdService = function ($http, $q) {
    * @returns {Promise}
    */
   function get(data) {
-    let params = angular.extend(defaultParams, data);
+    let params = angular.extend(angular.copy(defaultParams), data);
     return $http.jsonp('https://www.wikidata.org/w/api.php', {
       params: mapValues(params, p => angular.isArray(p) ? p.join('|') : p),
       cache: false
