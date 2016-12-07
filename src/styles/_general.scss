@@ -10,6 +10,10 @@ body {
     font: 16px Roboto, Arial, sans-serif; 
 }
 
+md-content {
+    margin: 20px;
+}
+
 .container {
     height: calc(100vh - 64px);
 
@@ -24,9 +28,10 @@ body {
     cursor: pointer;
 }
 
-a.link {
+a, a.link {
     cursor: pointer;
     color: rgb(33,150,243);
+    text-decoration: none;
 }
 
 .muted {
@@ -53,4 +58,10 @@ a.link {
 
 strong {
     font-weight: 500;
+}
+
+////
+
+.toolbar {
+    padding: 0 5px;
 }
