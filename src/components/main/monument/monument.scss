@@ -2,5 +2,10 @@
 @import '../../../styles/responsive';
 
 mo-monument {
-
+    .monument__title {
+        margin-bottom: 0;
+    }
+    .monument__subtitle {
+        margin-top: 0; 
+    }
 }

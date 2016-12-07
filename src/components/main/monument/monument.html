@@ -1,6 +1,6 @@
 <md-content layout="column" layout-align="start stretch" flex>
-  <h2 class="md-display-2">{{$ctrl.monument.labels.pl}}</h2>
-  <h4 class="md-headline muted">{{$ctrl.monument.labels.en}}</h4>
+  <h2 class="monument__title md-display-2">{{$ctrl.monument.labels.pl || 'brak polskiej nazwy'}}</h2>
+  <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'brak angielskiej nazwy'}}</h4>
   <div>
     <div ng-repeat="claim in $ctrl.monument.claims">
       <span>{{claim.property.pl}}:</span>
@@ -13,7 +13,7 @@
       </span>
     </div>
   </div>
-
+  <h4 class="md-display-1">Surowe dane</h4>
   <pre>
 {{$ctrl.monument | json}}
   </pre>

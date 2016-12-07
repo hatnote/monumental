@@ -13,8 +13,8 @@ function controller($http, $stateParams, wikidata) {
 
   const id = $stateParams.id;
   wikidata.getById(id).then(data => {
-    console.log(data[Object.keys(data)[0]]);
-    vm.monument = data[Object.keys(data)[0]];
+    const first = Object.keys(data)[0];
+    vm.monument = data[first];
   });
 }
 
