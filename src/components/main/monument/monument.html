@@ -4,8 +4,8 @@
     <div class="monument__left">
       <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
       <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
-      <div>
-        <div ng-repeat="claim in $ctrl.monument.claims">
+      <ul>
+        <li ng-repeat="claim in $ctrl.monument.claims">
           <span>{{claim.property[$ctrl.lang]}}:</span>
           <span ng-repeat="value in claim.values">
             <span ng-if="value.value_type === 'wikibase-item'">{{value.value[$ctrl.lang] || value.value.en}}</span>
@@ -14,16 +14,18 @@
             <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
             <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
             <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
+            <span ng-show="!$last">/</span>
           </span>
-        </div>
-      </div>
+        </li>
+      </ul>
 
       <md-button class="md-primary"
                  aria-label="Show raw data"
                  ng-click="$ctrl.showRawData = !$ctrl.showRawData">Show raw data</md-button>
       <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
     </div>
-    <div class="monument__right">
+    <div class="monument__right"
+         layout="column" layout-align="start stretch">
       <div class="monument__image"
            layout="column" layout-align="center center"
            ng-if="!$ctrl.image">
@@ -37,6 +39,11 @@
           <img ng-src="{{image.thumburl}}">
         </a>
       </div>
+      <md-button class="md-primary"
+                 ng-if="$ctrl.monument.claims.P373"
+                 ng-href="{{$ctrl.getCommonsLink()}}">
+        <md-icon>collections</md-icon> more in wikimedia commons
+      </md-button>
     </div>
   </div>
 </md-content>

@@ -12,6 +12,7 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
   let vm = this;
   const id = $stateParams.id;
 
+  vm.getCommonsLink = getCommonsLink;
   vm.lang = 'pl';
 
   wikidata.setLanguages(['pl', 'en']);
@@ -26,6 +27,11 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
         vm.images = data.map(image => image.imageinfo);
       });
     });
+  }
+
+  function getCommonsLink() {
+    const name = vm.monument.claims.P373.values[0].value;
+    return 'https://commons.wikimedia.org/wiki/Category:' + encodeURIComponent(name);
   }
 
   function getImage(image) {
