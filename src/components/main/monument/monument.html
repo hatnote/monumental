@@ -10,6 +10,7 @@
         <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
         <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
         <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
+        <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
       </span>
     </div>
   </div>
