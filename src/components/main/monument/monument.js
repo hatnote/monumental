@@ -8,14 +8,52 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $stateParams, wikidata) {
+function controller($http, $q, $stateParams, CommonsService, wikidata) {
   let vm = this;
-
   const id = $stateParams.id;
-  wikidata.getById(id).then(data => {
-    const first = Object.keys(data)[0];
-    vm.monument = data[first];
-  });
+
+  vm.getCommonsLink = getCommonsLink;
+  vm.lang = 'pl';
+
+  wikidata.setLanguages(['pl', 'en']);
+  getWikidata();
+
+  // functions
+
+  function getCategoryMembers(category) {
+    CommonsService.getCategoryMembers(category).then(data => {
+      const promises = data.map(image => CommonsService.getImage(image, { iiurlheight: 75 }));
+      $q.all(promises).then(data => {
+        vm.images = data.map(image => image.imageinfo);
+      });
+    });
+  }
+
+  function getCommonsLink() {
+    const name = vm.monument.claims.P373.values[0].value;
+    return 'https://commons.wikimedia.org/wiki/Category:' + encodeURIComponent(name);
+  }
+
+  function getImage(image) {
+    CommonsService.getImage(image).then(data => {
+      vm.image = data.imageinfo;
+    });
+  }
+
+  function getWikidata() {
+    wikidata.getById(id).then(data => {
+      const first = Object.keys(data)[0];
+      vm.monument = data[first];
+      const claims = vm.monument.claims;
+
+      if (vm.monument.claims.P18) {
+        getImage(claims.P18.values[0].value);
+      }
+      if (vm.monument.claims.P373) {
+        getCategoryMembers(claims.P373.values[0].value);
+      }
+    });
+  }
 }
 
 export default () => {

@@ -1,15 +1,15 @@
 const wdService = function ($http, $q) {
 
   const service = {
-    getById: getById
+    getById: getById,
+    setLanguages: setLanguages
   };
 
   const defaultParams = {
     action: 'wbgetentities',
     format: 'json',
-    props: ['info', 'labels', 'descriptions', 'claims', 'datatype'],
-    languages: ['pl', 'en'],
-    sitefilter: 'plwiki',
+    props: ['info', 'labels', 'aliases', 'descriptions', 'claims', 'datatype', 'sitelinks'],
+    languages: ['en'],
     callback: 'JSON_CALLBACK'
   };
 
@@ -62,11 +62,22 @@ const wdService = function ($http, $q) {
     return result;
   }
 
-  function simplify(entity) {
+  function setLanguages (languages) {
+    defaultParams.languages = languages;
+  }
+
+  function simplifyAliases(aliases) {
+    return mapValues(aliases, lang => lang.map(alias => alias.value));
+  }
+
+  function simplifyEntity(entity) {
     return {
       id: entity.id,
       labels: simplifyLabels(entity.labels),
-      claims: simplifyClaims(entity.claims)
+      aliases: simplifyAliases(entity.aliases),
+      descriptions: simplifyLabels(entity.descriptions),
+      claims: simplifyClaims(entity.claims),
+      interwiki: entity.sitelinks
     };
   }
 
@@ -94,10 +105,9 @@ const wdService = function ($http, $q) {
 
     return get({
       ids: id,
-      languages: ['pl', 'en'],
-      sitefilter: 'plwiki',
+      languages: defaultParams.languages
     })
-      .then(data => mapValues(data.data.entities, entity => simplify(entity)))
+      .then(data => mapValues(data.data.entities, entity => simplifyEntity(entity)))
       .then(data => {
         entities = data;
         const simplified = mapValues(data,
