@@ -1,21 +1,42 @@
-<md-content layout="column" layout-align="start stretch" flex>
-  <h2 class="monument__title md-display-2">{{$ctrl.monument.labels.pl || 'brak polskiej nazwy'}}</h2>
-  <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'brak angielskiej nazwy'}}</h4>
-  <div>
-    <div ng-repeat="claim in $ctrl.monument.claims">
-      <span>{{claim.property.pl}}:</span>
-      <span ng-repeat="value in claim.values">
-        <span ng-if="value.value_type === 'wikibase-item'">{{value.value.pl || value.value.en}}</span>
-        <span ng-if="value.value_type === 'string'">{{value.value}}</span>
-        <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
-        <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
-        <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
-        <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
-      </span>
+<md-content layout="column" layout-align="start center" flex>
+  <div class="monument"
+       layout="row" layout-align="space-between stretch">
+    <div class="monument__left">
+      <h2 class="monument__title md-display-1">{{$ctrl.monument.labels.pl || 'brak polskiej nazwy'}}</h2>
+      <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'brak angielskiej nazwy'}}</h4>
+      <div>
+        <div ng-repeat="claim in $ctrl.monument.claims">
+          <span>{{claim.property.pl}}:</span>
+          <span ng-repeat="value in claim.values">
+            <span ng-if="value.value_type === 'wikibase-item'">{{value.value.pl || value.value.en}}</span>
+            <span ng-if="value.value_type === 'string'">{{value.value}}</span>
+            <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
+            <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
+            <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
+            <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
+          </span>
+        </div>
+      </div>
+
+      <md-button class="md-primary"
+                 aria-label="Show raw data"
+                 ng-click="$ctrl.showRawData = !$ctrl.showRawData">Show raw data</md-button>
+      <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
+    </div>
+    <div class="monument__right">
+      <div class="monument__image"
+           layout="column" layout-align="center center"
+           ng-if="!$ctrl.image">
+        <md-icon>crop_original</md-icon>
+      </div>
+      <a ng-if="$ctrl.image" ng-href="{{$ctrl.image.descriptionurl}}">
+        <img  ng-src="{{$ctrl.image.thumburl}}">
+      </a>
+      <div class="monument__images" ng-if="$ctrl.images">
+        <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
+          <img ng-src="{{image.thumburl}}">
+        </a>
+      </div>
     </div>
   </div>
-  <h4 class="md-display-1">Surowe dane</h4>
-  <pre>
-{{$ctrl.monument | json}}
-  </pre>
 </md-content>
