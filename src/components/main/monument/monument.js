@@ -11,14 +11,17 @@ const MonumentComponent = {
 function controller($http, $q, $stateParams, CommonsService, wikidata) {
   let vm = this;
   const id = $stateParams.id;
-  
+
+  vm.lang = 'pl';
+
+  wikidata.setLanguages(['pl', 'en']);
   getWikidata();
 
   // functions
 
   function getCategoryMembers(category) {
     CommonsService.getCategoryMembers(category).then(data => {
-      const promises = data.map(image => CommonsService.getImage(image, {iiurlheight: 75}));
+      const promises = data.map(image => CommonsService.getImage(image, { iiurlheight: 75 }));
       $q.all(promises).then(data => {
         vm.images = data.map(image => image.imageinfo);
       });
@@ -37,14 +40,12 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
       vm.monument = data[first];
       const claims = vm.monument.claims;
 
-      if(vm.monument.claims.P18) {
+      if (vm.monument.claims.P18) {
         getImage(claims.P18.values[0].value);
       }
-      if(vm.monument.claims.P373) {
+      if (vm.monument.claims.P373) {
         getCategoryMembers(claims.P373.values[0].value);
       }
-
-      
     });
   }
 }

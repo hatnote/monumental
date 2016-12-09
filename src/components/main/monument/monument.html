@@ -2,13 +2,13 @@
   <div class="monument"
        layout="row" layout-align="space-between stretch">
     <div class="monument__left">
-      <h2 class="monument__title md-display-1">{{$ctrl.monument.labels.pl || 'brak polskiej nazwy'}}</h2>
-      <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'brak angielskiej nazwy'}}</h4>
+      <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
+      <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
       <div>
         <div ng-repeat="claim in $ctrl.monument.claims">
-          <span>{{claim.property.pl}}:</span>
+          <span>{{claim.property[$ctrl.lang]}}:</span>
           <span ng-repeat="value in claim.values">
-            <span ng-if="value.value_type === 'wikibase-item'">{{value.value.pl || value.value.en}}</span>
+            <span ng-if="value.value_type === 'wikibase-item'">{{value.value[$ctrl.lang] || value.value.en}}</span>
             <span ng-if="value.value_type === 'string'">{{value.value}}</span>
             <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
             <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
