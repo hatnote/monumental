@@ -34,6 +34,12 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
     return 'https://commons.wikimedia.org/wiki/Category:' + encodeURIComponent(name);
   }
 
+  function getFullLocation(id) {
+    wikidata.getRecursive(id, 'P131').then(data => {
+      vm.location = data;
+    });
+  }
+
   function getImage(image) {
     CommonsService.getImage(image).then(data => {
       vm.image = data.imageinfo;
@@ -51,6 +57,9 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
       }
       if (vm.monument.claims.P373) {
         getCategoryMembers(claims.P373.values[0].value);
+      }
+      if (vm.monument.claims.P131) {
+        getFullLocation(claims.P131.values[0].value_id);
       }
     });
   }

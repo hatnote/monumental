@@ -4,6 +4,12 @@
     <div class="monument__left">
       <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
       <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
+
+      <div>
+        <md-icon>place</md-icon>
+        <span ng-repeat="place in $ctrl.location"><a ng-href="{{place.link}}">{{place.value}}</a><span ng-if="!$last">, </span></span>
+      </div>
+
       <ul>
         <li ng-repeat="claim in $ctrl.monument.claims">
           <span>{{claim.property[$ctrl.lang]}}:</span>
