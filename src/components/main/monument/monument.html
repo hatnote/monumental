@@ -51,8 +51,8 @@
            ng-if="!$ctrl.image">
         <md-icon>crop_original</md-icon>
       </div>
-      <a ng-if="$ctrl.image" ng-href="{{$ctrl.image.descriptionurl}}">
-        <img  ng-src="{{$ctrl.image.thumburl}}">
+      <a ng-repeat="image in $ctrl.image" ng-href="{{image.descriptionurl}}">
+        <img ng-src="{{image.thumburl}}">
       </a>
       <div class="monument__images" ng-if="$ctrl.images">
         <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">

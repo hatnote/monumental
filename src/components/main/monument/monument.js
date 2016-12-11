@@ -14,6 +14,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
 
   vm.getCommonsLink = getCommonsLink;
   vm.lang = 'pl';
+  vm.image = [];
 
   wikidata.setLanguages(['pl', 'en']);
   getWikidata();
@@ -52,7 +53,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
 
   function getImage(image) {
     WikiService.getImage(image).then(data => {
-      vm.image = data.imageinfo;
+      vm.image.push(data.imageinfo);
     });
   }
 
@@ -63,7 +64,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
       const claims = vm.monument.claims;
 
       if (vm.monument.claims.P18) {
-        getImage(claims.P18.values[0].value);
+        claims.P18.values.forEach(image => getImage(image.value));
       }
       if (vm.monument.claims.P373) {
         getCategoryMembers(claims.P373.values[0].value);
