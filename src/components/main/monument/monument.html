@@ -8,8 +8,10 @@
 
       <div class="monument__place" layout="row" layout-align="start center">
         <span><md-icon>place</md-icon></span>
-        <span ng-repeat="place in $ctrl.location"><a ng-href="{{place.link}}">{{place.value}}</a><span ng-if="!$last">,&nbsp;</span></span>
-        <span class="muted" ng-if="!$ctrl.location">no location</span>
+        <span>
+          <span ng-repeat="place in $ctrl.location"><a ng-href="{{place.link}}">{{place.value}}</a><span ng-if="!$last"> · </span></span>
+          <span class="muted" ng-if="!$ctrl.location">no location</span>
+        </span>
       </div>
 
       <div class="monument__article" layout="column" layout-align="start center">

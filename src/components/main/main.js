@@ -10,16 +10,9 @@ const MainComponent = {
 function controller(wikidata, $state) {
   let vm = this;
 
-  vm.goToItem = (item) => $state.go('main.monument', {id: item.title});
-  vm.querySearch = querySearch;
+  vm.goToItem = (item) => $state.go('main.object', {id: item.title});
+  vm.querySearch = (text) => wikidata.getSearch(text);
   vm.search = {};
-
-  function querySearch(text) {
-    return wikidata.getSearch(text).then(data => {
-      console.log(data);
-      return data;
-    });
-  }
 
 }
 
