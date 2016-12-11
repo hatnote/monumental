@@ -7,7 +7,12 @@ const MainComponent = {
   template: template
 };
 
-function controller() {
+function controller(wikidata, $state) {
+  let vm = this;
+
+  vm.goToItem = (item) => $state.go('main.object', {id: item.title});
+  vm.querySearch = (text) => wikidata.getSearch(text);
+  vm.search = {};
 
 }
 

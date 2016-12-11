@@ -3,8 +3,13 @@
 
 mo-monument {
     .monument {
-        width: 1200px;
+        width: 980px;
         max-width: 100%;
+    }
+
+    .monument__left {
+        width: 100%;
+        margin-right: 50px;
     }
 
     .monument__right {
@@ -37,7 +42,7 @@ mo-monument {
         width: 400px;
 
         img {
-            margin-right: 5px;
+            margin-right: 1px;
             display: inline-block;
         }
     }
@@ -46,7 +51,72 @@ mo-monument {
         margin-top: 0;
         margin-bottom: 0;
     }
+
     .monument__subtitle {
         margin-top: 0; 
+        margin-bottom: 15px;
     }
+
+    .monument__place {
+        margin-bottom: 15px;
+
+        .material-icons {
+            margin-right: 5px;
+            color: $lightGrey;
+        }
+    }
+
+    .monument__article {
+        margin-top: 30px;
+
+        .article__header {
+            .md-button.md-primary {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        .article__text {
+            position:relative;
+            max-height: 320px;
+            overflow: hidden;
+            font-family: 'Merriweather', serif;
+            font-size: 15px;
+            text-align: justify;
+            line-height: 1.8;
+
+            p:first-child {
+                margin-top: 0;
+            }
+
+            &.article__text--long {
+                max-height: none;
+            }
+
+            &:after {
+                content: "";
+                position: absolute; top: 0; bottom: 0; left: -15px; right: -15px;
+                box-shadow: inset rgb(250,250,250) 0 -20px 10px;
+            }
+        }
+
+        .md-button {
+            margin-top: -18px;
+        }
+    }
+
+    .monument__details {
+        .monument__details-item {
+            margin-bottom: 15px;
+
+            strong {
+                margin-right: 20px;
+            }
+        }
+
+        .monument__details-value {
+            line-height: 1.5;
+        }
+    }
+    
 }

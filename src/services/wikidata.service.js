@@ -2,6 +2,8 @@ const wdService = function ($http, $q) {
 
   const service = {
     getById: getById,
+    getRecursive: getRecursive,
+    getSearch: getSearch,
     setLanguages: setLanguages
   };
 
@@ -44,6 +46,32 @@ const wdService = function ($http, $q) {
     });
   }
 
+  function getRecursive(element, recursiveProperty) {
+    let query = `SELECT ?parent ?parentLabel WHERE {
+        wd:`+ element + ` wdt:` + recursiveProperty + `* ?parent .
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "` + defaultParams.languages.join(', ') + `" }
+      }`;
+    return $http.get('https://query.wikidata.org/sparql', {
+      params: { query: query },
+      cache: false
+    }).then(data => {
+      return data.data.results.bindings.map(element => ({
+        link: element.parent.value.replace('entity', 'wiki'),
+        value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
+        value: element.parentLabel.value
+      }));
+    });
+  }
+
+  function getSearch(text) {
+    return get({
+      action: 'wbsearchentities',
+      search: text,
+      type: 'item',
+      language: defaultParams.languages[0]
+    }).then(data => data.data.search)
+  }
+
   /**
    * Creates an object with the same keys as `object` and values generated
    * by running each own enumerable string keyed property of `object` thru
@@ -62,7 +90,7 @@ const wdService = function ($http, $q) {
     return result;
   }
 
-  function setLanguages (languages) {
+  function setLanguages(languages) {
     defaultParams.languages = languages;
   }
 

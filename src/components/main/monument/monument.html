@@ -1,29 +1,76 @@
 <md-content layout="column" layout-align="start center" flex>
-  <div class="monument"
-       layout="row" layout-align="space-between stretch">
+  <div class="monument" layout="row" layout-align="space-between stretch">
+
+    <!-- LEFT -->
     <div class="monument__left">
       <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
       <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
-      <ul>
-        <li ng-repeat="claim in $ctrl.monument.claims">
-          <span>{{claim.property[$ctrl.lang]}}:</span>
-          <span ng-repeat="value in claim.values">
-            <span ng-if="value.value_type === 'wikibase-item'">{{value.value[$ctrl.lang] || value.value.en}}</span>
-            <span ng-if="value.value_type === 'string'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
-            <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
-            <span ng-show="!$last">/</span>
-          </span>
-        </li>
-      </ul>
 
+      <div class="monument__place" layout="row" layout-align="start center">
+        <span><md-icon>place</md-icon></span>
+        <span>
+          <span ng-repeat="place in $ctrl.location"><a ng-href="{{place.link}}">{{place.value}}</a><span ng-if="!$last"> · </span></span>
+          <span class="muted" ng-if="!$ctrl.location">no location</span>
+        </span>
+      </div>
+
+      <div class="monument__article" layout="column" layout-align="start stretch">
+        <div class="article__header"
+             layout="row" layout-align="start center">
+          <h4 class="monument__subtitle md-headline">Wikipedia</h4>
+          <span flex></span>
+          <md-button class="md-primary md-icon-button"
+                     ng-repeat="wiki in $ctrl.shownInterwiki"
+                     ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
+                     ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
+            {{wiki}}
+          </md-button>
+        </div>
+        
+        <div class="article__text"
+             ng-class="{'article__text--long' : $ctrl.showArticleLong}"
+             ng-bind-html="$ctrl.article"></div>
+        <md-button class="md-primary"
+                   ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
+                   ng-click="$ctrl.showArticleLong = true">
+          Show more
+        </md-button>
+      </div>
+
+      <div class="monument__details">
+        <h4 class="monument__subtitle md-headline">Properties</h4>
+        <div class="monument__details-item"
+             layout="row" layout-align="center stretch"
+             ng-repeat="claim in $ctrl.monument.claims">
+          <span class="muted" flex="35">{{claim.property[$ctrl.lang]}}</span>
+          <span flex="65"
+                layout="column" layout-align="start stretch">
+            <span class="monument__details-value" ng-repeat="value in claim.values">
+              <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
+              <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
+              <span ng-if="value.value_type === 'string'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'time'">{{value.value.time.substring(1) | date : 'yyyy'}}</span>
+              <span ng-if="value.value_type === 'url'">{{value.value}}</span>
+              <a ng-if="value.value_type === 'wikibase-item'"
+                 ng-href="http://www.wikidata.org/wiki/{{value.value_id}}">{{value.value[$ctrl.lang] || value.value.en}}</a>
+            </span>
+          </span>
+        </div>
+      </div>
       <md-button class="md-primary"
                  aria-label="Show raw data"
-                 ng-click="$ctrl.showRawData = !$ctrl.showRawData">Show raw data</md-button>
+                 ng-click="$ctrl.showRawData = !$ctrl.showRawData">
+        Show raw data
+      </md-button>
+      <md-button ng-href="http://www.wikidata.org/wiki/{{$ctrl.monument.id}}">
+        Show Wikidata page
+      </md-button>
       <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
     </div>
+
+    <!-- RIGHT -->
     <div class="monument__right"
          layout="column" layout-align="start stretch">
       <div class="monument__image"
@@ -31,8 +78,8 @@
            ng-if="!$ctrl.image">
         <md-icon>crop_original</md-icon>
       </div>
-      <a ng-if="$ctrl.image" ng-href="{{$ctrl.image.descriptionurl}}">
-        <img  ng-src="{{$ctrl.image.thumburl}}">
+      <a ng-repeat="image in $ctrl.image" ng-href="{{image.descriptionurl}}">
+        <img ng-src="{{image.thumburl}}">
       </a>
       <div class="monument__images" ng-if="$ctrl.images">
         <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
@@ -42,7 +89,7 @@
       <md-button class="md-primary"
                  ng-if="$ctrl.monument.claims.P373"
                  ng-href="{{$ctrl.getCommonsLink()}}">
-        <md-icon>collections</md-icon> more in wikimedia commons
+        <md-icon>collections</md-icon> {{$ctrl.monument.claims.P373.property[$ctrl.lang]}}
       </md-button>
     </div>
   </div>
