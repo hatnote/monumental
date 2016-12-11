@@ -8,7 +8,7 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiService, wikidata) {
   let vm = this;
   const id = $stateParams.id;
 
@@ -85,6 +85,9 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
         getArticleHeader(vm.monument.interwiki[vm.lang + 'wiki'].title);
       }
       getInterwiki();
+
+      let title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
+      $window.document.title = title + ' – Monumental';
     });
   }
 }
