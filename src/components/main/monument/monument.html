@@ -14,7 +14,19 @@
         </span>
       </div>
 
-      <div class="monument__article" layout="column" layout-align="start center">
+      <div class="monument__article" layout="column" layout-align="start stretch">
+        <div class="article__header"
+             layout="row" layout-align="start center">
+          <h4 class="monument__subtitle md-headline">Wikipedia</h4>
+          <span flex></span>
+          <md-button class="md-primary md-icon-button"
+                     ng-repeat="wiki in $ctrl.shownInterwiki"
+                     ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
+                     ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
+            {{wiki}}
+          </md-button>
+        </div>
+        
         <div class="article__text"
              ng-class="{'article__text--long' : $ctrl.showArticleLong}"
              ng-bind-html="$ctrl.article"></div>
@@ -24,6 +36,7 @@
           Show more
         </md-button>
       </div>
+
       <div class="monument__details">
         <h4 class="monument__subtitle md-headline">Properties</h4>
         <div class="monument__details-item"
@@ -76,7 +89,7 @@
       <md-button class="md-primary"
                  ng-if="$ctrl.monument.claims.P373"
                  ng-href="{{$ctrl.getCommonsLink()}}">
-        <md-icon>collections</md-icon> more in wikimedia commons
+        <md-icon>collections</md-icon> {{$ctrl.monument.claims.P373.property[$ctrl.lang]}}
       </md-button>
     </div>
   </div>

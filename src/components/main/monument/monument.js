@@ -57,6 +57,15 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
     });
   }
 
+  function getInterwiki() {
+    vm.shownInterwiki = ['de', 'en', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'zh'];
+    vm.monument.interwiki = _.mapValues(vm.monument.interwiki, (wiki) => ({
+      code: wiki.site.replace('wiki', ''),
+      title: wiki.title,
+      link: 'https://' + wiki.site.replace('wiki', '') + '.wikipedia.org/wiki/' + wiki.title
+    }));
+  }
+
   function getWikidata() {
     wikidata.getById(id).then(data => {
       const first = Object.keys(data)[0];
@@ -75,6 +84,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
       if(vm.monument.interwiki[vm.lang + 'wiki']) {
         getArticleHeader(vm.monument.interwiki[vm.lang + 'wiki'].title);
       }
+      getInterwiki();
     });
   }
 }

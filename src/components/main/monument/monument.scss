@@ -8,6 +8,7 @@ mo-monument {
     }
 
     .monument__left {
+        width: 100%;
         margin-right: 50px;
     }
 
@@ -66,6 +67,15 @@ mo-monument {
     }
 
     .monument__article {
+        margin-top: 30px;
+
+        .article__header {
+            .md-button.md-primary {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
         .article__text {
             position:relative;
             max-height: 320px;
@@ -74,6 +84,10 @@ mo-monument {
             font-size: 15px;
             text-align: justify;
             line-height: 1.8;
+
+            p:first-child {
+                margin-top: 0;
+            }
 
             &.article__text--long {
                 max-height: none;
