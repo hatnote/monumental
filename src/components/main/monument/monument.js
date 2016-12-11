@@ -13,10 +13,10 @@ function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikida
   const id = $stateParams.id;
 
   vm.getCommonsLink = getCommonsLink;
-  vm.lang = 'pl';
   vm.image = [];
+  vm.lang = $stateParams.lang || 'pl';
 
-  wikidata.setLanguages(['pl', 'en']);
+  wikidata.setLanguages([vm.lang, 'en']);
   getWikidata();
 
   // functions
