@@ -8,7 +8,7 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $q, $stateParams, CommonsService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, WikiService, wikidata) {
   let vm = this;
   const id = $stateParams.id;
 
@@ -21,10 +21,20 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
   // functions
 
   function getCategoryMembers(category) {
-    CommonsService.getCategoryMembers(category).then(data => {
-      const promises = data.map(image => CommonsService.getImage(image, { iiurlheight: 75 }));
+    WikiService.getCategoryMembers(category).then(data => {
+      const promises = data.map(image => WikiService.getImage(image, { iiurlheight: 75 }));
       $q.all(promises).then(data => {
         vm.images = data.map(image => image.imageinfo);
+      });
+    });
+  }
+
+  function getArticleHeader(name) {
+    WikiService.getArticleHeader(vm.lang, name).then(data => {
+      vm.article = $sce.trustAsHtml(data);
+      $timeout(() => {
+        let height = document.querySelector('.article__text').offsetHeight;
+        vm.isArticleLong = height === 320;
       });
     });
   }
@@ -41,7 +51,7 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
   }
 
   function getImage(image) {
-    CommonsService.getImage(image).then(data => {
+    WikiService.getImage(image).then(data => {
       vm.image = data.imageinfo;
     });
   }
@@ -60,6 +70,9 @@ function controller($http, $q, $stateParams, CommonsService, wikidata) {
       }
       if (vm.monument.claims.P131) {
         getFullLocation(claims.P131.values[0].value_id);
+      }
+      if(vm.monument.interwiki[vm.lang + 'wiki']) {
+        getArticleHeader(vm.monument.interwiki[vm.lang + 'wiki'].title);
       }
     });
   }

@@ -10,20 +10,34 @@
         <span ng-repeat="place in $ctrl.location"><a ng-href="{{place.link}}">{{place.value}}</a><span ng-if="!$last">, </span></span>
       </div>
 
-      <ul>
-        <li ng-repeat="claim in $ctrl.monument.claims">
-          <span>{{claim.property[$ctrl.lang]}}:</span>
-          <span ng-repeat="value in claim.values">
-            <span ng-if="value.value_type === 'wikibase-item'">{{value.value[$ctrl.lang] || value.value.en}}</span>
-            <span ng-if="value.value_type === 'string'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
-            <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
-            <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
-            <span ng-show="!$last">/</span>
-          </span>
-        </li>
-      </ul>
+      <div class="monument__article" layout="column" layout-align="start center">
+        <div class="article__text"
+             ng-class="{'article__text--long' : $ctrl.showArticleLong}"
+             ng-bind-html="$ctrl.article"></div>
+        <md-button class="md-primary"
+                   ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
+                   ng-click="$ctrl.showArticleLong = true">
+          Show more
+        </md-button>
+      </div>
+
+
+      <md-list>
+        <md-list-item ng-repeat="claim in $ctrl.monument.claims">
+          <p flex="50">{{claim.property[$ctrl.lang]}}</p>
+          <p flex="50">
+            <span ng-repeat="value in claim.values">
+              <span ng-if="value.value_type === 'wikibase-item'">{{value.value[$ctrl.lang] || value.value.en}}</span>
+              <span ng-if="value.value_type === 'string'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'commonsMedia'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'external-id'">{{value.value}}</span>
+              <span ng-if="value.value_type === 'globe-coordinate'">{{value.value.latitude}} / {{value.value.longitude}}</span>
+              <span ng-if="value.value_type === 'quantity'">{{value.value.amount}}</span>
+              <span ng-show="!$last">/</span>
+            </span>
+          </p>
+        </md-list-item>
+      </md-list>
 
       <md-button class="md-primary"
                  aria-label="Show raw data"
