@@ -7,7 +7,19 @@ const MainComponent = {
   template: template
 };
 
-function controller() {
+function controller(wikidata, $state) {
+  let vm = this;
+
+  vm.goToItem = (item) => $state.go('main.monument', {id: item.title});
+  vm.querySearch = querySearch;
+  vm.search = {};
+
+  function querySearch(text) {
+    return wikidata.getSearch(text).then(data => {
+      console.log(data);
+      return data;
+    });
+  }
 
 }
 

@@ -3,6 +3,7 @@ const wdService = function ($http, $q) {
   const service = {
     getById: getById,
     getRecursive: getRecursive,
+    getSearch: getSearch,
     setLanguages: setLanguages
   };
 
@@ -60,6 +61,15 @@ const wdService = function ($http, $q) {
         value: element.parentLabel.value
       }));
     });
+  }
+
+  function getSearch(text) {
+    return get({
+      action: 'wbsearchentities',
+      search: text,
+      type: 'item',
+      language: defaultParams.languages[0]
+    }).then(data => data.data.search)
   }
 
   /**
