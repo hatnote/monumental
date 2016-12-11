@@ -53,6 +53,16 @@ mo-monument {
 
     .monument__subtitle {
         margin-top: 0; 
+        margin-bottom: 15px;
+    }
+
+    .monument__place {
+        margin-bottom: 15px;
+
+        .material-icons {
+            margin-right: 5px;
+            color: $lightGrey;
+        }
     }
 
     .monument__article {
@@ -78,6 +88,20 @@ mo-monument {
 
         .md-button {
             margin-top: -18px;
+        }
+    }
+
+    .monument__details {
+        .monument__details-item {
+            margin-bottom: 15px;
+
+            strong {
+                margin-right: 20px;
+            }
+        }
+
+        .monument__details-value {
+            line-height: 1.5;
         }
     }
     

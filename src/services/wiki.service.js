@@ -24,7 +24,6 @@ const WikiService = function ($http, $q) {
   const imageParams = angular.extend({}, defaultParams, {
     prop: 'imageinfo',
     iiurlwidth: 300,
-    iiurlheight: 300,
     iiprop: ['timestamp', 'user', 'url', 'size'].join('|'),
   });
 
