@@ -31,9 +31,12 @@ angular
     'restangular',
     'infinite-scroll',
     'leaflet-directive'
-    ])
+  ])
   .config(stateConfig)
-  .config(themeConfig);
+  .config(themeConfig)
+  .config($logProvider => {
+    $logProvider.debugEnabled(false);
+  });
 
 /**
  * Config of routing
@@ -68,10 +71,15 @@ function stateConfig($stateProvider, $urlRouterProvider) {
  */
 function themeConfig($mdThemingProvider, $provide) {
   let tp = $mdThemingProvider;
+  tp.definePalette('moRed', tp.extendPalette('red', {
+    '500': '#8f0000',
+    '600': '#8f0000'
+  }));
+
   tp.alwaysWatchTheme(true);
   tp.theme('default')
-    .primaryPalette('blue')
-    .accentPalette('red');
+    .primaryPalette('moRed')
+    .accentPalette('blue');
 
   $provide.value('themeProvider', tp);
 }

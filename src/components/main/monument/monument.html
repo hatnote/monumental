@@ -91,6 +91,21 @@
                  ng-href="{{$ctrl.getCommonsLink()}}">
         <md-icon>collections</md-icon> {{$ctrl.monument.claims.P373.property[$ctrl.lang]}}
       </md-button>
+
+      <leaflet ng-if="$ctrl.monument.claims.P625"
+               markers="$ctrl.map.markers"
+               center="$ctrl.map.center"></leaflet>
+      <div layout="row" layout-align="center center"
+           ng-if="$ctrl.monument.claims.P625">
+        <md-button class="md-primary" flex
+                   ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}">
+          <md-icon>map</md-icon> Google Maps
+        </md-button>
+        <md-button class="md-primary" flex
+                   ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}">
+          <md-icon>map</md-icon> OSM
+        </md-button>
+      </div>
     </div>
   </div>
 </md-content>
