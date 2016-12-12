@@ -31,9 +31,12 @@ angular
     'restangular',
     'infinite-scroll',
     'leaflet-directive'
-    ])
+  ])
   .config(stateConfig)
-  .config(themeConfig);
+  .config(themeConfig)
+  .config($logProvider => {
+    $logProvider.debugEnabled(false);
+  });
 
 /**
  * Config of routing

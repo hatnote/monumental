@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import './monument.scss';
 import template from './monument.html';
+import '../../../images/marker.png';
 
 const MonumentComponent = {
   controller: controller,
@@ -15,6 +16,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
   vm.lang = $stateParams.lang || 'pl';
+  vm.map = {};
 
   wikidata.setLanguages([vm.lang, 'en']);
   getWikidata();
@@ -81,8 +83,34 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
       if (vm.monument.claims.P131) {
         getFullLocation(claims.P131.values[0].value_id);
       }
-      if(vm.monument.interwiki[vm.lang + 'wiki']) {
+      if (vm.monument.interwiki[vm.lang + 'wiki']) {
         getArticleHeader(vm.monument.interwiki[vm.lang + 'wiki'].title);
+      }
+      if (vm.monument.claims.P625) {
+        const value = vm.monument.claims.P625.values[0].value;
+        const icon = {
+          iconUrl: 'assets/images/marker.png',
+          shadowUrl: undefined,
+          iconSize: [40, 40],
+          shadowSize: [0, 0],
+          iconAnchor: [20, 20],
+          shadowAnchor: [0, 0]
+        };
+
+        vm.map = {
+          center: {
+            lat: value.latitude,
+            lng: value.longitude,
+            zoom: 15
+          },
+          markers: {
+            marker: {
+              lat: value.latitude,
+              lng: value.longitude,
+              icon: icon
+            }
+          }
+        };
       }
       getInterwiki();
 
