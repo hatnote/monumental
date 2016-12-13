@@ -4,6 +4,7 @@ const wdService = function ($http, $q) {
     getById: getById,
     getRecursive: getRecursive,
     getSearch: getSearch,
+    getSPARQL: getSPARQL,
     setLanguages: setLanguages
   };
 
@@ -51,11 +52,8 @@ const wdService = function ($http, $q) {
         wd:`+ element + ` wdt:` + recursiveProperty + `* ?parent .
         SERVICE wikibase:label { bd:serviceParam wikibase:language "` + defaultParams.languages.join(', ') + `" }
       }`;
-    return $http.get('https://query.wikidata.org/sparql', {
-      params: { query: query },
-      cache: false
-    }).then(data => {
-      return data.data.results.bindings.map(element => ({
+    return getSPARQL(query).then(data => {
+      return data.map(element => ({
         link: element.parent.value.replace('entity', 'wiki'),
         value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
         value: element.parentLabel.value
@@ -70,6 +68,13 @@ const wdService = function ($http, $q) {
       type: 'item',
       language: defaultParams.languages[0]
     }).then(data => data.data.search)
+  }
+
+  function getSPARQL(query) {
+    return $http.get('https://query.wikidata.org/sparql', {
+      params: { query: query },
+      cache: false
+    }).then(data => data.data.results.bindings);
   }
 
   /**
