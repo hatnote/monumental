@@ -1,0 +1,7 @@
+<md-content layout="column" layout-gt-sm="row" layout-align="start stretch" flex>
+  <ul>
+      <li ng-repeat="item in $ctrl.list | orderBy: 'value'">
+          <a ui-sref="main.object({id: item.value_id.substring(1)})">{{item.value}}</a>
+      </li>
+  </ul>
+</md-content>
