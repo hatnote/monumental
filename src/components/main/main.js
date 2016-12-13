@@ -10,7 +10,7 @@ const MainComponent = {
 function controller(wikidata, $state) {
   let vm = this;
 
-  vm.goToItem = (item) => $state.go('main.object', {id: item.title});
+  vm.goToItem = (item) => $state.go('main.object', {id: item.title.substring(1)});
   vm.querySearch = (text) => wikidata.getSearch(text);
   vm.search = {};
 
