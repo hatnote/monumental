@@ -1,0 +1,12 @@
+mo-list {
+    .list {
+        width: 980px;
+        max-width: 100%;
+    }
+    
+    .list__container {
+        max-height: calc(100vh - 110px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+}
