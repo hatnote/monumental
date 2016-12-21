@@ -11,7 +11,7 @@ const MonumentComponent = {
 
 function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiService, wikidata) {
   let vm = this;
-  const id = $stateParams.id;
+  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];

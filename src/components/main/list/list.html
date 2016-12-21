@@ -1,0 +1,12 @@
+<md-content layout="column" layout-align="start center" flex>
+  <div class="list" layout="row" layout-align="start stretch">
+    <div class="list__container" flex>
+      <md-subheader class="md-no-sticky">List</md-subheader>
+      <md-list-item ng-repeat="item in $ctrl.list | orderBy: 'value'"
+                    ui-sref="main.object({id: item.name.value_id.substring(1)})">
+        <p>{{item.name.value}} <span class="muted">{{item.admin.value}}</span></p>
+      </md-list-item>
+    </div>
+    <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" center="$ctrl.map.center" flex></leaflet>
+  </div>
+</md-content>
