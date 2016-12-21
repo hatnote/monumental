@@ -2,5 +2,8 @@
 @import '../../../styles/responsive';
 
 mo-dashboard {
-
+    .dashboard {
+        width: 980px;
+        max-width: 100%;
+    }
 }
