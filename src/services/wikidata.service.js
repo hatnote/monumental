@@ -2,6 +2,7 @@ const wdService = function ($http, $q) {
 
   const service = {
     getById: getById,
+    getLabels: getLabels,
     getRecursive: getRecursive,
     getSearch: getSearch,
     getSPARQL: getSPARQL,
@@ -40,11 +41,18 @@ const wdService = function ($http, $q) {
    * @returns {Promise}
    */
   function get(data) {
-    let params = angular.extend(angular.copy(defaultParams), data);
+    let params = angular.extend({}, defaultParams, data);
     return $http.jsonp('https://www.wikidata.org/w/api.php', {
       params: mapValues(params, p => angular.isArray(p) ? p.join('|') : p),
       cache: false
     });
+  }
+
+  function getLabels(ids) {
+    return get({
+      ids: ids,
+      props: ['labels']
+    }).then(response => mapValues(response.data.entities, entity => simplifyLabels(entity.labels)));
   }
 
   function getRecursive(element, recursiveProperty) {
@@ -154,11 +162,7 @@ const wdService = function ($http, $q) {
         ids = ids.filter((item, pos, self) => item && self.indexOf(item) === pos);
         return ids;
       })
-      .then(labelsIDs => get({
-        ids: labelsIDs,
-        props: ['labels']
-      }))
-      .then(response => mapValues(response.data.entities, entity => simplifyLabels(entity.labels)))
+      .then(labelsIDs => getLabels(labelsIDs))
       .then(labels => {
         forOwn(entities, entity => {
           entity.claims = mapValues(entity.claims, (values, key) => ({
