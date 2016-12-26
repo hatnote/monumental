@@ -1,12 +1,34 @@
-<md-content layout="column" layout-align="start center" flex>
-  <div class="list" layout="row" layout-align="start stretch">
+<md-content layout="row" layout-align="start stretch" flex>
+  <div class="list" layout="column" layout-align="start stretch" flex="none">
+    <!-- <div class="md-headline">{{$ctrl.listParams.object.label.pl}} in {{$ctrl.listParams.place.label.pl}}</div> -->
+    <md-autocomplete
+          md-input-name="autocompleteField"
+          md-selected-item="$ctrl.search.selectedItem"
+          md-search-text="$ctrl.search.text"
+          md-items="item in $ctrl.querySearch($ctrl.search.text)"
+          md-selected-item-change="$ctrl.goToItem(item)"
+          md-item-text="item.label"
+          md-min-length="1"
+          placeholder="Search"
+          md-menu-class="autocomplete-custom-template">
+        <md-item-template>
+           <strong>{{item.label}}</strong>
+       <span>{{item.description}}</span>
+      </md-item-template>
+    </md-autocomplete>
     <div class="list__container" flex>
-      <md-subheader class="md-no-sticky">List</md-subheader>
-      <md-list-item ng-repeat="item in $ctrl.list | orderBy: 'value'"
+      <md-list-item class="md-2-line"
+                    ng-repeat="item in $ctrl.list | orderBy: 'name.value'"
                     ui-sref="main.object({id: item.name.value_id.substring(1)})">
-        <p>{{item.name.value}} <span class="muted">{{item.admin.value}}</span></p>
+        <div class="list__image" layout="row" layout-align="center center">
+          <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
+        </div>
+        <div class="md-list-item-text" layout="column">
+          <p>{{item.name.value}}</p>
+          <p class="muted">{{item.admin.value}}</p>
+        </div>
       </md-list-item>
     </div>
-    <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" center="$ctrl.map.center" flex></leaflet>
   </div>
+  <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" center="$ctrl.map.center" flex></leaflet>
 </md-content>
