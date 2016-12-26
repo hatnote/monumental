@@ -1,6 +1,5 @@
 <md-content layout="row" layout-align="start stretch" flex>
   <div class="list" layout="column" layout-align="start stretch" flex="none">
-    <!-- <div class="md-headline">{{$ctrl.listParams.object.label.pl}} in {{$ctrl.listParams.place.label.pl}}</div> -->
     <md-autocomplete
           md-input-name="autocompleteField"
           md-selected-item="$ctrl.search.selectedItem"
@@ -17,6 +16,9 @@
       </md-item-template>
     </md-autocomplete>
     <div class="list__container" flex>
+      <md-list-item>
+        <span>{{$ctrl.list.length}} results</span>
+      </md-list-item>
       <md-list-item class="md-2-line"
                     ng-repeat="item in $ctrl.list | orderBy: 'name.value'"
                     ui-sref="main.object({id: item.name.value_id.substring(1)})">
