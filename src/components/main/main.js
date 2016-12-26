@@ -7,8 +7,11 @@ const MainComponent = {
   template: template
 };
 
-function controller(wikidata, $state) {
+function controller(wikidata, $state, $stateParams) {
   let vm = this;
+
+  vm.lang = $stateParams.lang || 'pl';
+  wikidata.setLanguages([vm.lang, 'en']);
 
   vm.goToItem = (item) => $state.go('main.object', {id: item.title.substring(1)});
   vm.querySearch = (text) => wikidata.getSearch(text);
