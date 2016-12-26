@@ -11,12 +11,12 @@ const ListComponent = {
 
 function controller($state, $stateParams, $timeout, leafletData, wikidata) {
   let vm = this;
-  const ids = $stateParams.id.split('-in-').map(id => id[0] === 'Q' ? id : 'Q' + id);
+  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
   vm.map = {};
   vm.listParams = {};
 
-  vm.goToItem = (item) => item ? $state.go('main.list', { id: ids[0].substring(1) + '-in-' + item.id.substring(1) }) : false;
+  vm.goToItem = (item) => item ? $state.go('main.list', { id: item.id.substring(1) }) : false;
   vm.querySearch = (text) => wikidata.getSearch(text);
   vm.search = {};
 
@@ -38,34 +38,19 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
     markers: {}
   };
 
-  wikidata.getSearch(ids[1]).then(results => {
+  wikidata.getSearch(id).then(results => {
     vm.search.selectedItem = results.length ? results[0] : undefined;
   });
 
-  /*
-  wikidata.getLabels(ids).then(labels => {
-    angular.extend(vm.listParams, {
-      object: {
-        id: ids[0],
-        label: labels[ids[0]]
-      },
-      place: {
-        id: ids[1],
-        label: labels[ids[1]]
-      }
-    });
-  });
-  */
-
   wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel  ?admin ?adminLabel ?coord ?image WHERE {
     ?item p:P1435 ?monument .
-    ?item wdt:P131* wd:`+ ids[1] + ` .
+    ?item wdt:P131* wd:`+ id + ` .
     ?item wdt:P131 ?admin .
     ?item wdt:P625 ?coord .
     OPTIONAL { ?item wdt:P18 ?image } 
     SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en" }
   }`).then(data => {
-      console.log(data)
+      // console.log(data)
       vm.list = data.map(element => ({
         name: {
           value_id: element.item.value.substring(element.item.value.indexOf('/Q') + 1),
@@ -86,6 +71,7 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
           vm.map.markers[element.name.value_id] = {
             lat: +element.coord[1],
             lng: +element.coord[0],
+            message: element.name.value,
             icon: icon
           };
           bounds.push([+element.coord[1], +element.coord[0]]);
