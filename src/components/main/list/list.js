@@ -63,14 +63,18 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
     vm.search.selectedItem = results.length ? results[0] : undefined;
   });
 
-  wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel  ?admin ?adminLabel ?coord ?image WHERE {
-    ?item p:P1435 ?monument .
-    ?item wdt:P131* wd:`+ id + ` .
-    ?item wdt:P131 ?admin .
-    ?item wdt:P625 ?coord .
-    OPTIONAL { ?item wdt:P18 ?image } 
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en" }
-  }`).then(data => {
+  wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel) (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image)
+    WHERE {
+        ?item p:P1435 ?monument .
+        ?item wdt:P131* wd:` + id + ` .
+        ?item wdt:P131 ?admin .
+        ?item wdt:P625 ?coord .
+        OPTIONAL { ?item wdt:P18 ?image } 
+        OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "en"). }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en" }
+    }
+    GROUP BY ?item ?itemLabel
+    ORDER BY ?itemLabel`).then(data => {
       // console.log(data)
       vm.list = data.map(element => ({
         name: {
@@ -79,7 +83,7 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
         },
         admin: {
           value_id: element.admin.value.substring(element.admin.value.indexOf('/Q') + 1),
-          value: element.adminLabel.value
+          value: element.adminLabel ? element.adminLabel.value : element.admin.value
         },
         coord: element.coord.value ? element.coord.value.replace('Point(', '').replace(')', '').split(' ') : false,
         image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=75' : false
