@@ -35,7 +35,28 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
       lng: 19.545,
       zoom: 7
     },
-    markers: {}
+    markers: {},
+    layers: {
+      baselayers: {
+        osm: {
+          name: 'OpenStreetMap',
+          type: 'xyz',
+          url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          layerOptions: {
+            subdomains: ['a', 'b', 'c'],
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            continuousWorld: true
+          }
+        }
+      },
+      overlays: {
+        monuments: {
+          name: 'Monuments',
+          type: 'markercluster',
+          visible: true
+        }
+      }
+    }
   };
 
   wikidata.getSearch(id).then(results => {
@@ -72,6 +93,7 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
             lat: +element.coord[1],
             lng: +element.coord[0],
             message: element.name.value,
+            layer: 'monuments',
             icon: icon
           };
           bounds.push([+element.coord[1], +element.coord[0]]);
