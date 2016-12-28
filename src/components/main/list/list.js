@@ -59,6 +59,11 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
     }
   };
 
+  if (!id || id === 'Q') {
+    vm.showMap = true;
+    return;
+  }
+
   wikidata.getSearch(id).then(results => {
     vm.search.selectedItem = results.length ? results[0] : undefined;
   });
