@@ -7,16 +7,18 @@ const MainComponent = {
   template: template
 };
 
-function controller(wikidata, $state, $stateParams) {
+function controller(wikidata, $state, $stateParams, localStorageService) {
   let vm = this;
 
-  vm.lang = $stateParams.lang || 'pl';
-  wikidata.setLanguages([vm.lang, 'en']);
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+
+  vm.lang = langs[0];
+  wikidata.setLanguages(langs);
 
   vm.goToItem = (item) => $state.go('main.object', {id: item.title.substring(1)});
   vm.querySearch = (text) => wikidata.getSearch(text);
   vm.search = {};
-
 }
 
 export default () => {

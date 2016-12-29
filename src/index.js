@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import 'angular-animate';
 import 'angular-leaflet-directive';
+import 'angular-local-storage';
 import 'angular-material';
 import 'angular-messages';
 import 'angular-sanitize';
@@ -33,13 +34,22 @@ angular
     'ui.router',
     'restangular',
     'infinite-scroll',
-    'leaflet-directive'
+    'leaflet-directive',
+    'LocalStorageModule'
   ])
+  .config(localStorageConfig)
   .config(stateConfig)
   .config(themeConfig)
   .config($logProvider => {
     $logProvider.debugEnabled(false);
   });
+
+
+function localStorageConfig(localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('monumental')
+    .setStorageType('localStorage');
+}
 
 /**
  * Config of routing

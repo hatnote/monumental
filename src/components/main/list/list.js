@@ -9,7 +9,7 @@ const ListComponent = {
   template: template
 };
 
-function controller($state, $stateParams, $timeout, leafletData, wikidata) {
+function controller($state, $stateParams, $timeout, leafletData, localStorageService, wikidata) {
   let vm = this;
   const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
@@ -64,6 +64,10 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
     return;
   }
 
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+  wikidata.setLanguages(langs);
+
   wikidata.getSearch(id).then(results => {
     vm.search.selectedItem = results.length ? results[0] : undefined;
   });
@@ -75,8 +79,8 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
         ?item wdt:P131 ?admin .
         ?item wdt:P625 ?coord .
         OPTIONAL { ?item wdt:P18 ?image } 
-        OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "en"). }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en" }
+        OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "` + langs[0] + `"). }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "` + langs.join(',') + `" }
     }
     GROUP BY ?item ?itemLabel
     ORDER BY ?itemLabel`).then(data => {

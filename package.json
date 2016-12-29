@@ -53,6 +53,7 @@
     "angular-aria": "1.5.9",
     "angular-file-upload": "^2.3.4",
     "angular-leaflet-directive": "^0.10.0",
+    "angular-local-storage": "^0.5.0",
     "angular-material": "^1.0.0",
     "angular-messages": "1.5.9",
     "angular-sanitize": "1.5.9",

@@ -9,16 +9,19 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, wikidata) {
   let vm = this;
   const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
-  vm.lang = $stateParams.lang || 'pl';
   vm.map = {};
 
-  wikidata.setLanguages([vm.lang, 'en']);
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+
+  vm.lang = langs[0];
+  wikidata.setLanguages(langs);
   getWikidata();
 
   // functions
