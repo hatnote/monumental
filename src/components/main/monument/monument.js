@@ -69,6 +69,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
   }
 
   function getWikidata() {
+    vm.loading = true;
     wikidata.getById(id).then(data => {
       const first = Object.keys(data)[0];
       vm.monument = data[first];
@@ -113,6 +114,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
         };
       }
       getInterwiki();
+      vm.loading = false;
 
       let title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
       $window.document.title = title + ' – Monumental';
