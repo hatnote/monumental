@@ -92,7 +92,7 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
         },
         admin: {
           value_id: element.admin.value.substring(element.admin.value.indexOf('/Q') + 1),
-          value: element.adminLabel ? element.adminLabel.value : element.admin.value
+          value: element.adminLabel ? element.adminLabel.value : element.admin.value.substring(element.admin.value.indexOf('/Q') + 1)
         },
         coord: element.coord.value ? element.coord.value.replace('Point(', '').replace(')', '').split(' ') : false,
         image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=120' : false
