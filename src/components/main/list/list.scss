@@ -8,8 +8,7 @@ mo-list {
     }
     
     .list__container {
-        overflow-y: scroll;
-        overflow-x: hidden;
+        margin-right: 20px;
 
         md-list-item.md-2-line {
             border-bottom: 1px solid $softGrey;
