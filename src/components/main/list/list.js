@@ -91,7 +91,7 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
           value: element.adminLabel ? element.adminLabel.value : element.admin.value
         },
         coord: element.coord.value ? element.coord.value.replace('Point(', '').replace(')', '').split(' ') : false,
-        image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=75' : false
+        image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=120' : false
       }));
       return vm.list;
     }).then(list => {
