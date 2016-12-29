@@ -10,6 +10,14 @@ body {
     font: 16px Roboto, Arial, sans-serif; 
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+}
+
 md-content {
     margin: 20px;
 }

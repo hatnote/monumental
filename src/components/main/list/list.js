@@ -9,7 +9,7 @@ const ListComponent = {
   template: template
 };
 
-function controller($state, $stateParams, $timeout, leafletData, wikidata) {
+function controller($state, $stateParams, $timeout, leafletData, localStorageService, wikidata) {
   let vm = this;
   const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
@@ -35,21 +35,55 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
       lng: 19.545,
       zoom: 7
     },
-    markers: {}
+    markers: {},
+    layers: {
+      baselayers: {
+        osm: {
+          name: 'OpenStreetMap',
+          type: 'xyz',
+          url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          layerOptions: {
+            subdomains: ['a', 'b', 'c'],
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            continuousWorld: true
+          }
+        }
+      },
+      overlays: {
+        monuments: {
+          name: 'Monuments',
+          type: 'markercluster',
+          visible: true
+        }
+      }
+    }
   };
+
+  if (!id || id === 'Q') {
+    vm.showMap = true;
+    return;
+  }
+
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+  wikidata.setLanguages(langs);
 
   wikidata.getSearch(id).then(results => {
     vm.search.selectedItem = results.length ? results[0] : undefined;
   });
 
-  wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel  ?admin ?adminLabel ?coord ?image WHERE {
-    ?item p:P1435 ?monument .
-    ?item wdt:P131* wd:`+ id + ` .
-    ?item wdt:P131 ?admin .
-    ?item wdt:P625 ?coord .
-    OPTIONAL { ?item wdt:P18 ?image } 
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "pl,en" }
-  }`).then(data => {
+  wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel) (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image)
+    WHERE {
+        ?item p:P1435 ?monument .
+        ?item wdt:P131* wd:` + id + ` .
+        ?item wdt:P131 ?admin .
+        ?item wdt:P625 ?coord .
+        OPTIONAL { ?item wdt:P18 ?image } 
+        OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "` + langs[0] + `"). }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "` + langs.join(',') + `" }
+    }
+    GROUP BY ?item ?itemLabel
+    ORDER BY ?itemLabel`).then(data => {
       // console.log(data)
       vm.list = data.map(element => ({
         name: {
@@ -58,10 +92,10 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
         },
         admin: {
           value_id: element.admin.value.substring(element.admin.value.indexOf('/Q') + 1),
-          value: element.adminLabel.value
+          value: element.adminLabel ? element.adminLabel.value : element.admin.value.substring(element.admin.value.indexOf('/Q') + 1)
         },
         coord: element.coord.value ? element.coord.value.replace('Point(', '').replace(')', '').split(' ') : false,
-        image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=75' : false
+        image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=120' : false
       }));
       return vm.list;
     }).then(list => {
@@ -72,6 +106,7 @@ function controller($state, $stateParams, $timeout, leafletData, wikidata) {
             lat: +element.coord[1],
             lng: +element.coord[0],
             message: element.name.value,
+            layer: 'monuments',
             icon: icon
           };
           bounds.push([+element.coord[1], +element.coord[0]]);

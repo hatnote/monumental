@@ -1,6 +1,29 @@
 <md-content layout="column" layout-align="start center" flex>
-  <div class="dashboard">
-    <a ui-sref="main.object({id: '765569'})">Zamek Gryf<a/><br />
-    <a ui-sref="main.list({id: '54181'})">monuments in silesian voivodeship<a/>
+  <div class="dashboard" layout="row" layout-align="center start">
+    <div layout="column" layout-align="start start" flex>
+      <h3 class="md-title">Language</h3>
+      <div layout="row" layout-align="start start">
+        <md-input-container>
+          <label>First language</label>
+          <input type="text" ng-model="$ctrl.languages[0]">
+        </md-input-container>
+        <md-input-container>
+          <label>Second language</label>
+          <input type="text" ng-model="$ctrl.languages[1]">
+        </md-input-container>
+        <md-input-container>
+          <label>Third language</label>
+          <input type="text" ng-model="$ctrl.languages[2]">
+        </md-input-container>
+      </div>
+      <md-button class="md-primary" ng-click="$ctrl.saveLanguages()">Save</md-button>
+    </div>
+    <div flex>
+      <h3 class="md-title">Examples</h3>
+      <ul>
+        <li><a ui-sref="main.object({id: '167566'})">Pałac Kultury i Nauki</a></li>
+        <li><a ui-sref="main.list({id: '54181'})">monuments in Silesian Voivodeship</a></li>
+      </ul>
+    </div>
   </div>
 </md-content>

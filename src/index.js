@@ -3,17 +3,21 @@ import _ from 'lodash';
 
 import 'angular-animate';
 import 'angular-leaflet-directive';
+import 'angular-local-storage';
 import 'angular-material';
 import 'angular-messages';
 import 'angular-sanitize';
 import 'angular-ui-router';
 import 'leaflet';
+import 'leaflet.markercluster';
 import 'ng-infinite-scroll';
 import 'restangular';
 
 import './styles/style.scss';
 import 'angular-material/angular-material.css';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'material-design-icons/iconfont/material-icons.css';
 
 import components from './components';
@@ -30,13 +34,22 @@ angular
     'ui.router',
     'restangular',
     'infinite-scroll',
-    'leaflet-directive'
+    'leaflet-directive',
+    'LocalStorageModule'
   ])
+  .config(localStorageConfig)
   .config(stateConfig)
   .config(themeConfig)
   .config($logProvider => {
     $logProvider.debugEnabled(false);
   });
+
+
+function localStorageConfig(localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('monumental')
+    .setStorageType('localStorage');
+}
 
 /**
  * Config of routing

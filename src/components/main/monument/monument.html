@@ -2,7 +2,11 @@
   <div class="monument" layout="row" layout-align="space-between stretch">
 
     <!-- LEFT -->
-    <div class="monument__left">
+    <div class="monument__left" ng-show="$ctrl.loading"> 
+      <h2 class="monument__title md-display-1">Loading...</h2>
+    </div>
+
+    <div class="monument__left" ng-show="!$ctrl.loading"> 
       <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
       <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
 

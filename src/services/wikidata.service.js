@@ -75,7 +75,7 @@ const wdService = function ($http, $q) {
       search: text,
       type: 'item',
       language: defaultParams.languages[0]
-    }).then(data => data.data.search)
+    }).then(data => data.data.search);
   }
 
   function getSPARQL(query) {

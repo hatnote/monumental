@@ -15,12 +15,13 @@
        <span>{{item.description}}</span>
       </md-item-template>
     </md-autocomplete>
-    <div class="list__container" flex>
+    <md-virtual-repeat-container class="list__container" flex>
       <md-list-item>
-        <span>{{$ctrl.list.length}} results</span>
+        <span ng-if="$ctrl.showMap">{{$ctrl.list.length}} results</span>
+        <span ng-if="!$ctrl.showMap">Loading...</span>
       </md-list-item>
       <md-list-item class="md-2-line"
-                    ng-repeat="item in $ctrl.list | orderBy: 'name.value'"
+                    md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
                     ui-sref="main.object({id: item.name.value_id.substring(1)})">
         <div class="list__image" layout="row" layout-align="center center">
           <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
@@ -30,7 +31,29 @@
           <p class="muted">{{item.admin.value}}</p>
         </div>
       </md-list-item>
-    </div>
+      <md-list-item class="md-2-line" ng-if="!$ctrl.showMap">
+        <div class="list__image" layout="row" layout-align="center center"></div>
+        <div class="md-list-item-text" layout="column"></div>
+      </md-list-item>
+      <md-list-item class="md-2-line" ng-if="!$ctrl.showMap">
+        <div class="list__image" layout="row" layout-align="center center"></div>
+        <div class="md-list-item-text" layout="column"></div>
+      </md-list-item>
+      <md-list-item class="md-2-line" ng-if="!$ctrl.showMap">
+        <div class="list__image" layout="row" layout-align="center center"></div>
+        <div class="md-list-item-text" layout="column"></div>
+      </md-list-item>
+      <md-list-item class="md-2-line" ng-if="!$ctrl.showMap">
+        <div class="list__image" layout="row" layout-align="center center"></div>
+        <div class="md-list-item-text" layout="column"></div>
+      </md-list-item>
+      <md-list-item class="md-2-line" ng-if="!$ctrl.showMap">
+        <div class="list__image" layout="row" layout-align="center center"></div>
+        <div class="md-list-item-text" layout="column"></div>
+      </md-list-item>
+    </md-virtual-repeat-container>
   </div>
-  <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" center="$ctrl.map.center" flex></leaflet>
+  <div class="list__map" flex>
+    <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" layers="$ctrl.map.layers" center="$ctrl.map.center" flex></leaflet>
+  </div>
 </md-content>
