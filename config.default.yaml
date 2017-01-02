@@ -1,0 +1,5 @@
+---
+oauth_secret_token: "see README"
+oauth_consumer_token: "see README"
+cookie_secret: "ReplaceThisWithSomethingSomewhatSecret"
+...

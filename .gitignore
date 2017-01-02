@@ -3,3 +3,7 @@ app
 
 .vscode
 jsconfig.json
+
+config.local.yaml
+config.labs.yaml
+*.*~
