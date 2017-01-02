@@ -9,16 +9,19 @@ const MonumentComponent = {
   template: template
 };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, wikidata) {
   let vm = this;
   const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
-  vm.lang = $stateParams.lang || 'pl';
   vm.map = {};
 
-  wikidata.setLanguages([vm.lang, 'en']);
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+
+  vm.lang = langs[0];
+  wikidata.setLanguages(langs);
   getWikidata();
 
   // functions
@@ -69,6 +72,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
   }
 
   function getWikidata() {
+    vm.loading = true;
     wikidata.getById(id).then(data => {
       const first = Object.keys(data)[0];
       vm.monument = data[first];
@@ -113,6 +117,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, WikiServic
         };
       }
       getInterwiki();
+      vm.loading = false;
 
       let title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
       $window.document.title = title + ' – Monumental';
