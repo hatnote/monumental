@@ -21,7 +21,7 @@ Copy config.default.yaml to config.local.yaml. You may need to add oauth consume
 3. Run the dev server
 
 ```bash
-python app/server.py
+python monumental/server.py
 ```
 
 Test it out:
