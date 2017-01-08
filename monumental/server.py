@@ -10,7 +10,8 @@ import yaml
 import clastic
 import requests
 
-from clastic import Application, redirect
+from clastic import Application, redirect, StaticFileRoute, MetaApplication
+from clastic.static import StaticApplication
 from clastic.render import render_basic
 from clastic.middleware.cookie import SignedCookieMiddleware, NEVER
 
@@ -21,7 +22,7 @@ from requests_oauthlib import OAuth1
 DEFAULT_WIKI_API_URL = 'https://www.wikidata.org/w/api.php'
 WIKI_OAUTH_URL = 'https://meta.wikimedia.org/w/index.php'
 CUR_PATH = os.path.dirname(os.path.abspath(__file__))
-
+STATIC_PATH = os.path.join(CUR_PATH, 'static')
 
 def home(cookie, request):
     headers = dict([(k, v) for k, v in
@@ -156,11 +157,16 @@ def send_to_wd_api(request, cookie, consumer_token):
 
 
 def create_app():
-    routes = [('/', home, render_basic),
+    static_app = StaticApplication(STATIC_PATH)
+
+    routes = [StaticFileRoute('/', STATIC_PATH + '/index.html'),
+              ('/', static_app),
+              ('/home', home, render_basic),
               ('/login', login),
               ('/logout', logout),
               ('/complete_login', complete_login),
-              ('/api', send_to_wd_api, render_basic)]
+              ('/api', send_to_wd_api, render_basic),
+              ('/meta', MetaApplication())]
 
     config_file_name = 'config.local.yaml'
     config_file_path = os.path.join(os.path.dirname(CUR_PATH), config_file_name)
