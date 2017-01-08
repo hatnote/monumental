@@ -35,6 +35,21 @@ mo-list {
             width: 100%;
             height: 100%;
         }
+
+        .leaflet-popup-close-button {
+            z-index: 1;
+            padding: 5px;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 2px;
+        }
+
+        .leaflet-popup-content {
+            min-width: 300px;
+            margin: 0;
+            font: 16px Roboto, Arial, sans-serif;
+        }
     }
 
     md-autocomplete {

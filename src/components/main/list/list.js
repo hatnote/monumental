@@ -105,7 +105,17 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
           vm.map.markers[element.name.value_id] = {
             lat: +element.coord[1],
             lng: +element.coord[0],
-            message: element.name.value,
+            message: `
+                <md-list-item class="md-2-line"
+                    ui-sref="main.object({id: ${element.name.value_id.substring(1)}})">
+                <div class="list__image" layout="row" layout-align="center center">
+                  <img ng-src="{{'${element.image}'}}" alt="${element.name.value}" ng-if="${!!element.image}">
+                </div>
+                <div class="md-list-item-text" layout="column">
+                  <p>${element.name.value}</p>
+                  <p class="muted">${element.admin.value}</p>
+                </div>
+              </md-list-item>`,
             layer: 'monuments',
             icon: icon
           };
