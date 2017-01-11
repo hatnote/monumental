@@ -23,7 +23,7 @@ md-content {
 }
 
 .container {
-    height: calc(100vh - 64px);
+    min-height: calc(100vh - 64px);
 
     ui-view, ui-view > * {
         width: 100%;
