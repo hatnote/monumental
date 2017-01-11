@@ -10,4 +10,9 @@
             width: 300px;
         }
     }
+
+    &.toolbar--wide .md-toolbar-tools {
+        max-width: 100%;
+        padding-left: 15px;
+    }
 }
