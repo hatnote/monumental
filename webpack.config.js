@@ -9,7 +9,7 @@ var config = {
   context: path.join(__dirname, 'src'),
   entry: './index.js',
   output: {
-    path: path.join(__dirname, 'app', 'assets'),
+    path: path.join(__dirname, 'monumental', 'static', 'assets'),
     publicPath: 'assets/',
     filename: 'bundle.js?v=' + package.version
   },

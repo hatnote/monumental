@@ -113,6 +113,7 @@ const wdService = function ($http, $q) {
 
   function simplifyEntity(entity) {
     return {
+      _raw: entity,
       id: entity.id,
       labels: simplifyLabels(entity.labels),
       aliases: simplifyAliases(entity.aliases),
@@ -131,7 +132,8 @@ const wdService = function ($http, $q) {
     return {
       value_type: snak.datatype,
       value_id: snak.datavalue.value.id,
-      value: snak.datavalue.value
+      value: snak.datavalue.value,
+      qualifiers: claim.qualifiers
     };
   }
 
@@ -170,7 +172,8 @@ const wdService = function ($http, $q) {
             property: labels[key],
             values: values.map(value => labels[value.value_id] ?
               angular.extend(value, { value: labels[value.value_id] }) :
-              value)
+              value),
+            qualifiers: entity.qualifiers
           }));
         });
         return entities;
