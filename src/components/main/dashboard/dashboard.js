@@ -1,13 +1,10 @@
 import './dashboard.scss';
 import template from './dashboard.html';
 
-const DashboardComponent = {
-  controller: controller,
-  template: template
-};
+const DashboardComponent = { controller, template };
 
 function controller($state, localStorageService) {
-  let vm = this;
+  const vm = this;
   vm.languages = localStorageService.get('languages') || ['en', 'de'];
   vm.saveLanguages = saveLanguages;
 

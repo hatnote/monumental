@@ -4,14 +4,11 @@ import './monument.scss';
 import template from './monument.html';
 import '../../../images/marker.png';
 
-const MonumentComponent = {
-  controller: controller,
-  template: template
-};
+const MonumentComponent = { controller, template };
 
 function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, wikidata) {
-  let vm = this;
-  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
+  const vm = this;
+  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : `Q${$stateParams.id}`;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
@@ -27,19 +24,19 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   // functions
 
   function getCategoryMembers(category) {
-    WikiService.getCategoryMembers(category).then(data => {
+    WikiService.getCategoryMembers(category).then((data) => {
       const promises = data.map(image => WikiService.getImage(image, { iiurlheight: 75 }));
-      $q.all(promises).then(data => {
+      $q.all(promises).then((data) => {
         vm.images = data.map(image => image.imageinfo);
       });
     });
   }
 
   function getArticleHeader(name) {
-    WikiService.getArticleHeader(vm.lang, name).then(data => {
+    WikiService.getArticleHeader(vm.lang, name).then((data) => {
       vm.article = $sce.trustAsHtml(data);
       $timeout(() => {
-        let height = document.querySelector('.article__text').offsetHeight;
+        const height = document.querySelector('.article__text').offsetHeight;
         vm.isArticleLong = height === 320;
       });
     });
@@ -64,7 +61,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
 
   function getInterwiki() {
     vm.shownInterwiki = ['de', 'en', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'zh'];
-    vm.monument.interwiki = _.mapValues(vm.monument.interwiki, (wiki) => ({
+    vm.monument.interwiki = _.mapValues(vm.monument.interwiki, wiki => ({
       code: wiki.site.replace('wiki', ''),
       title: wiki.title,
       link: 'https://' + wiki.site.replace('wiki', '') + '.wikipedia.org/wiki/' + wiki.title
@@ -73,7 +70,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
 
   function getWikidata() {
     vm.loading = true;
-    wikidata.getById(id).then(data => {
+    wikidata.getById(id).then((data) => {
       const first = Object.keys(data)[0];
       vm.monument = data[first];
       const claims = vm.monument.claims;
@@ -87,8 +84,8 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       if (vm.monument.claims.P131) {
         getFullLocation(claims.P131.values[0].value_id);
       }
-      if (vm.monument.interwiki[vm.lang + 'wiki']) {
-        getArticleHeader(vm.monument.interwiki[vm.lang + 'wiki'].title);
+      if (vm.monument.interwiki[`${vm.lang}wiki`]) {
+        getArticleHeader(vm.monument.interwiki[`${vm.lang}wiki`].title);
       }
       if (vm.monument.claims.P625) {
         const value = vm.monument.claims.P625.values[0].value;
