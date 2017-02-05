@@ -32,8 +32,9 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     });
   }
 
-  function getArticleHeader(name) {
-    WikiService.getArticleHeader(vm.lang, name).then((data) => {
+  function getArticleHeader(lang, name) {
+    const language = lang.replace('wiki', '');
+    WikiService.getArticleHeader(language, name).then((data) => {
       vm.article = $sce.trustAsHtml(data);
       $timeout(() => {
         const height = document.querySelector('.article__text').offsetHeight;
@@ -84,8 +85,9 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       if (vm.monument.claims.P131) {
         getFullLocation(claims.P131.values[0].value_id);
       }
-      if (vm.monument.interwiki[`${vm.lang}wiki`]) {
-        getArticleHeader(vm.monument.interwiki[`${vm.lang}wiki`].title);
+      const articleInterwiki = vm.monument.interwiki[`${langs[0]}wiki`] || vm.monument.interwiki[`${langs[1]}wiki`] || vm.monument.interwiki[`${langs[2]}wiki`];
+      if (articleInterwiki) {
+        getArticleHeader(articleInterwiki.site, articleInterwiki.title);
       }
       if (vm.monument.claims.P625) {
         const value = vm.monument.claims.P625.values[0].value;
