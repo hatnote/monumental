@@ -67,10 +67,14 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
 
   function getMessage(element) {
     return `<md-list-item class="md-2-line" ui-sref="main.object({id: ${element.name.value_id.substring(1)}})">
-      <div class="md-list-item-text" layout="column">
-        <p>${element.name.value}</p>
-      </div>
-    </md-list-item>`;
+        <div class="list__image" layout="row" layout-align="center center">
+          <img ng-src="{{'${element.image}'}}" alt="${element.name.value}" ng-if="${!!element.image}">
+        </div>
+        <div class="md-list-item-text" layout="column">
+          <p>${element.name.value}</p>
+          <p class="muted">${element.admin ? element.admin.value : ''}</p>
+        </div>
+      </md-list-item>`;
   }
 
   function setListElement(element) {
