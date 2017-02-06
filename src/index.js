@@ -73,6 +73,11 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       template: `<mo-list></mo-list>`,
       resolve: {}
     })
+    .state('main.map', {
+      url: '/map',
+      template: '<mo-map></mo-map>',
+      resolve: {},
+    })
     .state('main.object', {
       url: '/object/:id?lang',
       template: `<mo-monument></mo-monument>`,
