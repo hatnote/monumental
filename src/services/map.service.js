@@ -47,6 +47,12 @@ const MapService = () => {
             name: 'Monuments',
             type: 'markercluster',
             visible: true,
+            layerOptions: {
+              spiderfyOnMaxZoom: false,
+              showCoverageOnHover: false,
+              zoomToBoundsOnClick: true,
+              disableClusteringAtZoom: 17,
+            },
           },
         },
       },
