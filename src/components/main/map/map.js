@@ -11,8 +11,9 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
 
   // bindings
 
-  vm.goToItem = item => $state.go('main.list', { id: item.id.substring(1) });
+  vm.goToItem = item => setMap(item);
   vm.map = mapService.getMapInstance({ center: { lat: 51.686, lng: 19.545, zoom: 7 } });
+  vm.querySearch = text => wikidata.getSearch(text);
   vm.list = [];
   vm.listParams = {};
   vm.loading = vm.loadingMap = true;
@@ -94,6 +95,24 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
       };
     }
     return obj;
+  }
+
+  function setMap(item) {
+    if (!item || !item.id) { return; }
+    vm.loading = true;
+    wikidata.getById(item.id)
+      .then((data) => {
+        const element = Object.values(data)[0];
+        const coords = element.claims.P625;
+        if (coords) {
+          const lat = coords.values[0].value.latitude;
+          const lng = coords.values[0].value.longitude;
+          leafletData.getMap().then((map) => {
+            map.setView([lat, lng], 14);
+            getDataBB(map.getBounds());
+          });
+        }
+      });
   }
 
   function setMarker(element) {
