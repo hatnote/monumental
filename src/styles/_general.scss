@@ -72,4 +72,6 @@ strong {
 
 .toolbar {
     padding: 0 5px;
+.md-virtual-repeat-container.md-autocomplete-suggestions-container {
+  z-index: 1000 !important;
 }
