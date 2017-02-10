@@ -28,9 +28,13 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
   $timeout(() => {
     vm.loadingMap = false;
     leafletData.getMap().then((map) => {
-      getDataBB(map.getBounds());
-      map.on('dragend zoomend', () => {
+      if (map.getZoom() > 12) {
         getDataBB(map.getBounds());
+      }
+      map.on('dragend zoomend', () => {
+        if (map.getZoom() > 12) {
+          getDataBB(map.getBounds());
+        }
       });
     });
   }, 100);
