@@ -39,7 +39,7 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
 
   function getDataBB(bounds) {
     vm.loading = true;
-    wikidata.getSPARQL(`SELECT ?item ?itemLabel ?admin ?adminLabel ?image ?coord WHERE {
+    wikidata.getSPARQL(`SELECT ?item ?itemLabel ?admin ?adminLabel ?image ?coord ?heritage WHERE {
         SERVICE wikibase:box {
           ?item wdt:P625 ?coord .
           bd:serviceParam wikibase:cornerWest "Point(${bounds.getSouthWest().lng} ${bounds.getSouthWest().lat})"^^geo:wktLiteral .
@@ -47,7 +47,8 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
         }
         OPTIONAL { ?item wdt:P131 ?admin . }
         OPTIONAL { ?item wdt:P18 ?image . }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "pl" }
+        ?item wdt:P1435 ?heritage .
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
       }`).then((data) => {
         vm.map.markers = {};
         vm.list = data.map(element => setListElement(element));
