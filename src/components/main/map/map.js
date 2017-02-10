@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import './map.scss';
 import template from './map.html';
 
@@ -20,6 +18,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
   vm.search = {};
 
   // activate
+
+  let langs = $stateParams.lang ? [$stateParams.lang] : [];
+  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+  wikidata.setLanguages(langs);
 
   $scope.$on('centerUrlHash', (event, centerHash) => {
     $location.search({ c: centerHash });
