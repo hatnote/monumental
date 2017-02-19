@@ -10,11 +10,12 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
   // bindings
 
   vm.goToItem = item => setMap(item);
-  vm.map = mapService.getMapInstance({ center: { lat: 51.686, lng: 19.545, zoom: 7 } });
+  vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
   vm.querySearch = text => wikidata.getSearch(text);
   vm.list = [];
   vm.listParams = {};
-  vm.loading = vm.loadingMap = true;
+  vm.loading = false;
+  vm.loadingMap = true;
   vm.search = {};
 
   // activate
