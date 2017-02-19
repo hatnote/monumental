@@ -32,7 +32,7 @@ Test it out:
 
 See [here](https://www.wikidata.org/w/api.php) for full Wikidata API docs.
 
-### Licnese
+### License
 
 Copyright (c) 2017, Stephen LaPorte
 
