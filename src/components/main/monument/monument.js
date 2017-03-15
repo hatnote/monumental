@@ -14,6 +14,18 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   vm.image = [];
   vm.map = {};
 
+  vm.addCategory = function() {
+    WikiService.setClaim({
+      action: 'wbcreateclaim',
+      format: 'json',
+      entity: `${id}`,
+      property: 'P373',
+      snaktype: 'value',
+      summary: '#monumental',
+      value: '"Mikołów town hall"',
+    });
+  };
+
   let langs = $stateParams.lang ? [$stateParams.lang] : [];
   langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
 

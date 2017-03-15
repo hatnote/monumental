@@ -35,7 +35,7 @@ angular
     'restangular',
     'infinite-scroll',
     'leaflet-directive',
-    'LocalStorageModule'
+    'LocalStorageModule',
   ])
   .config(localStorageConfig)
   .config(stateConfig)

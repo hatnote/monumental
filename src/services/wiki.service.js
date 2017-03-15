@@ -1,17 +1,18 @@
 import _ from 'lodash';
 
-const WikiService = function ($http, $q) {
-
+const WikiService = function ($http, $httpParamSerializerJQLike) {
   const service = {
-    getArticleHeader: getArticleHeader,
-    getCategoryMembers: getCategoryMembers,
-    getImage: getImage
+    getArticleHeader,
+    getCategoryMembers,
+    getImage,
+    getToken,
+    setClaim,
   };
 
   const defaultParams = {
     action: 'query',
     format: 'json',
-    callback: 'JSON_CALLBACK'
+    callback: 'JSON_CALLBACK',
   };
 
   const categoryFilesParams = angular.extend({}, defaultParams, {
@@ -65,6 +66,30 @@ const WikiService = function ($http, $q) {
     }).then(data => {
       const image = _.head(_.values(data.data.query.pages));
       return angular.extend({}, image, { imageinfo: image.imageinfo[0] });
+    });
+  }
+
+  function getToken() {
+    return $http.get('/api', {
+      params: {
+        action: 'query',
+        meta: 'tokens',
+        use_auth: 'true',
+      },
+    }).then((response) => {
+      if (response.data && response.data.query) {
+        return response.data.query.tokens.csrftoken;
+      }
+      return false;
+    });
+  }
+
+  function setClaim(params) {
+    return $http({
+      method: 'POST',
+      url: '/api',
+      data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
   }
 };
