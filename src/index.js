@@ -101,8 +101,8 @@ function themeConfig($mdThemingProvider, $provide) {
 
   tp.alwaysWatchTheme(true);
   tp.theme('default')
-    .primaryPalette('moRed')
-    .accentPalette('blue');
+    .primaryPalette('blue') // moRed
+    .accentPalette('orange');
 
   $provide.value('themeProvider', tp);
 }

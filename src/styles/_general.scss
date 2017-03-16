@@ -20,6 +20,7 @@ body {
 
 md-content {
   margin: 20px;
+  background: transparent;
 }
 
 .container {
@@ -38,7 +39,7 @@ md-content {
 
 a, a.link {
   cursor: pointer;
-  color: #8f0000;
+  color: rgb(33,150,243);
   text-decoration: none;
 }
 
@@ -72,6 +73,13 @@ strong {
 
 .toolbar {
   padding: 0 5px;
+  min-height: 54px;
+  max-height: 54px;
+  
+  .md-toolbar-tools {
+    max-height: 54px;
+    height: 54px;
+  }
 }
 
 .md-virtual-repeat-container.md-autocomplete-suggestions-container {

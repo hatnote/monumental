@@ -97,6 +97,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       if (vm.monument.claims.P131) {
         getFullLocation(claims.P131.values[0].value_id);
       }
+      vm.monument.interwikis = Object.keys(vm.monument.interwiki).length;
       const articleInterwiki = vm.monument.interwiki[`${langs[0]}wiki`] || vm.monument.interwiki[`${langs[1]}wiki`] || vm.monument.interwiki[`${langs[2]}wiki`];
       if (articleInterwiki) {
         getArticleHeader(articleInterwiki.site, articleInterwiki.title);
@@ -109,7 +110,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
           iconSize: [40, 40],
           shadowSize: [0, 0],
           iconAnchor: [20, 20],
-          shadowAnchor: [0, 0]
+          shadowAnchor: [0, 0],
         };
 
         vm.map = {

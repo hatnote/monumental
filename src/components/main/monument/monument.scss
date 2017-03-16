@@ -7,35 +7,56 @@ mo-monument {
         max-width: 100%;
     }
 
-    .monument__left {
-        width: 100%;
-        margin-right: 50px;
-    }
+    .monument__header {
+        padding: 25px;
+        margin-bottom: 15px;
+        background: white;
+        border-bottom: 1px solid $softGrey;
 
-    .monument__right {
-        width: 300px;
-        min-width: 300px;
-        overflow: hidden;
-
-        .md-button {
-            margin-left: 0;
-            margin-right: 0;
+        .monument__primary {
+            margin-bottom: 20px;
+            border-bottom: 1px solid $softGrey;
+        }
+        .monument__secondary {
+            .material-icons {
+                margin-right: 5px;
+                color: $lightGrey;
+            }
+            & > div {
+                margin-bottom: 15px;
+            }
         }
     }
 
     .monument__image {
-        background: #bdbdbd;
         width: 300px;
         height: 300px;
-        margin-top: 10px;
+        padding: 5px;
+        margin-right: 25px;
+        border: 1px solid $softGrey;
+    }
 
-        md-icon.material-icons {
-            width: 60px;
-            height: 60px;
-            font-size: 60px;
-            opacity: .75;
+    .monument__image-link {
+        background: $softGrey;
+        width: 100%;
+        height: 100%;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
         }
     }
+
+    .monument__panel {
+        margin: 15px 0;
+        padding: 30px;
+        background: white;
+        border: 1px solid $softGrey;
+        border-radius: 2px;
+    }
+
+
+
 
     .monument__images {
         margin-top: 10px;
@@ -58,17 +79,10 @@ mo-monument {
     }
 
     .monument__place {
-        margin-bottom: 15px;
-
-        .material-icons {
-            margin-right: 5px;
-            color: $lightGrey;
-        }
+        margin-bottom: 30px !important;
     }
 
     .monument__article {
-        margin-top: 30px;
-
         .article__header {
             .md-button.md-primary {
                 margin-left: 0;
@@ -96,7 +110,7 @@ mo-monument {
             &:after {
                 content: "";
                 position: absolute; top: 0; bottom: 0; left: -15px; right: -15px;
-                box-shadow: inset rgb(250,250,250) 0 -20px 10px;
+                box-shadow: inset rgb(255,255,255) 0 -20px 10px;
             }
         }
 

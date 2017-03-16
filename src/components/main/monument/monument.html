@@ -1,10 +1,10 @@
-<md-toolbar class="toolbar md-whiteframe-3dp" layout="column" layout-align="start center">
+<md-toolbar class="toolbar" layout="column" layout-align="start center">
 	<div class="md-toolbar-tools">
 		<md-button ui-sref="main.dashboard">
 			Dashboard
 		</md-button>
 		<span flex></span>
-		<md-autocomplete
+<!--		<md-autocomplete
 		  md-input-name="autocompleteField"
           md-selected-item="$ctrl.search.selectedItem"
           md-search-text="$ctrl.search.text"
@@ -18,53 +18,95 @@
            <strong>{{item.label}}</strong>
 		   <span>{{item.description}}</span>
         </md-item-template>
-      </md-autocomplete>
+      </md-autocomplete>-->
 	</div>
 </md-toolbar>
 <div class="container" layout="column" layout-align="space-between stretch" flex>
-  <md-content layout="column" layout-align="start center" flex>
-    <div class="monument" layout="row" layout-align="space-between stretch">
-
-      <!-- LEFT -->
-      <div class="monument__left" ng-show="$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">Loading...</h2>
-      </div>
-
-      <div class="monument__left" ng-show="!$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
-        <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
-
-        <div class="monument__place" layout="row" layout-align="start center">
-          <span><md-icon>place</md-icon></span>
-          <span>
-            <span ng-repeat="place in $ctrl.location"><a ui-sref="main.list({id: place.value_id.substring(1)})">{{place.value}}</a><span ng-if="!$last"> · </span></span>
-            <span class="muted" ng-if="!$ctrl.location">no location</span>
-          </span>
+  <div layout="column" layout-align="start stretch" flex>
+    <div class="monument__header" layout="column" layout-align="center center">
+      <div class="monument" layout="row" layout-align="center start">
+        <div class="monument__image" flex="none">
+          <a class="monument__image-link" layout="row" layout-align="center center"
+              ng-repeat="image in $ctrl.image"
+              ng-href="{{image.descriptionurl}}">
+            <img ng-src="{{image.thumburl}}">
+          </a>
         </div>
-
-        <div class="monument__article" layout="column" layout-align="start stretch">
-          <div class="article__header"
-              layout="row" layout-align="start center">
-            <h4 class="monument__subtitle md-headline">Wikipedia</h4>
-            <span flex></span>
-            <md-button class="md-primary md-icon-button"
-                      ng-repeat="wiki in $ctrl.shownInterwiki"
-                      ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
-                      ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
-              {{wiki}}
-            </md-button>
+        <div layout="column" layout-align="start stretch" flex>
+          <div class="monument__primary" layout="row" layout-align="center start">
+            <div flex>
+              <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
+                <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
+            </div>
+            <div flex="none">
+              <md-button class="md-primary">Upload</md-button>
+            </div>
           </div>
-          
-          <div class="article__text"
-              ng-class="{'article__text--long' : $ctrl.showArticleLong}"
-              ng-bind-html="$ctrl.article"></div>
-          <md-button class="md-primary"
-                    ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
-                    ng-click="$ctrl.showArticleLong = true">
-            Show more
+          <div class="monument__secondary">
+            <div class="monument__place" layout="row" layout-align="start center">
+              <span><md-icon>place</md-icon></span>
+              <span>
+                <span ng-repeat="place in $ctrl.location">
+                  <a ui-sref="main.list({id: place.value_id.substring(1)})">{{place.value}}</a><span ng-if="!$last"> · </span>
+                </span>
+                <span class="muted" ng-if="!$ctrl.location">no location</span>
+              </span>
+            </div>
+            <div layout="row" layout-align="center start">
+              <div flex="50">
+                <span><md-icon>photo</md-icon></span>
+                <span>{{$ctrl.images.length || 0}} images</span>
+              </div>
+              <div flex="50">
+                <span><md-icon>description</md-icon></span>
+                <span>{{$ctrl.monument.interwikis || 0}} wikis</span>
+              </div>
+            </div>
+            <div layout="row" layout-align="center start">
+              <div flex="50" layout="row" layout-align="start start">
+                <div flex="10"><span><md-icon>account_balance</md-icon></span></div>
+                <div flex>
+                  <span ng-repeat="monType in $ctrl.monument.claims.P1435.values">
+                    <a ng-href="http://www.wikidata.org/wiki/{{monType.value_id}}">{{monType.value[$ctrl.lang] || monType.value.en}}</a>
+                    <br />
+                  </span>
+                </div>
+              </div>
+              <div flex="50">
+                <span><md-icon>link</md-icon></span>
+                <span><a ng-href="{{$ctrl.monument.claims.P856.values[0].value}}">{{$ctrl.monument.claims.P856.values[0].value}}</a></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="monument__data" layout="column" layout-align="start center">
+      <div class="monument monument__panel monument__article"
+            layout="column" layout-align="start stretch">
+        <div class="article__header"
+            layout="row" layout-align="start center">
+          <h4 class="monument__subtitle md-headline">Wikipedia</h4>
+          <span flex></span>
+          <md-button class="md-primary md-icon-button"
+                    ng-repeat="wiki in $ctrl.shownInterwiki"
+                    ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
+                    ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
+            {{wiki}}
           </md-button>
         </div>
+        <div class="article__text"
+              ng-class="{'article__text--long' : $ctrl.showArticleLong}"
+              ng-bind-html="$ctrl.article"></div>
+        <md-button class="md-primary"
+                    ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
+                    ng-click="$ctrl.showArticleLong = true">
+          Show more
+        </md-button>
+      </div>
 
+      <div class="monument monument__panel">
         <div class="monument__details">
           <h4 class="monument__subtitle md-headline">Properties</h4>
           <div class="monument__details-item"
@@ -87,6 +129,23 @@
             </span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div style="display: none;" class="monument" layout="row" layout-align="space-between stretch">
+
+      <!-- LEFT -->
+      <div class="monument__left" ng-show="$ctrl.loading"> 
+        <h2 class="monument__title md-display-1">Loading...</h2>
+      </div>
+
+      <div class="monument__left" ng-show="!$ctrl.loading"> 
+        <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
+        <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
+
+
+
+
         <md-button class="md-primary"
                   aria-label="Show raw data"
                   ng-click="$ctrl.showRawData = !$ctrl.showRawData">
@@ -95,6 +154,7 @@
         <md-button ng-href="http://www.wikidata.org/wiki/{{$ctrl.monument.id}}">
           Show Wikidata page
         </md-button>
+        <md-button ng-click="$ctrl.addCategory()">go</md-button>
         <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
       </div>
 
@@ -136,5 +196,5 @@
         </div>
       </div>
     </div>
-  </md-content>
+  </div>
 </div>
