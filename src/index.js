@@ -53,7 +53,7 @@ function localStorageConfig(localStorageServiceProvider) {
 
 /**
  * Config of routing
- * 
+ *
  * @param {any} $stateProvider
  * @param {any} $urlRouterProvider
  */
@@ -61,17 +61,17 @@ function stateConfig($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('main', {
       template: '<mo-main></mo-main>',
-      resolve: {}
+      resolve: {},
     })
     .state('main.dashboard', {
       url: '/',
-      template: `<mo-dashboard></mo-dashboard>`,
-      resolve: {}
+      template: '<mo-dashboard></mo-dashboard>',
+      resolve: {},
     })
     .state('main.list', {
       url: '/list/:id',
-      template: `<mo-list></mo-list>`,
-      resolve: {}
+      template: '<mo-list></mo-list>',
+      resolve: {},
     })
     .state('main.map', {
       url: '/map',
@@ -80,23 +80,23 @@ function stateConfig($stateProvider, $urlRouterProvider) {
     })
     .state('main.object', {
       url: '/object/:id?lang',
-      template: `<mo-monument></mo-monument>`,
-      resolve: {}
+      template: '<mo-monument></mo-monument>',
+      resolve: {},
     });
   $urlRouterProvider.otherwise('/');
 }
 
 /**
  * Config of material design theme
- * 
+ *
  * @param {any} $mdThemingProvider
  * @param {any} $provide
  */
 function themeConfig($mdThemingProvider, $provide) {
-  let tp = $mdThemingProvider;
+  const tp = $mdThemingProvider;
   tp.definePalette('moRed', tp.extendPalette('red', {
-    '500': '#8f0000',
-    '600': '#8f0000'
+    500: '#8f0000',
+    600: '#8f0000',
   }));
 
   tp.alwaysWatchTheme(true);

@@ -1,12 +1,12 @@
 const wdService = function ($http, $q) {
 
   const service = {
-    getById: getById,
-    getLabels: getLabels,
-    getRecursive: getRecursive,
-    getSearch: getSearch,
-    getSPARQL: getSPARQL,
-    setLanguages: setLanguages
+    getById,
+    getLabels,
+    getRecursive,
+    getSearch,
+    getSPARQL,
+    setLanguages,
   };
 
   const defaultParams = {
@@ -14,13 +14,13 @@ const wdService = function ($http, $q) {
     format: 'json',
     props: ['info', 'labels', 'aliases', 'descriptions', 'claims', 'datatype', 'sitelinks'],
     languages: ['en'],
-    callback: 'JSON_CALLBACK'
+    callback: 'JSON_CALLBACK',
   };
 
   /**
    * Iterates over own enumerable string keyed properties of an object and
    * invokes `func` for each property..
-   * 
+   *
    * @param {Object} object The object to iterate over
    * @param {Function} func The function invoked per iteration
    * @returns {Object} Returns `object`
@@ -119,7 +119,7 @@ const wdService = function ($http, $q) {
       aliases: simplifyAliases(entity.aliases),
       descriptions: simplifyLabels(entity.descriptions),
       claims: simplifyClaims(entity.claims),
-      interwiki: entity.sitelinks
+      interwiki: entity.sitelinks,
     };
   }
 
@@ -133,7 +133,7 @@ const wdService = function ($http, $q) {
       value_type: snak.datatype,
       value_id: snak.datavalue.value.id,
       value: snak.datavalue.value,
-      qualifiers: claim.qualifiers
+      qualifiers: claim.qualifiers,
     };
   }
 
@@ -141,14 +141,14 @@ const wdService = function ($http, $q) {
     return mapValues(claims, claim => claim.map(simplifyClaim));
   }
 
-  //function getIDs
+  // function getIDs
 
   function getById(id) {
     let entities = {};
 
     return get({
       ids: id,
-      languages: defaultParams.languages
+      languages: defaultParams.languages,
     })
       .then(data => mapValues(data.data.entities, entity => simplifyEntity(entity)))
       .then(data => {
