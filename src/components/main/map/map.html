@@ -25,21 +25,21 @@
   <md-content layout="row" layout-align="start stretch" flex>
     <div class="list" layout="column" layout-align="start stretch" flex="none">
       <div class="list__loading" layout="column" layout-align="center center"
-          ng-if="$ctrl.map.center.zoom <= 12">
+            ng-if="$ctrl.map.center.zoom <= 12">
         <h4 class="md-title">Zoom in</h4>
       </div>
       <div class="list__loading" layout="column" layout-align="center center"
-          ng-if="$ctrl.loading">
+            ng-if="$ctrl.loading">
         <md-progress-linear md-mode="indeterminate"></md-progress-linear>
       </div>
       <div class="list__loading" layout="column" layout-align="center center"
-          ng-if="$ctrl.map.center.zoom > 12 && !$ctrl.loading && !$ctrl.list.length">
+            ng-if="$ctrl.map.center.zoom > 12 && !$ctrl.loading && !$ctrl.list.length">
         <h4 class="md-title">No results</h4>
       </div>
       <md-virtual-repeat-container class="list__container" flex>
         <md-list-item class="md-2-line"
-                      md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
-                      ui-sref="main.object({id: item.name.value_id.substring(1)})">
+                        md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
+                        ui-sref="main.object({id: item.name.value_id.substring(1)})">
           <div class="list__image" layout="row" layout-align="center center">
             <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
           </div>

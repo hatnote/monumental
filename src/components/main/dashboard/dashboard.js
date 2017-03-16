@@ -24,7 +24,9 @@ function controller($state, $window, WikiService, localStorageService) {
   }
 
   function saveLanguages() {
-    vm.languages.indexOf('en') === -1 ? vm.languages.push('en') : false;
+    if (vm.languages.includes('en')) {
+      vm.languages.push('en');
+    }
     localStorageService.set('languages', vm.languages.filter(lang => lang));
     $state.reload();
   }

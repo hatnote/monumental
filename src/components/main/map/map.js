@@ -66,6 +66,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
       });
   }
 
+  /**
+   * Gets link to image
+   * @param {String} image
+   */
   function getImage(image) {
     if (image) {
       const newImage = image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file');

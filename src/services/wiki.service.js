@@ -33,38 +33,38 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
   // functions
 
   function getArticleHeader(lang, title) {
-    let params = angular.extend({}, defaultParams, {
+    const params = angular.extend({}, defaultParams, {
       prop: 'extracts',
       titles: title,
       redirects: true,
-      exintro: 1
+      exintro: 1,
     });
-    return $http.jsonp('https://' + lang + '.wikipedia.org/w/api.php', {
-      params: params,
-      cache: true
-    }).then(data => {
-      return _.values(data.data.query.pages)[0].extract;
+    return $http.jsonp(`https://${lang}.wikipedia.org/w/api.php`, {
+      params,
+      cache: true,
+    }).then((response) => {
+      return _.values(response.data.query.pages)[0].extract;
     });
   }
 
   function getCategoryMembers(category) {
-    let params = angular.extend({}, categoryFilesParams, { cmtitle: 'Category:' + category });
+    const params = angular.extend({}, categoryFilesParams, { cmtitle: `Category:${category}` });
     return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params: params,
-      cache: true
-    }).then(data => {
-      let images = data.data.query.categorymembers.map(image => image.title.substring(5));
+      params,
+      cache: true,
+    }).then((response) => {
+      const images = response.data.query.categorymembers.map(image => image.title.substring(5));
       return images;
     });
   }
 
   function getImage(image, extraParams) {
-    let params = angular.extend({}, imageParams, { titles: 'File:' + image }, extraParams);
+    const params = angular.extend({}, imageParams, { titles: `File:${image}` }, extraParams);
     return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params: params,
-      cache: true
-    }).then(data => {
-      const image = _.head(_.values(data.data.query.pages));
+      params,
+      cache: true,
+    }).then((response) => {
+      const image = _.head(_.values(response.data.query.pages));
       return angular.extend({}, image, { imageinfo: image.imageinfo[0] });
     });
   }

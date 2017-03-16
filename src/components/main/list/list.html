@@ -30,8 +30,8 @@
           <span ng-if="!$ctrl.showMap">Loading...</span>
         </md-list-item>
         <md-list-item class="md-2-line"
-                      md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
-                      ui-sref="main.object({id: item.name.value_id.substring(1)})">
+                        md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
+                        ui-sref="main.object({id: item.name.value_id.substring(1)})">
           <div class="list__image" layout="row" layout-align="center center">
             <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
           </div>

@@ -14,7 +14,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   vm.image = [];
   vm.map = {};
 
-  vm.addCategory = function() {
+  vm.addCategory = function () {
     WikiService.setClaim({
       action: 'wbcreateclaim',
       format: 'json',
@@ -38,8 +38,8 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   function getCategoryMembers(category) {
     WikiService.getCategoryMembers(category).then((data) => {
       const promises = data.map(image => WikiService.getImage(image, { iiurlheight: 75 }));
-      $q.all(promises).then((data) => {
-        vm.images = data.map(image => image.imageinfo);
+      $q.all(promises).then((response) => {
+        vm.images = response.map(image => image.imageinfo);
       });
     });
   }
@@ -57,18 +57,18 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
 
   function getCommonsLink() {
     const name = vm.monument.claims.P373.values[0].value;
-    return 'https://commons.wikimedia.org/wiki/Category:' + encodeURIComponent(name);
+    return `https://commons.wikimedia.org/wiki/Category:${encodeURIComponent(name)}`;
   }
 
   function getFullLocation(id) {
-    wikidata.getRecursive(id, 'P131').then(data => {
-      vm.location = data;
+    wikidata.getRecursive(id, 'P131').then((response) => {
+      vm.location = response;
     });
   }
 
   function getImage(image) {
-    WikiService.getImage(image).then(data => {
-      vm.image.push(data.imageinfo);
+    WikiService.getImage(image).then((response) => {
+      vm.image.push(response.imageinfo);
     });
   }
 
@@ -77,7 +77,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     vm.monument.interwiki = _.mapValues(vm.monument.interwiki, wiki => ({
       code: wiki.site.replace('wiki', ''),
       title: wiki.title,
-      link: 'https://' + wiki.site.replace('wiki', '') + '.wikipedia.org/wiki/' + wiki.title
+      link: `https://${wiki.site.replace('wiki', '')}.wikipedia.org/wiki/${wiki.title}`,
     }));
   }
 
@@ -117,22 +117,22 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
           center: {
             lat: value.latitude,
             lng: value.longitude,
-            zoom: 15
+            zoom: 15,
           },
           markers: {
             marker: {
               lat: value.latitude,
               lng: value.longitude,
-              icon: icon
-            }
-          }
+              icon,
+            },
+          },
         };
       }
       getInterwiki();
       vm.loading = false;
 
-      let title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
-      $window.document.title = title + ' – Monumental';
+      const title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
+      $window.document.title = `${title} – Monumental`;
     });
   }
 }

@@ -2,17 +2,17 @@
 @import '../../styles/responsive';
 
 .toolbar {
-    .md-toolbar-tools {
-        max-width: 980px;
-        padding: 0;
+  .md-toolbar-tools {
+    max-width: 980px;
+    padding: 0;
 
-        md-autocomplete {
-            width: 300px;
-        }
+    md-autocomplete {
+      width: 300px;
     }
+  }
 
-    &.toolbar--wide .md-toolbar-tools {
-        max-width: 100%;
-        padding-left: 15px;
-    }
+  &.toolbar--wide .md-toolbar-tools {
+    max-width: 100%;
+    padding-left: 15px;
+  }
 }
