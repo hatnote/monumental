@@ -1,6 +1,6 @@
 <md-toolbar class="toolbar" layout="column" layout-align="start center">
 	<div class="md-toolbar-tools"
-        ng-class="{ 'md-toolbar-tools-wide': $ctrl.wide }">
+        ng-class="{ 'md-toolbar-tools-wide': ('main.list' | includedByState) || ('main.map' | includedByState) }">
     <div flex="20">
       <md-button ui-sref="main.dashboard">
         Monumental
