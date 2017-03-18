@@ -9,7 +9,6 @@ mo-monument {
 
   .monument__header {
     padding: 25px;
-    margin-bottom: 15px;
     background: white;
     border-bottom: 1px solid $softGrey;
 
@@ -25,6 +24,27 @@ mo-monument {
       & > div {
         margin-bottom: 15px;
       }
+    }
+  }
+
+  .monument__subheader {
+    padding: 15px 0;
+    background: #fafafa;
+    border-bottom: 1px solid $softGrey;
+  }
+
+  .monument__images {
+    width: 980px;
+    height: 90px;
+    overflow: hidden;
+    text-align: center;
+
+    img {
+      display: inline-block;
+      margin-right: 5px;
+      padding: 5px;
+      background: white;
+      border: 1px solid $softGrey;
     }
   }
 
@@ -55,19 +75,6 @@ mo-monument {
     border-radius: 2px;
   }
 
-
-
-
-  .monument__images {
-    margin-top: 10px;
-    width: 400px;
-
-    img {
-      margin-right: 1px;
-      display: inline-block;
-    }
-  }
-
   .monument__title {
     margin-top: 0;
     margin-bottom: 0;
@@ -79,6 +86,7 @@ mo-monument {
   }
 
   .monument__place {
+    display: block;
     margin-bottom: 30px !important;
   }
 
