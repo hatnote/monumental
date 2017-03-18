@@ -94,14 +94,14 @@ function stateConfig($stateProvider, $urlRouterProvider) {
  */
 function themeConfig($mdThemingProvider, $provide) {
   const tp = $mdThemingProvider;
-  tp.definePalette('moRed', tp.extendPalette('red', {
-    500: '#8f0000',
-    600: '#8f0000',
+  tp.definePalette('belize', tp.extendPalette('blue', {
+    500: '#2980b9',
+    600: '#2980b9',
   }));
 
   tp.alwaysWatchTheme(true);
   tp.theme('default')
-    .primaryPalette('blue') // moRed
+    .primaryPalette('belize')
     .accentPalette('orange');
 
   $provide.value('themeProvider', tp);
