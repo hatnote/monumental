@@ -57,7 +57,7 @@ const wdService = function ($http, $q) {
 
   function getRecursive(element, recursiveProperty) {
     let query = `SELECT ?parent ?parentLabel WHERE {
-        wd:`+ element + ` wdt:` + recursiveProperty + `* ?parent .
+        wd:`+ element + ` ` + recursiveProperty + `* ?parent .
         SERVICE wikibase:label { bd:serviceParam wikibase:language "` + defaultParams.languages.join(', ') + `" }
       }`;
     return getSPARQL(query).then(data => {

@@ -21,15 +21,7 @@
             </div>
           </div>
           <div class="monument__secondary">
-            <div class="monument__place" layout="row" layout-align="start center">
-              <span><md-icon>place</md-icon></span>
-              <span>
-                <span ng-repeat="place in $ctrl.location">
-                  <a ui-sref="main.list({id: place.value_id.substring(1)})">{{place.value}}</a><span ng-if="!$last"> · </span>
-                </span>
-                <span class="muted" ng-if="!$ctrl.location">no location</span>
-              </span>
-            </div>
+            <mo-location class="monument__place" ng-if="$ctrl.monument" monument="$ctrl.monument"></mo-location>
             <div layout="row" layout-align="center start">
               <div flex="50">
                 <span><md-icon>photo</md-icon></span>
