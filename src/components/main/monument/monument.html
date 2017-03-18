@@ -42,10 +42,7 @@
                   </span>
                 </div>
               </div>
-              <div flex="50">
-                <span><md-icon>link</md-icon></span>
-                <span><a ng-href="{{$ctrl.monument.claims.P856.values[0].value}}">{{$ctrl.monument.claims.P856.values[0].value}}</a></span>
-              </div>
+              <mo-url ng-if="$ctrl.monument" monument="$ctrl.monument" flex="50"></mo-url>
             </div>
           </div>
         </div>
