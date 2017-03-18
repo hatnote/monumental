@@ -4,51 +4,15 @@ import '../../../images/marker.png';
 
 const ListComponent = { controller, template };
 
-function controller($state, $stateParams, $timeout, leafletData, localStorageService, wikidata) {
+function controller($state, $stateParams, $timeout, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
-  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : 'Q' + $stateParams.id;
+  const icon = mapService.getMapIcon();
+  const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
 
-  vm.map = {};
+  vm.filters = {};
+  vm.image = [];
+  vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
   vm.listParams = {};
-
-  const icon = {
-    iconUrl: 'assets/images/marker.png',
-    shadowUrl: undefined,
-    iconSize: [40, 40],
-    shadowSize: [0, 0],
-    iconAnchor: [20, 20],
-    shadowAnchor: [0, 0],
-  };
-
-  vm.map = {
-    center: {
-      lat: 51.686,
-      lng: 19.545,
-      zoom: 7,
-    },
-    markers: {},
-    layers: {
-      baselayers: {
-        osm: {
-          name: 'OpenStreetMap',
-          type: 'xyz',
-          url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          layerOptions: {
-            subdomains: ['a', 'b', 'c'],
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            continuousWorld: true,
-          },
-        },
-      },
-      overlays: {
-        monuments: {
-          name: 'Monuments',
-          type: 'markercluster',
-          visible: true,
-        },
-      },
-    },
-  };
 
   if (!id || id === 'Q') {
     vm.showMap = true;
@@ -57,24 +21,45 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
 
   let langs = $stateParams.lang ? [$stateParams.lang] : [];
   langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
+  vm.lang = langs[0];
   wikidata.setLanguages(langs);
 
-  wikidata.getSearch(id).then((results) => {
-    vm.search.selectedItem = results.length ? results[0] : undefined;
-  });
+  init();
 
-  wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel) (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image)
+  function getImage(image) {
+    WikiService.getImage(image).then((response) => {
+      vm.image.push(response.imageinfo);
+    });
+  }
+
+  function getList() {
+    return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel
+    (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel) (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image)
     WHERE {
-        ?item p:P1435 ?monument .
-        ?item wdt:P131* wd:${id} .
-        ?item wdt:P131 ?admin .
-        ?item wdt:P625 ?coord .
-        OPTIONAL { ?item wdt:P18 ?image } 
-        OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "${langs[0]}"). }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
+      ?item p:P1435 ?monument; wdt:P131* wd:${id}; wdt:P131 ?admin; wdt:P625 ?coord .
+      OPTIONAL { ?item wdt:P18 ?image } 
+      OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "${langs[0]}"). }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
     }
     GROUP BY ?item ?itemLabel
-    ORDER BY ?itemLabel`).then((data) => {
+    ORDER BY ?itemLabel`);
+  }
+
+  function getPlace() {
+    wikidata.getById(id).then((data) => {
+      const first = Object.keys(data)[0];
+      vm.place = data[first];
+
+      if (vm.place.claims.P18) {
+        const claims = vm.place.claims;
+        claims.P18.values.forEach(image => getImage(image.value));
+      }
+    });
+  }
+
+  function init() {
+    getPlace();
+    getList().then((data) => {
       // console.log(data)
       vm.list = data.map(element => ({
         name: {
@@ -122,6 +107,7 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
         });
       });
     });
+  }
 }
 
 export default () => {
