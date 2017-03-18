@@ -1,0 +1,27 @@
+<md-toolbar class="toolbar" layout="column" layout-align="start center">
+	<div class="md-toolbar-tools"
+        ng-class="{ 'md-toolbar-tools-wide': $ctrl.wide }">
+    <div flex="20">
+      <md-button ui-sref="main.dashboard">
+        Monumental
+      </md-button>
+    </div>
+		<md-autocomplete flex
+		    md-input-name="autocompleteField"
+        md-selected-item="$ctrl.search.selectedItem"
+        md-search-text="$ctrl.search.text"
+        md-items="item in $ctrl.querySearch($ctrl.search.text)"
+        md-selected-item-change="$ctrl.goToItem(item)"
+        md-item-text="item.label"
+        md-min-length="1"
+        placeholder="Search for monument or location"
+        md-menu-class="autocomplete-custom-template">
+      <md-item-template>
+        <strong>{{item.label}}</strong>
+        <span>{{item.description}}</span>
+      </md-item-template>
+		</md-autocomplete>
+    <div class="text-right" flex="20">
+      <md-button ng-click="$ctrl.login()">Login</md-button>
+    </div>
+	</div>

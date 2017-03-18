@@ -1,0 +1,36 @@
+.toolbar {
+  padding: 0 5px;
+  min-height: 54px;
+  max-height: 54px;
+
+  .md-toolbar-tools-wide {
+    max-width: none;
+  }
+
+  md-autocomplete {
+    background: rgba(255, 255, 255, 0.15);
+
+    md-autocomplete-wrap {
+      box-shadow: none;
+
+      input {
+        padding: 0 10px;
+        color: white;
+      }
+
+      ::-webkit-input-placeholder { color: rgba(255, 255, 255, 0.75); }
+      ::-moz-placeholder { color: rgba(255, 255, 255, 0.75); }
+      :-ms-input-placeholder { color: rgba(255, 255, 255, 0.75); }
+      :-moz-placeholder { color: rgba(255, 255, 255, 0.75); }
+    }
+  }
+  
+  .md-toolbar-tools {
+    max-height: 54px;
+    height: 54px;
+  }
+}
+
+.md-virtual-repeat-container.md-autocomplete-suggestions-container {
+  z-index: 1000 !important;
+}

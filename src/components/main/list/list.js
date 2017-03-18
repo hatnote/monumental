@@ -11,10 +11,6 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
   vm.map = {};
   vm.listParams = {};
 
-  vm.goToItem = item => item ? $state.go('main.list', { id: item.id.substring(1) }) : false;
-  vm.querySearch = text => wikidata.getSearch(text);
-  vm.search = {};
-
   const icon = {
     iconUrl: 'assets/images/marker.png',
     shadowUrl: undefined,

@@ -1,26 +1,4 @@
-<md-toolbar class="toolbar toolbar--wide md-whiteframe-3dp" layout="column" layout-align="start center">
-	<div class="md-toolbar-tools">
-		<md-button ui-sref="main.dashboard">
-			Dashboard
-		</md-button>
-		<span flex></span>
-    <md-autocomplete
-          md-input-name="autocompleteField"
-          md-selected-item="$ctrl.search.selectedItem"
-          md-search-text="$ctrl.search.text"
-          md-items="item in $ctrl.querySearch($ctrl.search.text)"
-          md-selected-item-change="$ctrl.goToItem(item)"
-          md-item-text="item.label"
-          md-min-length="1"
-          placeholder="Search"
-          md-menu-class="autocomplete-custom-template">
-        <md-item-template>
-          <strong>{{item.label}}</strong>
-      <span>{{item.description}}</span>
-      </md-item-template>
-    </md-autocomplete>
-	</div>
-</md-toolbar>
+<mo-toolbar></mo-toolbar>
 <div class="container" layout="column" layout-align="space-between stretch" flex>
   <md-content layout="row" layout-align="start stretch" flex>
     <div class="list" layout="column" layout-align="start stretch" flex="none">
