@@ -8,7 +8,7 @@ const MonumentComponent = { controller, template };
 
 function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, wikidata) {
   const vm = this;
-  const id = $stateParams.id[0] === 'Q' ? $stateParams.id : `Q${$stateParams.id}`;
+  const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
@@ -83,7 +83,8 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       const claims = vm.monument.claims;
 
       if (vm.monument.claims.P18) {
-        claims.P18.values.forEach(image => getImage(image.value));
+        getImage(claims.P18.values[0].value);
+        // claims.P18.values.forEach(image => getImage(image.value));
       }
       if (vm.monument.claims.P373) {
         getCategoryMembers(claims.P373.values[0].value);
