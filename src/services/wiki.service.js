@@ -5,6 +5,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
     getArticleHeader,
     getCategoryMembers,
     getImage,
+    getUserInfo,
     getToken,
     setClaim,
   };
@@ -67,6 +68,15 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
       const image = _.head(_.values(response.data.query.pages));
       return angular.extend({}, image, { imageinfo: image.imageinfo[0] });
     });
+  }
+
+  function getUserInfo(extraParams) {
+    const params = angular.extend({}, defaultParams, {
+      meta: 'userinfo|globaluserinfo',
+    }, extraParams);
+    return $http.jsonp('https://wikidata.org/w/api.php', {
+      params,
+    }).then(response => response.data.query.globaluserinfo);
   }
 
   function getToken() {
