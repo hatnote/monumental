@@ -27,6 +27,6 @@
     </div>
 	</div>
 </md-toolbar>
-<div ng-if="$ctrl.settings">
-  Settings
+<div class="toolbar__settings md-whiteframe-16dp" ng-if="$ctrl.settings">
+  <md-button ng-click="$ctrl.logout()">Logout</md-button>
 </div>

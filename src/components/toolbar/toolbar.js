@@ -13,6 +13,7 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
 
   vm.goToItem = goToItem;
   vm.login = login;
+  vm.logout = logout;
   vm.querySearch = text => wikidata.getSearch(text);
 
   init();
@@ -44,6 +45,10 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
   function login() {
     vm.loading = true;
     $window.location.pathname = '/login';
+  }
+
+  function logout() {
+    $window.location.pathname = '/logout';
   }
 }
 
