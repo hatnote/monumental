@@ -80,8 +80,8 @@ const wdService = function ($http, $q) {
 
   function getSPARQL(query) {
     return $http.get('https://query.wikidata.org/sparql', {
-      params: { query: query },
-      cache: false
+      params: { query: query.replace(/ {2,}/g, ' ') },
+      cache: false,
     }).then(data => data.data.results.bindings);
   }
 
