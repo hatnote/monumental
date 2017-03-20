@@ -22,6 +22,11 @@
       </md-item-template>
 		</md-autocomplete>
     <div class="text-right" flex="20">
-      <md-button ng-click="$ctrl.login()">Login</md-button>
+      <md-button ng-if="$ctrl.isLoggedIn" ng-click="$ctrl.settings = !$ctrl.settings">Logged In</md-button>
+      <md-button ng-if="!$ctrl.isLoggedIn" ng-click="$ctrl.login()">Login</md-button>
     </div>
 	</div>
+</md-toolbar>
+<div ng-if="$ctrl.settings">
+  Settings
+</div>

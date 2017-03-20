@@ -3,11 +3,19 @@ import template from './toolbar.html';
 
 const ToolbarComponent = { bindings: { wide: '=' }, controller, template };
 
-function controller($mdToast, $state, $window, wikidata) {
+function controller($mdToast, $state, $window, WikiService, wikidata) {
   const vm = this;
-  vm.goToItem = goToItem;
-  vm.querySearch = text => wikidata.getSearch(text);
+  vm.isLoggedIn = false;
+  vm.loading = true;
   vm.search = {};
+
+  // functions
+
+  vm.goToItem = goToItem;
+  vm.login = login;
+  vm.querySearch = text => wikidata.getSearch(text);
+
+  init();
 
   function goToItem(item) {
     if (!item) { return; }
@@ -26,7 +34,14 @@ function controller($mdToast, $state, $window, wikidata) {
     });
   }
 
-  function login () {
+  function init() {
+    WikiService.getToken().then((response) => {
+      vm.isLoggedIn = response;
+      vm.loading = false;
+    });
+  }
+
+  function login() {
     vm.loading = true;
     $window.location.pathname = '/login';
   }
