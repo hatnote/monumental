@@ -25,7 +25,8 @@ function controller(wikidata) {
       id = vm.monument.id;
     } else if (vm.monument.claims.P131) {
       prop = 'wdt:P131';
-      id = vm.monument.claims.P131.values[0].value_id;
+      const preferred = vm.monument.claims.P131.values.filter(value => value.rank === 'preferred');
+      id = preferred.length ? preferred[0].value_id : vm.monument.claims.P131.values[0].value_id;
     } else {
       return;
     }
