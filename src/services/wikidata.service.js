@@ -131,9 +131,10 @@ const wdService = function ($http, $q) {
     const snak = claim.mainsnak;
     return {
       value_type: snak.datatype,
-      value_id: snak.datavalue.value.id,
-      value: snak.datavalue.value,
+      value_id: snak.snaktype === 'novalue' ? false : snak.datavalue.value.id,
+      value: snak.snaktype === 'novalue' ? false : snak.datavalue.value,
       qualifiers: claim.qualifiers,
+      rank: claim.rank,
     };
   }
 
@@ -157,7 +158,7 @@ const wdService = function ($http, $q) {
           entity => mapValues(entity.claims,
             claim => claim.map(value => value.value_id)));
         let ids = [];
-        forOwn(simplified, item => {
+        forOwn(simplified, (item) => {
           ids.push.apply(ids, Object.keys(item));
           forOwn(item, prop => ids.push.apply(ids, prop));
         });
@@ -165,15 +166,15 @@ const wdService = function ($http, $q) {
         return ids;
       })
       .then(labelsIDs => getLabels(labelsIDs))
-      .then(labels => {
-        forOwn(entities, entity => {
+      .then((labels) => {
+        forOwn(entities, (entity) => {
           entity.claims = mapValues(entity.claims, (values, key) => ({
             property_id: key,
             property: labels[key],
             values: values.map(value => labels[value.value_id] ?
               angular.extend(value, { value: labels[value.value_id] }) :
               value),
-            qualifiers: entity.qualifiers
+            qualifiers: entity.qualifiers,
           }));
         });
         return entities;
