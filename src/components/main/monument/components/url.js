@@ -16,7 +16,7 @@ function controller() {
     if (vm.monument && vm.monument.claims && vm.monument.claims.P856) {
       const values = vm.monument.claims.P856.values;
       vm.value = values[0].value;
-      vm.label = values[0].value.replace(/^https?:\/\/(www\.)?/, '');
+      vm.label = values[0].value.replace(/^https?:\/\/(www\.)?/, '').replace(/^\/|\/$/g, '');
     }
   }
 }
