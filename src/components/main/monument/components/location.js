@@ -19,14 +19,15 @@ function controller(wikidata) {
   function init() {
     let prop;
     let id;
+    const claims = vm.monument.claims;
 
-    if (vm.monument.claims.P276) {
+    if (claims.P276) {
       prop = 'wdt:P276/wdt:P131';
       id = vm.monument.id;
-    } else if (vm.monument.claims.P131) {
+    } else if (claims.P131) {
       prop = 'wdt:P131';
-      const preferred = vm.monument.claims.P131.values.filter(value => value.rank === 'preferred');
-      id = preferred.length ? preferred[0].value_id : vm.monument.claims.P131.values[0].value_id;
+      const preferred = claims.P131.values.filter(value => value.rank === 'preferred');
+      id = preferred.length ? preferred[0].value_id : claims.P131.values[0].value_id;
     } else {
       return;
     }
