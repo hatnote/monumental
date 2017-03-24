@@ -9,6 +9,8 @@ import url from './main/monument/components/url';
 
 import toolbar from './toolbar/toolbar';
 
+import category from './main/games/category/games-category';
+
 export default () => {
   main();
   dashboard();
@@ -20,4 +22,6 @@ export default () => {
   url();
 
   toolbar();
+
+  category();
 };

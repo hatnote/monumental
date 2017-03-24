@@ -3,6 +3,7 @@ import _ from 'lodash';
 const WikiService = function ($http, $httpParamSerializerJQLike) {
   const service = {
     getArticleHeader,
+    getFilesCategories,
     getCategoryMembers,
     getImage,
     getUserInfo,
@@ -57,6 +58,18 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
       const images = response.data.query.categorymembers.map(image => image.title.substring(5));
       return images;
     });
+  }
+
+  function getFilesCategories(files) {
+    const params = angular.extend({}, defaultParams, {
+      prop: 'categories',
+      clshow: '!hidden',
+      cllimit: '100',
+      titles: files.join('|'),
+    });
+    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
+      params,
+    }).then(response => response.data.query.pages);
   }
 
   function getImage(image, extraParams) {

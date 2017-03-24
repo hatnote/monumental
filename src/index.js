@@ -82,6 +82,16 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       url: '/object/:id?lang',
       template: '<mo-monument></mo-monument>',
       resolve: {},
+    })
+    .state('main.game', {
+      abstract: true,
+      url: '/game',
+      template: '<div ui-view ng-cloak><p>Loading</p></div>',
+    })
+    .state('main.game.category', {
+      url: '/category',
+      template: '<mo-game-category></mo-game-category>',
+      resolve: {},
     });
   $urlRouterProvider.otherwise('/');
 }
