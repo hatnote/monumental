@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
-const WikiService = function ($http, $httpParamSerializerJQLike) {
+const WikiService = function ($http, $httpParamSerializerJQLike, $q, wikidata) {
   const service = {
+    addCategory,
     getArticleHeader,
     getFilesCategories,
     getCategoryInfo,
@@ -34,6 +35,28 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
   return service;
 
   // functions
+
+  function addCategory(id, value) {
+    return wikidata.get({ ids: id })
+      .then((response) => {
+        const entry = response.entities[id];
+        return entry.claims.P373;
+      })
+      .then((response) => {
+        if (response) {
+          return $q.reject('Category is already added');
+        }
+        return setClaim({
+          action: 'wbcreateclaim',
+          format: 'json',
+          entity: `${id}`,
+          property: 'P373',
+          snaktype: 'value',
+          summary: '#monumental',
+          value: `"${value}"`,
+        });
+      });
+  }
 
   function getArticleHeader(lang, title) {
     const params = angular.extend({}, defaultParams, {
@@ -79,7 +102,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
     const params = angular.extend({}, defaultParams, {
       prop: 'categories',
       clshow: '!hidden',
-      cllimit: '100',
+      cllimit: '250',
       titles: files.join('|'),
     });
     return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
@@ -128,6 +151,9 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
       url: '/api',
       data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }).then((response) => {
+      if (response.data.status === 'exception') { return $q.reject(response.data.exception); }
+      return response;
     });
   }
 };

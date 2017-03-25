@@ -85,11 +85,11 @@ function stateConfig($stateProvider, $urlRouterProvider) {
     })
     .state('main.game', {
       abstract: true,
-      url: '/game',
+      url: '/games',
       template: '<div ui-view ng-cloak><p>Loading</p></div>',
     })
     .state('main.game.category', {
-      url: '/category',
+      url: '/add-category?country',
       template: '<mo-game-category></mo-game-category>',
       resolve: {},
     });
