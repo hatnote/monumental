@@ -6,25 +6,14 @@ import '../../../images/marker.png';
 
 const MonumentComponent = { controller, template };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, langService, mapService, wikidata) {
   const vm = this;
+  const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
   vm.map = {};
-
-  vm.addCategory = function () {
-    WikiService.setClaim({
-      action: 'wbcreateclaim',
-      format: 'json',
-      entity: `${id}`,
-      property: 'P373',
-      snaktype: 'value',
-      summary: '#monumental',
-      value: '"Mikołów town hall"',
-    });
-  };
 
   let langs = $stateParams.lang ? [$stateParams.lang] : [];
   langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
@@ -34,6 +23,12 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   getWikidata();
 
   // functions
+
+  function getCategoryInfo(category) {
+    WikiService.getCategoryInfo(category).then((response) => {
+      vm.category = response;
+    });
+  }
 
   function getCategoryMembers(category) {
     WikiService.getCategoryMembers(category).then((data) => {
@@ -60,8 +55,11 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     return `https://commons.wikimedia.org/wiki/Category:${encodeURIComponent(name)}`;
   }
 
-  function getImage(image) {
-    WikiService.getImage(image).then((response) => {
+  function getImage() {
+    const image = getPropertyValue('P18');
+    if (!image) { return; }
+
+    WikiService.getImage(image.value).then((response) => {
       vm.image.push(response.imageinfo);
     });
   }
@@ -75,6 +73,13 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     }));
   }
 
+  function getPropertyValue(prop) {
+    if (vm.monument.claims[prop] && vm.monument.claims[prop].values.length) {
+      return vm.monument.claims[prop].values[0];
+    }
+    return false;
+  }
+
   function getWikidata() {
     vm.loading = true;
     wikidata.getById(id).then((data) => {
@@ -82,11 +87,9 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       vm.monument = data[first];
       const claims = vm.monument.claims;
 
-      if (vm.monument.claims.P18) {
-        getImage(claims.P18.values[0].value);
-        // claims.P18.values.forEach(image => getImage(image.value));
-      }
+      getImage();
       if (vm.monument.claims.P373) {
+        getCategoryInfo(claims.P373.values[0].value);
         getCategoryMembers(claims.P373.values[0].value);
       }
 
@@ -97,27 +100,16 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       }
       if (vm.monument.claims.P625) {
         const value = vm.monument.claims.P625.values[0].value;
-        const icon = {
-          iconUrl: 'assets/images/marker.png',
-          shadowUrl: undefined,
-          iconSize: [40, 40],
-          shadowSize: [0, 0],
-          iconAnchor: [20, 20],
-          shadowAnchor: [0, 0],
-        };
-
-        vm.map = {
-          center: {
+        vm.map = mapService.getMapInstance({ center: {
+          lat: value.latitude,
+          lng: value.longitude,
+          zoom: 15,
+        } });
+        vm.map.markers = {
+          marker: {
             lat: value.latitude,
             lng: value.longitude,
-            zoom: 15,
-          },
-          markers: {
-            marker: {
-              lat: value.latitude,
-              lng: value.longitude,
-              icon,
-            },
+            icon,
           },
         };
       }

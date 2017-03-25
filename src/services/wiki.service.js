@@ -4,6 +4,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
   const service = {
     getArticleHeader,
     getFilesCategories,
+    getCategoryInfo,
     getCategoryMembers,
     getImage,
     getUserInfo,
@@ -46,6 +47,20 @@ const WikiService = function ($http, $httpParamSerializerJQLike) {
       cache: true,
     }).then((response) => {
       return _.values(response.data.query.pages)[0].extract;
+    });
+  }
+
+  function getCategoryInfo(category) {
+    const params = angular.extend({}, defaultParams, { 
+      prop: 'categoryinfo',
+      titles: `Category:${category}`,
+    });
+    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
+      params,
+      cache: true,
+    }).then((response) => {
+      const page = _.sample(response.data.query.pages);
+      return angular.extend({}, page.categoryinfo, { title: page.title });
     });
   }
 
