@@ -27,6 +27,11 @@
     </div>
 	</div>
 </md-toolbar>
-<div class="toolbar__settings md-whiteframe-16dp" ng-if="$ctrl.settings">
-  <md-button ng-click="$ctrl.logout()">Logout</md-button>
+<div class="toolbar__settings md-whiteframe-16dp"
+      layout="row" layout-align="center center"
+      ng-if="$ctrl.settings">
+  <div class="toolbar__column" layout="row" layout-align="center center" flex>
+    <span flex></span>
+    <md-button ng-click="$ctrl.logout()">Logout</md-button>
+  </div>
 </div>

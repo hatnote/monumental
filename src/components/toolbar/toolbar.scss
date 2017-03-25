@@ -37,8 +37,12 @@
 
 .toolbar__settings {
   position: absolute;
-  width: calc(100% - 50px);
+  width: 100%;
   z-index: 10;
-  padding: 20px 25px;
+  padding: 10px 25px;
   background: white;
+
+  .toolbar__column {
+    max-width: 980px;
+  }
 }
