@@ -15,7 +15,9 @@
           <div class="monument__primary" layout="row" layout-align="center start">
             <div flex ng-if="$ctrl.monument">
               <h2 class="monument__title md-display-1">{{ ::$ctrl.monument.labels[$ctrl.lang] || "no name" }}</h2>
-              <h4 class="monument__subtitle md-headline muted">{{ ::$ctrl.monument.labels.en || "no english name" }}</h4>
+              <h4 class="monument__subtitle md-headline muted">
+                <mo-native-name monument="$ctrl.monument"></mo-native-name>
+              </h4>
             </div>
             <div flex="none">
               <md-button class="md-primary" href="//wikidata.org/wiki/{{ $ctrl.monument.id }}" target="_blank">Wikidata</md-button>

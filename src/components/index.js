@@ -5,6 +5,7 @@ import map from './main/map/map';
 
 import monument from './main/monument/monument';
 import location from './main/monument/components/location';
+import nativeName from './main/monument/components/native-name';
 import url from './main/monument/components/url';
 
 import toolbar from './toolbar/toolbar';
@@ -19,6 +20,7 @@ export default () => {
 
   monument();
   location();
+  nativeName();
   url();
 
   toolbar();

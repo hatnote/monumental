@@ -20,7 +20,7 @@
         <div class="header__primary" layout="row" layout-align="center start">
           <div flex>
             <h2 class="header__title md-display-1">{{ ::$ctrl.place.labels[$ctrl.lang] || "no name" }}</h2>
-            <h4 class="header__subtitle md-headline muted">{{ ::$ctrl.place.labels.en }}</h4>
+            <h4 class="header__subtitle md-headline muted"><mo-native-name monument="$ctrl.place"></mo-native-name></h4>
           </div>
           <div flex="none">
             <md-button class="md-primary" href="//wikidata.org/wiki/{{ ::$ctrl.place.id }}" target="_blank">Wikidata</md-button>

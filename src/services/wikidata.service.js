@@ -1,6 +1,6 @@
-const wdService = function ($http, $q) {
-
+const wdService = function ($http) {
   const service = {
+    get,
     getById,
     getLabels,
     getRecursive,
@@ -41,18 +41,18 @@ const wdService = function ($http, $q) {
    * @returns {Promise}
    */
   function get(data) {
-    let params = angular.extend({}, defaultParams, data);
+    const params = angular.extend({}, defaultParams, data);
     return $http.jsonp('https://www.wikidata.org/w/api.php', {
       params: mapValues(params, p => angular.isArray(p) ? p.join('|') : p),
-      cache: false
-    });
+      cache: false,
+    }).then(response => response.data);
   }
 
   function getLabels(ids) {
     return get({
-      ids: ids,
-      props: ['labels']
-    }).then(response => mapValues(response.data.entities, entity => simplifyLabels(entity.labels)));
+      ids,
+      props: ['labels'],
+    }).then(response => mapValues(response.entities, entity => simplifyLabels(entity.labels)));
   }
 
   function getRecursive(element, recursiveProperty) {
@@ -74,8 +74,8 @@ const wdService = function ($http, $q) {
       action: 'wbsearchentities',
       search: text,
       type: 'item',
-      language: defaultParams.languages[0]
-    }).then(data => data.data.search);
+      language: defaultParams.languages[0],
+    }).then(response => response.search);
   }
 
   function getSPARQL(query) {
@@ -149,10 +149,10 @@ const wdService = function ($http, $q) {
 
     return get({
       ids: id,
-      languages: defaultParams.languages,
+      languages: undefined,
     })
-      .then(data => mapValues(data.data.entities, entity => simplifyEntity(entity)))
-      .then(data => {
+      .then(response => mapValues(response.entities, entity => simplifyEntity(entity)))
+      .then((data) => {
         entities = data;
         const simplified = mapValues(data,
           entity => mapValues(entity.claims,
