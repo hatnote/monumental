@@ -83,8 +83,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   function getWikidata() {
     vm.loading = true;
     wikidata.getById(id).then((data) => {
-      const first = Object.keys(data)[0];
-      vm.monument = data[first];
+      vm.monument = _.sample(data);
       const claims = vm.monument.claims;
 
       getImage();

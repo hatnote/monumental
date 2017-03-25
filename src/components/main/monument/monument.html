@@ -20,7 +20,7 @@
               </h4>
             </div>
             <div flex="none">
-              <md-button class="md-primary" href="//wikidata.org/wiki/{{ $ctrl.monument.id }}" target="_blank">Wikidata</md-button>
+              <md-button class="md-primary" ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}" target="_blank">Wikidata</md-button>
             </div>
           </div>
           <div class="monument__secondary">
@@ -38,7 +38,7 @@
               </div>
               <div flex="40">
                 <span><md-icon>description</md-icon></span>
-                <span>{{ $ctrl.monument.interwikis || 0 }} wikis</span>
+                <a ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ $ctrl.monument.interwikis || 0 }} wikis</a>
               </div>
             </div>
             <div layout="row" layout-align="center start">
@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <div class="monument__subheader" layout="column" layout-align="center center">
+    <div class="monument__subheader" layout="row" layout-align="center stretch">
       <div class="monument__images" ng-if="$ctrl.images">
         <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
           <img ng-src="{{image.thumburl}}">
