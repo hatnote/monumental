@@ -48,24 +48,33 @@ const wdService = function ($http, $q, langService) {
   }
 
   function getLabels(ids) {
-    return get({
-      ids,
-      props: ['labels'],
-    }).then(response => mapValues(response.entities, entity => simplifyLabels(entity.labels)));
+    const promises = [];
+    for (let i = 0; i < Math.ceil(ids.length / 50); i += 1) {
+      promises.push(get({
+        ids: ids.slice(i * 50, ((i + 1) * 50) - 1),
+        props: ['labels'],
+      }));
+    }
+    return $q.all(promises).then((responses) => {
+      const result = {};
+      responses.forEach((response) => {
+        const values = mapValues(response.entities, entity => simplifyLabels(entity.labels));
+        angular.extend(result, values);
+      });
+      return result;
+    });
   }
 
   function getRecursive(element, recursiveProperty) {
-    let query = `SELECT ?parent ?parentLabel WHERE {
-        wd:`+ element + ` ` + recursiveProperty + `* ?parent .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "` + defaultParams.languages.join(', ') + `" }
+    const query = `SELECT ?parent ?parentLabel WHERE {
+        wd:${element} ${recursiveProperty}* ?parent .
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${defaultParams.languages.join(', ')}" }
       }`;
-    return getSPARQL(query).then(data => {
-      return data.map(element => ({
-        link: element.parent.value.replace('entity', 'wiki'),
-        value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
-        value: element.parentLabel.value
-      }));
-    });
+    return getSPARQL(query).then(data => data.map((element) => ({
+      link: element.parent.value.replace('entity', 'wiki'),
+      value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
+      value: element.parentLabel.value,
+    })));
   }
 
   function getSearch(text) {
