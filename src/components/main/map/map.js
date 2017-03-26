@@ -3,9 +3,10 @@ import template from './map.html';
 
 const MapComponent = { controller, template };
 
-function controller($location, $scope, $state, $stateParams, $timeout, leafletData, localStorageService, mapService, wikidata) {
+function controller($location, $scope, $state, $stateParams, $timeout, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
+  const langs = langService.getUserLanguages();
 
   // bindings
 
@@ -16,10 +17,6 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
   vm.loadingMap = true;
 
   // activate
-
-  let langs = $stateParams.lang ? [$stateParams.lang] : [];
-  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
-  wikidata.setLanguages(langs);
 
   $scope.$on('centerUrlHash', (event, centerHash) => {
     $location.search({ c: centerHash });

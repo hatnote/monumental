@@ -1,6 +1,8 @@
-const LangService = function () {
+const LangService = function ($q, localStorageService) {
   const service = {
     getNativeLanguages,
+    getUserLanguages,
+    setUserLanguages,
   };
 
   const languagesList = {
@@ -19,7 +21,7 @@ const LangService = function () {
     Q902: ['bn'],
     Q244: ['en'],
     Q184: ['ru', 'be'],
-    Q31: ['fr', 'de', 'nl'],
+    Q31: ['nl', 'fr', 'de'],
     Q242: ['en'],
     Q962: ['fr'],
     Q917: ['dz'],
@@ -194,6 +196,7 @@ const LangService = function () {
     Q953: ['en'],
     Q954: ['en'],
   };
+  let userLanguages = [];
 
   return service;
 
@@ -201,6 +204,23 @@ const LangService = function () {
 
   function getNativeLanguages(code) {
     return languagesList[code];
+  }
+
+  function getUserLanguages() {
+    if (userLanguages.length) { return userLanguages; }
+
+    const ls = localStorageService.get('languages');
+    const def = navigator.language || navigator.userLanguage;
+
+    userLanguages = ls || [def];
+    if (!userLanguages.includes('en')) { userLanguages.push('en'); }
+    return userLanguages;
+  }
+
+  function setUserLanguages(langs) {
+    localStorageService.set('languages', langs);
+    userLanguages = langs;
+    return $q.when(true);
   }
 };
 

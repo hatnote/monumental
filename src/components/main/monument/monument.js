@@ -10,16 +10,13 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
+  const langs = langService.getUserLanguages();
 
   vm.getCommonsLink = getCommonsLink;
   vm.image = [];
+  vm.lang = langs[0];
   vm.map = {};
 
-  let langs = $stateParams.lang ? [$stateParams.lang] : [];
-  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
-
-  vm.lang = langs[0];
-  wikidata.setLanguages(langs);
   getWikidata();
 
   // functions

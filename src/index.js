@@ -79,7 +79,7 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.object', {
-      url: '/object/:id?lang',
+      url: '/object/:id',
       template: '<mo-monument></mo-monument>',
       resolve: {},
     })

@@ -3,18 +3,18 @@ import template from './dashboard.html';
 
 const DashboardComponent = { controller, template };
 
-function controller($state, $window, WikiService, localStorageService) {
+function controller($mdToast, $state, $window, WikiService, langService) {
   const vm = this;
-  vm.languages = localStorageService.get('languages') || ['en', 'de'];
+  vm.languages = langService.getUserLanguages();
   vm.loading = false;
   vm.saveLanguages = saveLanguages;
 
   function saveLanguages() {
-    if (vm.languages.includes('en')) {
-      vm.languages.push('en');
-    }
-    localStorageService.set('languages', vm.languages.filter(lang => lang));
-    $state.reload();
+    langService.setUserLanguages(vm.languages.filter(lang => lang))
+      .then(() => {
+        $mdToast.show($mdToast.simple().textContent('Languages saved!').hideDelay(3000));
+        $state.reload();
+      });
   }
 }
 

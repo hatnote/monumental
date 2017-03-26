@@ -1,4 +1,4 @@
-const wdService = function ($http) {
+const wdService = function ($http, $q, langService) {
   const service = {
     get,
     getById,
@@ -6,14 +6,13 @@ const wdService = function ($http) {
     getRecursive,
     getSearch,
     getSPARQL,
-    setLanguages,
   };
 
   const defaultParams = {
     action: 'wbgetentities',
     format: 'json',
     props: ['info', 'labels', 'aliases', 'descriptions', 'claims', 'datatype', 'sitelinks'],
-    languages: ['en'],
+    languages: langService.getUserLanguages(),
     callback: 'JSON_CALLBACK',
   };
 
@@ -101,10 +100,6 @@ const wdService = function ($http) {
       result[key] = func.call(object, object[key], key);
     }
     return result;
-  }
-
-  function setLanguages(languages) {
-    defaultParams.languages = languages;
   }
 
   function simplifyAliases(aliases) {

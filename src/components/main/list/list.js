@@ -4,13 +4,15 @@ import '../../../images/marker.png';
 
 const ListComponent = { controller, template };
 
-function controller($state, $stateParams, $timeout, leafletData, localStorageService, mapService, WikiService, wikidata) {
+function controller($state, $stateParams, $timeout, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
+  const langs = langService.getUserLanguages();
 
   vm.filters = {};
   vm.image = [];
+  vm.lang = langs[0];
   vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
   vm.listParams = {};
 
@@ -18,11 +20,6 @@ function controller($state, $stateParams, $timeout, leafletData, localStorageSer
     vm.showMap = true;
     return;
   }
-
-  let langs = $stateParams.lang ? [$stateParams.lang] : [];
-  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
-  vm.lang = langs[0];
-  wikidata.setLanguages(langs);
 
   init();
 
