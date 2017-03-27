@@ -2,126 +2,146 @@
 @import '../../../styles/responsive';
 
 mo-monument {
-    .monument {
-        width: 980px;
-        max-width: 100%;
+  .monument {
+    width: 980px;
+    max-width: 100%;
+  }
+
+  .monument__header {
+    padding: 25px;
+    background: white;
+    border-bottom: 1px solid $softGrey;
+
+    .monument__primary {
+      margin-bottom: 20px;
+      border-bottom: 1px solid $softGrey;
+    }
+    .monument__secondary {
+      .material-icons {
+        margin-right: 5px;
+        color: $lightGrey;
+      }
+      & > div {
+        margin-bottom: 15px;
+      }
+    }
+  }
+
+  .monument__subheader {
+    padding: 15px 0;
+    background: #fafafa;
+    border-bottom: 1px solid $softGrey;
+  }
+
+  .monument__images {
+    width: 980px;
+    height: 90px;
+    overflow: hidden;
+    text-align: center;
+
+    img {
+      display: inline-block;
+      margin-right: 5px;
+      padding: 5px;
+      background: white;
+      border: 1px solid $softGrey;
+    }
+  }
+
+  .monument__image {
+    width: 300px;
+    height: 300px;
+    padding: 5px;
+    margin-right: 25px;
+    border: 1px solid $softGrey;
+  }
+
+  .monument__image-link {
+    background: $softGrey;
+    width: 100%;
+    height: 100%;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
+  .monument__panel {
+    margin: 15px 0;
+    padding: 30px;
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
+  }
+
+  .monument__title {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .monument__subtitle {
+    margin-top: 0; 
+    margin-bottom: 15px;
+  }
+
+  .monument__place {
+    display: block;
+    margin-bottom: 30px !important;
+  }
+
+  .monument__article {
+    .article__header {
+      .md-button.md-primary {
+        margin-left: 0;
+        margin-right: 0;
+      }
     }
 
-    .monument__left {
-        width: 100%;
-        margin-right: 50px;
-    }
+    .article__text {
+      position:relative;
+      max-height: 320px;
+      overflow: hidden;
+      font-family: 'Merriweather', serif;
+      font-size: 15px;
+      text-align: justify;
+      line-height: 1.8;
 
-    .monument__right {
-        width: 300px;
-        min-width: 300px;
-        overflow: hidden;
-
-        .md-button {
-            margin-left: 0;
-            margin-right: 0;
-        }
-    }
-
-    .monument__image {
-        background: #bdbdbd;
-        width: 300px;
-        height: 300px;
-        margin-top: 10px;
-
-        md-icon.material-icons {
-            width: 60px;
-            height: 60px;
-            font-size: 60px;
-            opacity: .75;
-        }
-    }
-
-    .monument__images {
-        margin-top: 10px;
-        width: 400px;
-
-        img {
-            margin-right: 1px;
-            display: inline-block;
-        }
-    }
-
-    .monument__title {
+      p:first-child {
         margin-top: 0;
-        margin-bottom: 0;
+      }
+
+      &.article__text--long {
+        max-height: none;
+      }
     }
 
-    .monument__subtitle {
-        margin-top: 0; 
-        margin-bottom: 15px;
+    .article__more {
+      margin-top: -14px;
+      z-index: 5;
+      box-shadow: inset rgb(255,255,255) 0 -45px 15px;
     }
 
-    .monument__place {
-        margin-bottom: 15px;
+    .md-icon-button {
+      margin-top: -18px;
+    }
+  }
 
-        .material-icons {
-            margin-right: 5px;
-            color: $lightGrey;
-        }
+  .monument__details {
+    .monument__details-item {
+      margin-bottom: 15px;
+
+      strong {
+        margin-right: 20px;
+      }
     }
 
-    .monument__article {
-        margin-top: 30px;
-
-        .article__header {
-            .md-button.md-primary {
-                margin-left: 0;
-                margin-right: 0;
-            }
-        }
-
-        .article__text {
-            position:relative;
-            max-height: 320px;
-            overflow: hidden;
-            font-family: 'Merriweather', serif;
-            font-size: 15px;
-            text-align: justify;
-            line-height: 1.8;
-
-            p:first-child {
-                margin-top: 0;
-            }
-
-            &.article__text--long {
-                max-height: none;
-            }
-
-            &:after {
-                content: "";
-                position: absolute; top: 0; bottom: 0; left: -15px; right: -15px;
-                box-shadow: inset rgb(250,250,250) 0 -20px 10px;
-            }
-        }
-
-        .md-button {
-            margin-top: -18px;
-        }
+    .monument__details-value {
+      line-height: 1.5;
     }
-
-    .monument__details {
-        .monument__details-item {
-            margin-bottom: 15px;
-
-            strong {
-                margin-right: 20px;
-            }
-        }
-
-        .monument__details-value {
-            line-height: 1.5;
-        }
-    }
-    
-    .angular-leaflet-map {
-        width: 100%;
-        height: 300px;
-        margin-top: 20px;
-    }
+  }
+  
+  .angular-leaflet-map {
+    height: 600px;
+  }
 }

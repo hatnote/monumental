@@ -35,7 +35,7 @@ angular
     'restangular',
     'infinite-scroll',
     'leaflet-directive',
-    'LocalStorageModule'
+    'LocalStorageModule',
   ])
   .config(localStorageConfig)
   .config(stateConfig)
@@ -53,7 +53,7 @@ function localStorageConfig(localStorageServiceProvider) {
 
 /**
  * Config of routing
- * 
+ *
  * @param {any} $stateProvider
  * @param {any} $urlRouterProvider
  */
@@ -61,17 +61,17 @@ function stateConfig($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('main', {
       template: '<mo-main></mo-main>',
-      resolve: {}
+      resolve: {},
     })
     .state('main.dashboard', {
       url: '/',
-      template: `<mo-dashboard></mo-dashboard>`,
-      resolve: {}
+      template: '<mo-dashboard></mo-dashboard>',
+      resolve: {},
     })
     .state('main.list', {
       url: '/list/:id',
-      template: `<mo-list></mo-list>`,
-      resolve: {}
+      template: '<mo-list></mo-list>',
+      resolve: {},
     })
     .state('main.map', {
       url: '/map',
@@ -79,30 +79,40 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.object', {
-      url: '/object/:id?lang',
-      template: `<mo-monument></mo-monument>`,
-      resolve: {}
+      url: '/object/:id',
+      template: '<mo-monument></mo-monument>',
+      resolve: {},
+    })
+    .state('main.game', {
+      abstract: true,
+      url: '/games',
+      template: '<div ui-view ng-cloak><p>Loading</p></div>',
+    })
+    .state('main.game.category', {
+      url: '/add-category?country',
+      template: '<mo-game-category></mo-game-category>',
+      resolve: {},
     });
   $urlRouterProvider.otherwise('/');
 }
 
 /**
  * Config of material design theme
- * 
+ *
  * @param {any} $mdThemingProvider
  * @param {any} $provide
  */
 function themeConfig($mdThemingProvider, $provide) {
-  let tp = $mdThemingProvider;
-  tp.definePalette('moRed', tp.extendPalette('red', {
-    '500': '#8f0000',
-    '600': '#8f0000'
+  const tp = $mdThemingProvider;
+  tp.definePalette('belize', tp.extendPalette('blue', {
+    500: '#2980b9',
+    600: '#2980b9',
   }));
 
   tp.alwaysWatchTheme(true);
   tp.theme('default')
-    .primaryPalette('moRed')
-    .accentPalette('blue');
+    .primaryPalette('belize')
+    .accentPalette('orange');
 
   $provide.value('themeProvider', tp);
 }

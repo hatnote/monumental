@@ -2,57 +2,133 @@
 @import '../../../styles/responsive';
 
 mo-list {
-    .list {
-        width: 450px;
-        height: calc(100vh - 105px);
+  .list {
+    width: 450px;
+  }
+
+  .list__header {
+    padding: 20px 25px;
+    background: white;
+    border-bottom: 1px solid $softGrey;
+
+    .header__primary {
+      margin-bottom: 10px;
+      border-bottom: 1px solid $softGrey;
     }
+
+    .header__secondary {
+      .material-icons {
+        margin-right: 5px;
+        color: $lightGrey;
+      }
+      & > div {
+        margin-bottom: 15px;
+      }
+    }
+
+    .header__image {
+      width: 100px;
+      height: 100px;
+      padding: 5px;
+      margin-right: 25px;
+      border: 1px solid $softGrey;
+    }
+
+    .header__image-link {
+      background: $softGrey;
+      width: 100%;
+      height: 100%;
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+
+    .header__title {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 32px;
+      line-height: 32px;
+    }
+
+    .header__subtitle {
+      margin-top: 0; 
+      margin-bottom: 10px;
+    }
+
+    .header__place {
+      display: block;
+    }
+  }
+
+  .list__subheader {
+    padding: 15px 25px;
+    background: #fafafa;
+    border-bottom: 1px solid $softGrey;
+
+    md-input-container {
+      margin-bottom: 0;
+      margin-top: 0;
+      padding: 0;
+
+      .md-errors-spacer {
+        display: none;
+      }
+    }
+  }
+  
+  .list__container {
+    margin-right: 20px;
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
+
+    md-list-item.md-2-line {
+      border-bottom: 1px solid $softGrey;
+    }
+  }
+
+  .list__image {
+    width: 75px;
+    min-width: 75px;
+    height: 75px;
+    background: $softGrey;
+    margin: 15px 15px 15px 0;
     
-    .list__container {
-        margin-right: 20px;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
 
-        md-list-item.md-2-line {
-            border-bottom: 1px solid $softGrey;
-        }
+  .list__map {
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
+
+    .angular-leaflet-map {
+      width: 100%;
+      height: 100%;
     }
 
-    .list__image {
-        width: 75px;
-        min-width: 75px;
-        height: 75px;
-        background: $softGrey;
-        margin: 15px 15px 15px 0;
-        
-        img {
-            max-width: 100%;
-            max-height: 100%;
-        }
+    .leaflet-popup-close-button {
+      z-index: 1;
+      padding: 5px;
     }
 
-    .list__map {
-        background: $softGrey;
-
-        .angular-leaflet-map {
-            width: 100%;
-            height: 100%;
-        }
-
-        .leaflet-popup-close-button {
-            z-index: 1;
-            padding: 5px;
-        }
-
-        .leaflet-popup-content-wrapper {
-            border-radius: 2px;
-        }
-
-        .leaflet-popup-content {
-            min-width: 300px;
-            margin: 0;
-            font: 16px Roboto, Arial, sans-serif;
-        }
+    .leaflet-popup-content-wrapper {
+      border-radius: 2px;
     }
 
-    md-autocomplete {
-        margin: 20px;
+    .leaflet-popup-content {
+      min-width: 300px;
+      margin: 0;
+      font: 16px Roboto, Arial, sans-serif;
     }
+  }
+
+  md-autocomplete {
+    margin: 20px;
+  }
 }

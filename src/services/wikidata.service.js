@@ -1,26 +1,25 @@
-const wdService = function ($http, $q) {
-
+const wdService = function ($http, $q, langService) {
   const service = {
-    getById: getById,
-    getLabels: getLabels,
-    getRecursive: getRecursive,
-    getSearch: getSearch,
-    getSPARQL: getSPARQL,
-    setLanguages: setLanguages
+    get,
+    getById,
+    getLabels,
+    getRecursive,
+    getSearch,
+    getSPARQL,
   };
 
   const defaultParams = {
     action: 'wbgetentities',
     format: 'json',
     props: ['info', 'labels', 'aliases', 'descriptions', 'claims', 'datatype', 'sitelinks'],
-    languages: ['en'],
-    callback: 'JSON_CALLBACK'
+    languages: langService.getUserLanguages(),
+    callback: 'JSON_CALLBACK',
   };
 
   /**
    * Iterates over own enumerable string keyed properties of an object and
    * invokes `func` for each property..
-   * 
+   *
    * @param {Object} object The object to iterate over
    * @param {Function} func The function invoked per iteration
    * @returns {Object} Returns `object`
@@ -41,32 +40,41 @@ const wdService = function ($http, $q) {
    * @returns {Promise}
    */
   function get(data) {
-    let params = angular.extend({}, defaultParams, data);
+    const params = angular.extend({}, defaultParams, data);
     return $http.jsonp('https://www.wikidata.org/w/api.php', {
       params: mapValues(params, p => angular.isArray(p) ? p.join('|') : p),
-      cache: false
-    });
+      cache: false,
+    }).then(response => response.data);
   }
 
   function getLabels(ids) {
-    return get({
-      ids: ids,
-      props: ['labels']
-    }).then(response => mapValues(response.data.entities, entity => simplifyLabels(entity.labels)));
+    const promises = [];
+    for (let i = 0; i < Math.ceil(ids.length / 50); i += 1) {
+      promises.push(get({
+        ids: ids.slice(i * 50, ((i + 1) * 50) - 1),
+        props: ['labels'],
+      }));
+    }
+    return $q.all(promises).then((responses) => {
+      const result = {};
+      responses.forEach((response) => {
+        const values = mapValues(response.entities, entity => simplifyLabels(entity.labels));
+        angular.extend(result, values);
+      });
+      return result;
+    });
   }
 
   function getRecursive(element, recursiveProperty) {
-    let query = `SELECT ?parent ?parentLabel WHERE {
-        wd:`+ element + ` wdt:` + recursiveProperty + `* ?parent .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "` + defaultParams.languages.join(', ') + `" }
+    const query = `SELECT ?parent ?parentLabel WHERE {
+        wd:${element} ${recursiveProperty}* ?parent .
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${defaultParams.languages.join(', ')}" }
       }`;
-    return getSPARQL(query).then(data => {
-      return data.map(element => ({
-        link: element.parent.value.replace('entity', 'wiki'),
-        value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
-        value: element.parentLabel.value
-      }));
-    });
+    return getSPARQL(query).then(data => data.map((element) => ({
+      link: element.parent.value.replace('entity', 'wiki'),
+      value_id: element.parent.value.substring(element.parent.value.indexOf('/Q') + 1),
+      value: element.parentLabel.value,
+    })));
   }
 
   function getSearch(text) {
@@ -74,14 +82,14 @@ const wdService = function ($http, $q) {
       action: 'wbsearchentities',
       search: text,
       type: 'item',
-      language: defaultParams.languages[0]
-    }).then(data => data.data.search);
+      language: defaultParams.languages[0],
+    }).then(response => response.search);
   }
 
   function getSPARQL(query) {
     return $http.get('https://query.wikidata.org/sparql', {
-      params: { query: query },
-      cache: false
+      params: { query: query.replace(/ {2,}/g, ' ') },
+      cache: false,
     }).then(data => data.data.results.bindings);
   }
 
@@ -103,10 +111,6 @@ const wdService = function ($http, $q) {
     return result;
   }
 
-  function setLanguages(languages) {
-    defaultParams.languages = languages;
-  }
-
   function simplifyAliases(aliases) {
     return mapValues(aliases, lang => lang.map(alias => alias.value));
   }
@@ -119,7 +123,7 @@ const wdService = function ($http, $q) {
       aliases: simplifyAliases(entity.aliases),
       descriptions: simplifyLabels(entity.descriptions),
       claims: simplifyClaims(entity.claims),
-      interwiki: entity.sitelinks
+      interwiki: entity.sitelinks,
     };
   }
 
@@ -131,9 +135,10 @@ const wdService = function ($http, $q) {
     const snak = claim.mainsnak;
     return {
       value_type: snak.datatype,
-      value_id: snak.datavalue.value.id,
-      value: snak.datavalue.value,
-      qualifiers: claim.qualifiers
+      value_id: snak.snaktype === 'novalue' ? false : snak.datavalue.value.id,
+      value: snak.snaktype === 'novalue' ? false : snak.datavalue.value,
+      qualifiers: claim.qualifiers,
+      rank: claim.rank,
     };
   }
 
@@ -141,23 +146,23 @@ const wdService = function ($http, $q) {
     return mapValues(claims, claim => claim.map(simplifyClaim));
   }
 
-  //function getIDs
+  // function getIDs
 
   function getById(id) {
     let entities = {};
 
     return get({
       ids: id,
-      languages: defaultParams.languages
+      languages: undefined,
     })
-      .then(data => mapValues(data.data.entities, entity => simplifyEntity(entity)))
-      .then(data => {
+      .then(response => mapValues(response.entities, entity => simplifyEntity(entity)))
+      .then((data) => {
         entities = data;
         const simplified = mapValues(data,
           entity => mapValues(entity.claims,
             claim => claim.map(value => value.value_id)));
         let ids = [];
-        forOwn(simplified, item => {
+        forOwn(simplified, (item) => {
           ids.push.apply(ids, Object.keys(item));
           forOwn(item, prop => ids.push.apply(ids, prop));
         });
@@ -165,15 +170,15 @@ const wdService = function ($http, $q) {
         return ids;
       })
       .then(labelsIDs => getLabels(labelsIDs))
-      .then(labels => {
-        forOwn(entities, entity => {
+      .then((labels) => {
+        forOwn(entities, (entity) => {
           entity.claims = mapValues(entity.claims, (values, key) => ({
             property_id: key,
             property: labels[key],
             values: values.map(value => labels[value.value_id] ?
               angular.extend(value, { value: labels[value.value_id] }) :
               value),
-            qualifiers: entity.qualifiers
+            qualifiers: entity.qualifiers,
           }));
         });
         return entities;

@@ -1,70 +1,98 @@
-<md-toolbar class="toolbar md-whiteframe-3dp" layout="column" layout-align="start center">
-	<div class="md-toolbar-tools">
-		<md-button ui-sref="main.dashboard">
-			Dashboard
-		</md-button>
-		<span flex></span>
-		<md-autocomplete
-		  md-input-name="autocompleteField"
-          md-selected-item="$ctrl.search.selectedItem"
-          md-search-text="$ctrl.search.text"
-          md-items="item in $ctrl.querySearch($ctrl.search.text)"
-		      md-selected-item-change="$ctrl.goToItem(item)"
-          md-item-text="item.label"
-          md-min-length="1"
-          placeholder="Search monument"
-          md-menu-class="autocomplete-custom-template">
-        <md-item-template>
-           <strong>{{item.label}}</strong>
-		   <span>{{item.description}}</span>
-        </md-item-template>
-      </md-autocomplete>
-	</div>
-</md-toolbar>
 <div class="container" layout="column" layout-align="space-between stretch" flex>
-  <md-content layout="column" layout-align="start center" flex>
-    <div class="monument" layout="row" layout-align="space-between stretch">
-
-      <!-- LEFT -->
-      <div class="monument__left" ng-show="$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">Loading...</h2>
-      </div>
-
-      <div class="monument__left" ng-show="!$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
-        <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
-
-        <div class="monument__place" layout="row" layout-align="start center">
-          <span><md-icon>place</md-icon></span>
-          <span>
-            <span ng-repeat="place in $ctrl.location"><a ui-sref="main.list({id: place.value_id.substring(1)})">{{place.value}}</a><span ng-if="!$last"> · </span></span>
-            <span class="muted" ng-if="!$ctrl.location">no location</span>
-          </span>
-        </div>
-
-        <div class="monument__article" layout="column" layout-align="start stretch">
-          <div class="article__header"
-              layout="row" layout-align="start center">
-            <h4 class="monument__subtitle md-headline">Wikipedia</h4>
-            <span flex></span>
-            <md-button class="md-primary md-icon-button"
-                      ng-repeat="wiki in $ctrl.shownInterwiki"
-                      ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
-                      ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
-              {{wiki}}
-            </md-button>
+  <div layout="column" layout-align="start stretch" flex>
+    <div class="monument__header" layout="column" layout-align="center center">
+      <div class="monument" layout="row" layout-align="center start">
+        <div flex="none">
+          <div class="monument__image">
+            <a class="monument__image-link" layout="row" layout-align="center center"
+                ng-repeat="image in $ctrl.image"
+                ng-href="{{image.descriptionurl}}">
+              <img ng-src="{{image.thumburl}}">
+            </a>
           </div>
-          
-          <div class="article__text"
+        </div>
+        <div layout="column" layout-align="start stretch" flex>
+          <div class="monument__primary" layout="row" layout-align="center start">
+            <div flex ng-if="$ctrl.monument">
+              <h2 class="monument__title md-display-1">{{ ::$ctrl.monument.labels[$ctrl.lang] || "no name" }}</h2>
+              <h4 class="monument__subtitle md-headline muted">
+                <mo-native-name monument="$ctrl.monument"></mo-native-name>
+              </h4>
+            </div>
+            <div flex="none">
+              <md-button class="md-primary" ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}" target="_blank">Wikidata</md-button>
+            </div>
+          </div>
+          <div class="monument__secondary">
+            <mo-location class="monument__place" ng-if="$ctrl.monument" monument="$ctrl.monument"></mo-location>
+            <div layout="row" layout-align="center start">
+              <div flex="60">
+                <span><md-icon>photo</md-icon></span>
+                <span>
+                  <a ng-if="$ctrl.category" ng-href="//commons.wikimedia.org/wiki/{{ $ctrl.category.title }}" target="_blank">
+                    {{ $ctrl.category.files }} images
+                    <span ng-if="$ctrl.category.subcats">and {{ $ctrl.category.subcats }} subcategories</span>
+                  </a>
+                  <span class="muted" ng-if="!$ctrl.category">no Commons category</span>
+                </span>
+              </div>
+              <div flex="40">
+                <span><md-icon>description</md-icon></span>
+                <a ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ $ctrl.monument.interwikis || 0 }} wikis</a>
+              </div>
+            </div>
+            <div layout="row" layout-align="center start">
+              <div flex="60" layout="row" layout-align="start start">
+                <div flex="10"><span><md-icon>account_balance</md-icon></span></div>
+                <div flex>
+                  <span ng-repeat="monType in $ctrl.monument.claims.P1435.values">
+                    <a ng-href="http://www.wikidata.org/wiki/{{monType.value_id}}">{{ monType.value[$ctrl.lang] || monType.value.en }}</a>
+                    <br />
+                  </span>
+                </div>
+              </div>
+              <mo-url ng-if="$ctrl.monument" monument="$ctrl.monument" flex="40"></mo-url>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="monument__subheader" layout="row" layout-align="center stretch">
+      <div class="monument__images" ng-if="$ctrl.images">
+        <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
+          <img ng-src="{{image.thumburl}}">
+        </a>
+      </div>
+    </div>
+
+    <div class="monument__data" layout="column" layout-align="start center">
+      <div class="monument monument__panel monument__article"
+            layout="column" layout-align="start stretch">
+        <div class="article__header"
+            layout="row" layout-align="start center">
+          <h4 class="monument__subtitle md-headline">Wikipedia</h4>
+          <span flex></span>
+          <md-button class="md-primary md-icon-button"
+                    ng-repeat="wiki in $ctrl.shownInterwiki"
+                    ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
+                    ng-click="$ctrl.getWikipedia(wiki, $ctrl.monument.interwiki[wiki + 'wiki'].title)">
+            {{wiki}}
+          </md-button>
+        </div>
+        <div class="article__text"
               ng-class="{'article__text--long' : $ctrl.showArticleLong}"
               ng-bind-html="$ctrl.article"></div>
+        <div class="article__more"
+              layout="column" layout-align="center stretch"
+              ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong">
           <md-button class="md-primary"
-                    ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
-                    ng-click="$ctrl.showArticleLong = true">
+                      ng-click="$ctrl.showArticleLong = true">
             Show more
           </md-button>
         </div>
+      </div>
 
+      <div class="monument monument__panel">
         <div class="monument__details">
           <h4 class="monument__subtitle md-headline">Properties</h4>
           <div class="monument__details-item"
@@ -87,54 +115,32 @@
             </span>
           </div>
         </div>
-        <md-button class="md-primary"
-                  aria-label="Show raw data"
-                  ng-click="$ctrl.showRawData = !$ctrl.showRawData">
-          Show raw data
-        </md-button>
-        <md-button ng-href="http://www.wikidata.org/wiki/{{$ctrl.monument.id}}">
-          Show Wikidata page
-        </md-button>
-        <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
       </div>
 
-      <!-- RIGHT -->
-      <div class="monument__right"
-          layout="column" layout-align="start stretch">
-        <div class="monument__image"
-            layout="column" layout-align="center center"
-            ng-if="!$ctrl.image">
-          <md-icon>crop_original</md-icon>
-        </div>
-        <a ng-repeat="image in $ctrl.image" ng-href="{{image.descriptionurl}}">
-          <img ng-src="{{image.thumburl}}">
-        </a>
-        <div class="monument__images" ng-if="$ctrl.images">
-          <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
-            <img ng-src="{{image.thumburl}}">
-          </a>
-        </div>
-        <md-button class="md-primary"
-                  ng-if="$ctrl.monument.claims.P373"
-                  ng-href="{{$ctrl.getCommonsLink()}}">
-          <md-icon>collections</md-icon> {{$ctrl.monument.claims.P373.property[$ctrl.lang]}}
-        </md-button>
-
-        <leaflet ng-if="$ctrl.monument.claims.P625"
-                markers="$ctrl.map.markers"
-                center="$ctrl.map.center"></leaflet>
-        <div layout="row" layout-align="center center"
-            ng-if="$ctrl.monument.claims.P625">
-          <md-button class="md-primary" flex
-                    ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}">
-            <md-icon>map</md-icon> Google Maps
-          </md-button>
-          <md-button class="md-primary" flex
-                    ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}">
-            <md-icon>map</md-icon> OSM
-          </md-button>
+      <div class="monument monument__panel">
+        <div class="monument__details">
+          <h4 class="monument__subtitle md-headline">Map</h4>
+          <leaflet ng-if="$ctrl.monument.claims.P625"
+                    markers="::$ctrl.map.markers" layers="::$ctrl.map.layers" center="::$ctrl.map.center"></leaflet>
+          <div layout="row" layout-align="center center"
+                ng-if="$ctrl.monument.claims.P625">
+            <!--
+            <md-button class="md-primary" flex
+                        ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in Google Maps
+            </md-button>
+            <md-button class="md-primary" flex
+                        ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in OSM.org
+            </md-button>
+            -->
+            <md-button class="md-primary" flex
+                        ng-href="#/map?c={{$ctrl.map.markers.marker.lat}}:{{$ctrl.map.markers.marker.lng}}:16">
+              <md-icon>map</md-icon> Show all monuments nearby
+            </md-button>
+          </div>
         </div>
       </div>
     </div>
-  </md-content>
+  </div>
 </div>

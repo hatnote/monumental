@@ -1,0 +1,94 @@
+<div class="container" layout="column" layout-align="space-between stretch" flex>
+  <div layout="column" layout-align="start stretch" flex="none" ng-if="!$ctrl.error">
+    <div class="game__subheader" layout="row" layout-align="center center">
+      <div class="list" layout="row" layout-align="start center">
+        <div layout="column" layout-align="start start">
+          <span layout="row" layout-align="start center">
+            <span>List of monuments in</span>
+            <md-input-container>
+              <md-select placeholder="Country"
+                          ng-model="$ctrl.country"
+                          ng-change="$ctrl.reload()">
+                <md-option ng-value="country.code" ng-repeat="country in ::$ctrl.countries">{{ ::country.name }}</md-option>
+              </md-select>
+            </md-input-container>
+            <span>with image but without Wikimedia Commons category.</span>
+          </span>
+          <small class="muted">Click plus next to category sugestion to add it.</small>
+        </div>
+        <div flex></div>
+        <md-button ng-if="!$ctrl.loading">
+          <md-tooltip md-direction="bottom">This is cached value. It means it is not updated real-time.</md-tooltip>
+          <span>{{$ctrl.total}} results</span>
+        </md-button>
+        <md-button ng-click="$ctrl.reload()">
+          <md-icon>forward</md-icon> next entries
+        </md-button>
+      </div>
+    </div>
+  </div>
+  <md-content layout="column" layout-align="start center" flex>
+    <div class="list" flex
+          layout="column" layout-align="start stretch"
+          ng-if="!$ctrl.error && !$ctrl.loading">
+      <div class="list__container" layout="column" layout-align="start stretch" flex>
+        <md-list flex>
+          <md-list-item class="md-2-line list__item"
+                          layout="row" layout-align="center center"
+                          ng-class="{ 'list__item--done' : item.success, 'list__item--error': item.error, 'list__item--loading': item.loading }"
+                          ng-repeat="item in $ctrl.list">
+            <div class="md-list-item-text" layout="row" layout="row" layout-align="center center">
+              <div class="list__image" layout="row" layout-align="center center" flex="none">
+                <a class="list__image-link" layout="row" layout-align="center center"
+                    ng-href="//commons.wikimedia.org/wiki/File:{{ ::item.image.name }}" target="_blank">
+                  <img alt="{{ ::item.name.value }}" ng-src="{{ ::item.image.thumburl }}">
+                </a>
+              </div>
+              <p layout="column" layout-align="start start" flex>
+                <a ui-sref="main.object({id: item.name.value_id.substring(1)})" target="_blank">{{ ::item.name.value }}</a>
+                <span><span>{{ ::item.place }}</span><span ng-if="item.place && item.admin"> · </span><span>{{ ::item.admin }}</span></span>
+              </p>
+              <div flex layout="column" layout-align="start stretch">
+                <p class="list__category"
+                    layout="row" layout-align="start center"
+                    ng-repeat="category in item.categories"
+                    ng-class="{ 'list__category--underlined' : !$last }">
+                  <md-button class="md-primary" aria-label="Add category"
+                              ng-click="$ctrl.saveCategory(item, category)"
+                              ng-if="item.success !== category"
+                              ng-disabled="item.loading || item.success">
+                    <md-icon ng-if="item.loading !== category && item.success !== category">add_circle_outline</md-icon>
+                    <md-progress-circular md-mode="indeterminate" md-diameter="24px" ng-if="item.loading === category"></md-progress-circular>
+                    <md-icon ng-if="item.success === category">check_circle</md-icon>
+                  </md-button>
+                  <md-button class="md-primary" aria-label="Category added"
+                              ng-href="//wikidata.org/w/index.php?title={{ ::item.name.value_id }}&diff=last" target="_blank"
+                              ng-if="item.success === category">
+                    <md-tooltip md-direction="bottom">Click to see diff or revert edit</md-tooltip>
+                    <md-icon>check_circle</md-icon>
+                  </md-button>
+                  <span>
+                    <a ng-href="//commons.wikimedia.org/wiki/Category:{{ ::category }}" target="_blank">{{ ::category }}</a>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </md-list-item>
+        </md-list>
+      </div>
+    </div>
+    <div class="list" flex
+          layout="row" layout-align="end center"
+          ng-if="!$ctrl.error && !$ctrl.loading">
+      <md-button flex ng-click="$ctrl.reload()">
+        <md-icon>forward</md-icon> next entries
+      </md-button>
+    </div>
+    <div ng-if="$ctrl.error">
+      <h3 class="md-headline muted">{{ $ctrl.error }}</h3>
+    </div>
+    <div ng-if="$ctrl.loading">
+      <h3 class="md-headline muted">Loading data...</h3>
+    </div>
+  </md-content>
+</div>

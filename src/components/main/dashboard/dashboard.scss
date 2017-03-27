@@ -2,8 +2,28 @@
 @import '../../../styles/responsive';
 
 mo-dashboard {
-    .dashboard {
-        width: 980px;
-        max-width: 100%;
-    }
+  .dashboard {
+    width: 980px;
+    max-width: 100%;
+  }
+
+  .dashboard__box {
+      margin: 5px;
+      background: white;
+      border: 1px solid $softGrey;
+      border-radius: 2px;
+      padding: 20px;
+
+      .md-title {
+        margin: 0;
+      }
+
+      md-input-container {
+        margin-bottom: 0;
+
+        .md-errors-spacer {
+          display: none;
+        }
+      }
+  }
 }

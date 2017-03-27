@@ -3,26 +3,20 @@ import template from './map.html';
 
 const MapComponent = { controller, template };
 
-function controller($location, $scope, $state, $stateParams, $timeout, leafletData, localStorageService, mapService, wikidata) {
+function controller($location, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
+  const langs = langService.getUserLanguages();
 
   // bindings
 
-  vm.goToItem = item => setMap(item);
   vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
-  vm.querySearch = text => wikidata.getSearch(text);
   vm.list = [];
   vm.listParams = {};
   vm.loading = false;
   vm.loadingMap = true;
-  vm.search = {};
 
   // activate
-
-  let langs = $stateParams.lang ? [$stateParams.lang] : [];
-  langs = langs.concat(localStorageService.get('languages') || ['en', 'de']);
-  wikidata.setLanguages(langs);
 
   $scope.$on('centerUrlHash', (event, centerHash) => {
     $location.search({ c: centerHash });
@@ -42,6 +36,8 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
     });
   }, 100);
 
+  $window.document.title = 'Monumental';
+
   // functions
 
   function getDataBB(bounds) {
@@ -58,7 +54,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
         SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
       }`).then((data) => {
         vm.map.markers = {};
-        vm.list = data.map(element => setListElement(element));
+        // http://stackoverflow.com/a/36744732/1418878
+        vm.list = data
+          .map(element => setListElement(element))
+          .filter((element, index, array) => array.findIndex(t => t.name.value_id === element.name.value_id) === index);
         vm.list.forEach((element) => {
           vm.map.markers[element.name.value_id] = setMarker(element);
         });
@@ -66,6 +65,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, leafletDa
       });
   }
 
+  /**
+   * Gets link to image
+   * @param {String} image
+   */
   function getImage(image) {
     if (image) {
       const newImage = image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file');
