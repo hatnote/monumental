@@ -66,6 +66,8 @@ function controller($q, $state, $stateParams, $window, WikiService, langService,
     vm.loading = true;
     vm.list = [];
 
+    $window.document.title = 'Monumental';
+
     getCountry();
     getList()
       .then((response) => {

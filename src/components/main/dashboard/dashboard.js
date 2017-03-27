@@ -9,6 +9,12 @@ function controller($mdToast, $state, $window, WikiService, langService) {
   vm.loading = false;
   vm.saveLanguages = saveLanguages;
 
+  init();
+
+  function init() {
+    $window.document.title = 'Dashboard – Monumental';
+  }
+
   function saveLanguages() {
     langService.setUserLanguages(vm.languages.filter(lang => lang))
       .then(() => {

@@ -3,7 +3,7 @@ import template from './map.html';
 
 const MapComponent = { controller, template };
 
-function controller($location, $scope, $state, $stateParams, $timeout, langService, leafletData, localStorageService, mapService, wikidata) {
+function controller($location, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const langs = langService.getUserLanguages();
@@ -35,6 +35,8 @@ function controller($location, $scope, $state, $stateParams, $timeout, langServi
       });
     });
   }, 100);
+
+  $window.document.title = 'Monumental';
 
   // functions
 

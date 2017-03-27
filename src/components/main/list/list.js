@@ -3,7 +3,7 @@ import template from './list.html';
 
 const ListComponent = { controller, template };
 
-function controller($state, $stateParams, $timeout, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
+function controller($state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -60,7 +60,12 @@ function controller($state, $stateParams, $timeout, langService, leafletData, lo
 
   function init() {
     getPlace()
-    .then(() => getList())
+    .then(() => {
+      const title = vm.place.labels[vm.lang] || vm.place.labels.en || vm.place.id;
+      $window.document.title = `${title} – Monumental`;
+
+      return getList();
+    })
     .then((data) => {
       // console.log(data)
       vm.list = data.map(element => ({
