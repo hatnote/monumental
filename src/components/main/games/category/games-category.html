@@ -17,7 +17,7 @@
           <small class="muted">Click plus next to category sugestion to add it.</small>
         </div>
         <div flex></div>
-        <md-button ng-if="!$ctrl.loading" ng-disabled="true">
+        <md-button ng-if="!$ctrl.loading">
           <md-tooltip md-direction="bottom">This is cached value. It means it is not updated real-time.</md-tooltip>
           <span>{{$ctrl.total}} results</span>
         </md-button>
