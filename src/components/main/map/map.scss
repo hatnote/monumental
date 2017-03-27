@@ -10,6 +10,9 @@ mo-map {
   
   .list__container {
     margin-right: 20px;
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
 
     md-list-item.md-2-line {
       border-bottom: 1px solid $softGrey;
@@ -58,7 +61,9 @@ mo-map {
   }
 
   .list__map {
-    background: $softGrey;
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
 
     .angular-leaflet-map {
       width: 100%;
