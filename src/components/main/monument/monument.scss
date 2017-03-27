@@ -114,15 +114,15 @@ mo-monument {
       &.article__text--long {
         max-height: none;
       }
-
-      &:after {
-        // content: "";
-        // position: absolute; top: 0; bottom: 0; left: -15px; right: -15px;
-        // box-shadow: inset rgb(255,255,255) 0 -20px 10px;
-      }
     }
 
-    .md-button {
+    .article__more {
+      margin-top: -14px;
+      z-index: 5;
+      box-shadow: inset rgb(255,255,255) 0 -45px 15px;
+    }
+
+    .md-icon-button {
       margin-top: -18px;
     }
   }

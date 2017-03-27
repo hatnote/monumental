@@ -75,18 +75,21 @@
           <md-button class="md-primary md-icon-button"
                     ng-repeat="wiki in $ctrl.shownInterwiki"
                     ng-disabled="!$ctrl.monument.interwiki[wiki + 'wiki']"
-                    ng-href="{{$ctrl.monument.interwiki[wiki + 'wiki'].link}}">
+                    ng-click="$ctrl.getWikipedia(wiki, $ctrl.monument.interwiki[wiki + 'wiki'].title)">
             {{wiki}}
           </md-button>
         </div>
         <div class="article__text"
               ng-class="{'article__text--long' : $ctrl.showArticleLong}"
               ng-bind-html="$ctrl.article"></div>
-        <md-button class="md-primary"
-                    ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong"
-                    ng-click="$ctrl.showArticleLong = true">
-          Show more
-        </md-button>
+        <div class="article__more"
+              layout="column" layout-align="center stretch"
+              ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong">
+          <md-button class="md-primary"
+                      ng-click="$ctrl.showArticleLong = true">
+            Show more
+          </md-button>
+        </div>
       </div>
 
       <div class="monument monument__panel">
@@ -133,7 +136,7 @@
             -->
             <md-button class="md-primary" flex
                         ng-href="#/map?c={{$ctrl.map.markers.marker.lat}}:{{$ctrl.map.markers.marker.lng}}:16">
-              <md-icon>map</md-icon> Show monuments nearby
+              <md-icon>map</md-icon> Show all monuments nearby
             </md-button>
           </div>
         </div>

@@ -12,6 +12,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   const langs = langService.getUserLanguages();
 
   vm.getCommonsLink = getCommonsLink;
+  vm.getWikipedia = getWikipedia;
   vm.image = [];
   vm.lang = langs[0];
   vm.map = {};
@@ -35,7 +36,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     });
   }
 
-  function getArticleHeader(lang, name) {
+  function getWikipedia(lang, name) {
     const language = lang.replace('wiki', '');
     WikiService.getArticleHeader(language, name).then((data) => {
       vm.article = $sce.trustAsHtml(data);
@@ -91,7 +92,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       vm.monument.interwikis = Object.keys(vm.monument.interwiki).length;
       const articleInterwiki = vm.monument.interwiki[`${langs[0]}wiki`] || vm.monument.interwiki[`${langs[1]}wiki`] || vm.monument.interwiki[`${langs[2]}wiki`];
       if (articleInterwiki) {
-        getArticleHeader(articleInterwiki.site, articleInterwiki.title);
+        getWikipedia(articleInterwiki.site, articleInterwiki.title);
       }
       if (vm.monument.claims.P625) {
         const value = vm.monument.claims.P625.values[0].value;
