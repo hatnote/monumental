@@ -5,7 +5,7 @@ import template from './games-category.html';
 
 const GamesCategoryComponent = { controller, template };
 
-function controller($q, $state, $stateParams, $window, WikiService, langService, wikidata) {
+function controller($mdToast, $q, $state, $stateParams, $window, WikiService, langService, wikidata) {
   const vm = this;
   const id = $stateParams.country.includes('Q') ? $stateParams.country : `Q${$stateParams.country}`;
 
@@ -14,7 +14,7 @@ function controller($q, $state, $stateParams, $window, WikiService, langService,
     { name: 'Germany', code: 'Q183' },
     { name: 'Great Britain', code: 'Q145' },
     { name: 'Poland', code: 'Q36' },
-    { name: 'the United States', code: 'Q30' },
+    { name: 'the USA', code: 'Q30' },
   ];
   vm.country = id || 'Q36';
   vm.loading = true;
@@ -113,6 +113,7 @@ function controller($q, $state, $stateParams, $window, WikiService, langService,
       }).catch((err) => {
         item.error = err;
         item.loading = false;
+        $mdToast.show($mdToast.simple().textContent(`Error: ${err}`).hideDelay(3000));
       });
     }
   }

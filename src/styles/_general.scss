@@ -1,6 +1,7 @@
 @import 'variables';
 
 html, body {
+  height: auto !important;
   min-width: 100%;
   min-height: 100%;
 }
@@ -8,6 +9,14 @@ html, body {
 body {
   color: $darkGrey;
   font: 16px Roboto, Arial, sans-serif; 
+
+  md-toast.md-bottom {
+    position: fixed;
+  }
+
+  &.md-toast-animating {
+    overflow: auto !important;
+  }
 }
 
 ::-webkit-scrollbar {
