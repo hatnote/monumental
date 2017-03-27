@@ -207,14 +207,14 @@ const LangService = function ($q, localStorageService) {
   }
 
   function getUserLanguages() {
-    if (userLanguages.length) { return userLanguages; }
+    if (userLanguages.length) { return angular.copy(userLanguages); }
 
     const ls = localStorageService.get('languages');
     const def = navigator.language || navigator.userLanguage;
 
     userLanguages = ls || [def];
     if (!userLanguages.includes('en')) { userLanguages.push('en'); }
-    return userLanguages;
+    return angular.copy(userLanguages);
   }
 
   function setUserLanguages(langs) {
