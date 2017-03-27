@@ -8,7 +8,7 @@ function controller($state, $stateParams, $timeout, langService, leafletData, lo
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
-  const langs = langService.getUserLanguages();
+  let langs = langService.getUserLanguages();
 
   vm.filters = {};
   vm.image = [];
@@ -35,7 +35,7 @@ function controller($state, $stateParams, $timeout, langService, leafletData, lo
     WHERE {
       ?item p:P1435 ?monument; wdt:P131* wd:${id}; wdt:P131 ?admin; wdt:P625 ?coord .
       OPTIONAL { ?item wdt:P18 ?image } 
-      OPTIONAL { ?admin rdfs:label ?adminLabel. FILTER(LANG(?adminLabel) = "${langs[0]}"). }
+      OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0]}")) }
       SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
     }
     GROUP BY ?item ?itemLabel
@@ -43,20 +43,26 @@ function controller($state, $stateParams, $timeout, langService, leafletData, lo
   }
 
   function getPlace() {
-    wikidata.getById(id).then((data) => {
+    return wikidata.getById(id).then((data) => {
       const first = Object.keys(data)[0];
       vm.place = data[first];
 
+      const claims = vm.place.claims;
       if (vm.place.claims.P18) {
-        const claims = vm.place.claims;
         claims.P18.values.forEach(image => getImage(image.value));
       }
+      if (vm.place.claims.P17) {
+        const country = claims.P17.values[0];
+        langs = langs.concat(langService.getNativeLanguages(country.value_id));
+      }
+      return true;
     });
   }
 
   function init() {
-    getPlace();
-    getList().then((data) => {
+    getPlace()
+    .then(() => getList())
+    .then((data) => {
       // console.log(data)
       vm.list = data.map(element => ({
         name: {
