@@ -1,4 +1,5 @@
-import '../images/marker.png';
+import '../images/marker-red.png';
+import '../images/marker-shadow.png';
 
 const MapService = () => {
   const service = {
@@ -12,12 +13,13 @@ const MapService = () => {
 
   function getMapIcon(options) {
     return angular.extend({
-      iconUrl: 'assets/images/marker.png',
-      shadowUrl: undefined,
-      iconSize: [40, 40],
-      shadowSize: [0, 0],
-      iconAnchor: [20, 20],
-      shadowAnchor: [0, 0],
+      iconUrl: 'assets/images/marker-red.png',
+      shadowUrl: 'assets/images/marker-shadow.png',
+      iconSize: [29, 41],
+      shadowSize: [41, 41],
+      iconAnchor: [15, 41],
+      shadowAnchor: [12, 41],
+      popupAnchor: [0, -43],
     }, options);
   }
 

@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import './monument.scss';
 import template from './monument.html';
-import '../../../images/marker.png';
 
 const MonumentComponent = { controller, template };
 

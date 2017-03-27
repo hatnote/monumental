@@ -1,6 +1,5 @@
 import './list.scss';
 import template from './list.html';
-import '../../../images/marker.png';
 
 const ListComponent = { controller, template };
 
