@@ -52,7 +52,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, langServi
         SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
       }`).then((data) => {
         vm.map.markers = {};
-        vm.list = data.map(element => setListElement(element));
+        // http://stackoverflow.com/a/36744732/1418878
+        vm.list = data
+          .map(element => setListElement(element))
+          .filter((element, index, array) => array.findIndex(t => t.name.value_id === element.name.value_id) === index);
         vm.list.forEach((element) => {
           vm.map.markers[element.name.value_id] = setMarker(element);
         });
