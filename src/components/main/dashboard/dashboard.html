@@ -126,15 +126,27 @@
         <div layout="column" layout-align="start stretch" flex="40">
           <div class="dashboard__box">
             <h4 class="md-title">Showcases</h4>
-            <p>
-              <a ui-sref="main.object({id: '9188'})">Empire State Building</a><br />
-              <a ui-sref="main.object({id: '167566'})">Pałac Kultury i Nauki</a><br /><br />
-
-              <a ui-sref="main.list({id: '699800'})">monuments in Berlin-Moabit</a><br />
-              <a ui-sref="main.list({id: '54181'})">monuments in Silesian Voivodeship</a><br /><br />
-
-              <a href="#/map?c=51.5075:-0.0748:16">monuments nearby Tower of London</a>
-            </p>
+            <div layout="column" layout-align="start stretch">
+              <p layout="column" layout-align="start stretch">
+                <strong>Monument</strong>
+                <a ui-sref="main.object({id: '9188'})">Empire State Building</a>
+                <a ui-sref="main.object({id: '167566'})">Pałac Kultury i Nauki</a>
+              </p>
+              <p layout="column" layout-align="start stretch">
+                <strong>Administrative division</strong>
+                <a ui-sref="main.list({id: '699800'})">monuments in Berlin-Moabit</a>
+                <a ui-sref="main.list({id: '54181'})">monuments in Silesian Voivodeship</a>
+              </p>
+              <p layout="column" layout-align="start stretch">
+                <strong>Map</strong>
+                <a href="#/map?c=51.5075:-0.0748:16">monuments nearby Tower of London</a>
+                <a href="#/map?c=48.8583:2.2944:16">monuments nearby the Eiffel Tower</a>
+              </p>
+              <p layout="column" layout-align="start stretch">
+                <strong>Games</strong>
+                <a ui-sref="main.game.category({country: '145'})">Wikidata entry – Wikimedia Commons category matching for Great Britain</a>
+              </p>
+            </div>
           </div>
           <div class="dashboard__box" layout="column" layout-align="start stretch">
             <h4 class="md-title">Set language</h4>
