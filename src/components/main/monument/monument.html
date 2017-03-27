@@ -66,7 +66,7 @@
     </div>
 
     <div class="monument__data" layout="column" layout-align="start center">
-      <div class="monument monument__panel monument__article" flex="40"
+      <div class="monument monument__panel monument__article"
             layout="column" layout-align="start stretch">
         <div class="article__header"
             layout="row" layout-align="start center">
@@ -89,7 +89,7 @@
         </md-button>
       </div>
 
-      <div class="monument monument__panel" flex="60">
+      <div class="monument monument__panel">
         <div class="monument__details">
           <h4 class="monument__subtitle md-headline">Properties</h4>
           <div class="monument__details-item"
@@ -113,69 +113,29 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div style="display: none;" class="monument" layout="row" layout-align="space-between stretch">
-
-      <!-- LEFT -->
-      <div class="monument__left" ng-show="$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">Loading...</h2>
-      </div>
-
-      <div class="monument__left" ng-show="!$ctrl.loading"> 
-        <h2 class="monument__title md-display-1">{{$ctrl.monument.labels[$ctrl.lang] || 'no name'}}</h2>
-        <h4 class="monument__subtitle md-headline muted">{{$ctrl.monument.labels.en || 'no english name'}}</h4>
-
-
-
-
-        <md-button class="md-primary"
-                  aria-label="Show raw data"
-                  ng-click="$ctrl.showRawData = !$ctrl.showRawData">
-          Show raw data
-        </md-button>
-        <md-button ng-href="http://www.wikidata.org/wiki/{{$ctrl.monument.id}}">
-          Show Wikidata page
-        </md-button>
-        <md-button ng-click="$ctrl.addCategory()">go</md-button>
-        <pre ng-show="$ctrl.showRawData">{{$ctrl.monument | json}}</pre>
-      </div>
-
-      <!-- RIGHT -->
-      <div class="monument__right"
-          layout="column" layout-align="start stretch">
-        <div class="monument__image"
-            layout="column" layout-align="center center"
-            ng-if="!$ctrl.image">
-          <md-icon>crop_original</md-icon>
-        </div>
-        <a ng-repeat="image in $ctrl.image" ng-href="{{image.descriptionurl}}">
-          <img ng-src="{{image.thumburl}}">
-        </a>
-        <div class="monument__images" ng-if="$ctrl.images">
-          <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
-            <img ng-src="{{image.thumburl}}">
-          </a>
-        </div>
-        <md-button class="md-primary"
-                  ng-if="$ctrl.monument.claims.P373"
-                  ng-href="{{$ctrl.getCommonsLink()}}">
-          <md-icon>collections</md-icon> {{$ctrl.monument.claims.P373.property[$ctrl.lang]}}
-        </md-button>
-
-        <leaflet ng-if="$ctrl.monument.claims.P625"
-                markers="$ctrl.map.markers"
-                center="$ctrl.map.center"></leaflet>
-        <div layout="row" layout-align="center center"
-            ng-if="$ctrl.monument.claims.P625">
-          <md-button class="md-primary" flex
-                    ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}">
-            <md-icon>map</md-icon> Google Maps
-          </md-button>
-          <md-button class="md-primary" flex
-                    ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}">
-            <md-icon>map</md-icon> OSM
-          </md-button>
+      <div class="monument monument__panel">
+        <div class="monument__details">
+          <h4 class="monument__subtitle md-headline">Map</h4>
+          <leaflet ng-if="$ctrl.monument.claims.P625"
+                    markers="::$ctrl.map.markers" layers="::$ctrl.map.layers" center="::$ctrl.map.center"></leaflet>
+          <div layout="row" layout-align="center center"
+                ng-if="$ctrl.monument.claims.P625">
+            <!--
+            <md-button class="md-primary" flex
+                        ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in Google Maps
+            </md-button>
+            <md-button class="md-primary" flex
+                        ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in OSM.org
+            </md-button>
+            -->
+            <md-button class="md-primary" flex
+                        ng-href="#/map?c={{$ctrl.map.markers.marker.lat}}:{{$ctrl.map.markers.marker.lng}}:16">
+              <md-icon>map</md-icon> Show monuments nearby
+            </md-button>
+          </div>
         </div>
       </div>
     </div>

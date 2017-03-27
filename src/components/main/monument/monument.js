@@ -6,7 +6,7 @@ import '../../../images/marker.png';
 
 const MonumentComponent = { controller, template };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, langService, mapService, wikidata) {
+function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, langService, leafletData, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -99,7 +99,7 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
         vm.map = mapService.getMapInstance({ center: {
           lat: value.latitude,
           lng: value.longitude,
-          zoom: 15,
+          zoom: 16,
         } });
         vm.map.markers = {
           marker: {
@@ -108,6 +108,10 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
             icon,
           },
         };
+        leafletData.getMap().then((map) => {
+          map.scrollWheelZoom.disable();
+          map.once('focus', () => { map.scrollWheelZoom.enable(); });
+        });
       }
       getInterwiki();
       vm.loading = false;
