@@ -59,8 +59,8 @@ var config = {
 var ENV = process.env.NODE_ENV;
 if (ENV === 'prod' || ENV === 'dev') {
   config.output = {
-    path: path.join(__dirname, 'app', 'dist'),
-    publicPath: 'dist/',
+    path: path.join(__dirname, 'monumental', 'static', 'assets'),
+    publicPath: 'assets/',
     filename: 'bundle.min.js?v=' + package.version
   };
   config.plugins = [

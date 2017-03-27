@@ -8,6 +8,7 @@
     "start-live": "webpack-dev-server --content-base src --progress --colors",
     "start": "webpack --watch --content-base src --progress --colors",
     "build": "webpack --content-base src --progress",
+    "build-dev": "set NODE_ENV=dev&&webpack --content-base src --progress",
     "test": "echo OK"
   },
   "devDependencies": {

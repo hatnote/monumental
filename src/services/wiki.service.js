@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const WikiService = function ($http, $httpParamSerializerJQLike, $q, wikidata) {
+const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wikidata) {
   const service = {
     addCategory,
     getArticleHeader,
@@ -131,7 +131,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, wikidata) {
   }
 
   function getToken() {
-    return $http.get('/api', {
+    return $http.get(`${$window.__env.baseUrl}/api`, {
       params: {
         action: 'query',
         meta: 'tokens',
@@ -148,7 +148,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, wikidata) {
   function setClaim(params) {
     return $http({
       method: 'POST',
-      url: '/api',
+      url: `${$window.__env.baseUrl}/api`,
       data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     }).then((response) => {

@@ -30,7 +30,7 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
         $mdToast.show($mdToast.simple()
           .position('top right')
           .textContent(`${item.label} is not an architectural structure or territorial entity`)
-          .hideDelay(3000000));
+          .hideDelay(2000));
       }
     });
   }
@@ -44,11 +44,11 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
 
   function login() {
     vm.loading = true;
-    $window.location.pathname = '/login';
+    $window.location.pathname = `${$window.__env.baseUrl}/login`;
   }
 
   function logout() {
-    $window.location.pathname = '/logout';
+    $window.location.pathname = `${$window.__env.baseUrl}/logout`;
   }
 }
 
