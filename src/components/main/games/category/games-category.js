@@ -7,16 +7,16 @@ const GamesCategoryComponent = { controller, template };
 
 function controller($mdToast, $q, $state, $stateParams, $window, WikiService, langService, wikidata) {
   const vm = this;
-  const id = $stateParams.country.includes('Q') ? $stateParams.country : `Q${$stateParams.country}`;
+  const id = getId();
 
   vm.countries = [
     { name: 'France', code: 'Q142' },
     { name: 'Germany', code: 'Q183' },
     { name: 'Great Britain', code: 'Q145' },
     { name: 'Poland', code: 'Q36' },
-    { name: 'the USA', code: 'Q30' },
+    { name: 'the United States', code: 'Q30' },
   ];
-  vm.country = id || 'Q36';
+  vm.country = id;
   vm.loading = true;
 
   vm.reload = () => $state.go($state.current, { country: vm.country }, { reload: true });
@@ -45,6 +45,13 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
       });
   }
 
+  function getId() {
+    const param = $stateParams.country;
+    if (!param) { return false; }
+    if (param.includes('Q')) { return param; }
+    return `Q${param}`;
+  }
+
   function getList() {
     const langs = langService.getNativeLanguages(id);
     if (!langs) { return $q.reject('Provided ID is not a country'); }
@@ -63,6 +70,8 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
   }
 
   function init() {
+    if (!vm.country) { return; }
+
     vm.loading = true;
     vm.list = [];
 

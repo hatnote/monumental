@@ -73,6 +73,14 @@ small {
   text-align: right;
 }
 
+.text-small {
+  font-size: small;
+
+  &p {
+    margin: 5px 0;
+  }
+}
+
 .invisible {
   width: 0;
   height: 0;

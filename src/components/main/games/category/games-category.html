@@ -1,4 +1,23 @@
 <div class="container" layout="column" layout-align="space-between stretch" flex>
+<div class="container" flex
+      layout="column" layout-align="space-between stretch"
+      ng-if="!$ctrl.country">
+  <md-content layout="column" layout-align="start center" flex>
+    <div class="list" layout="column" layout-align="start stretch">
+      <div class="game__title">
+        <h3 class="md-headline">Matching Wikidata entry with Wikimedia Commons category</h3>
+        <h4 class="md-subhead muted">Monumental Wikidata Games</h4>
+      </div>
+      <div layout="row" layout-align="center center">
+        <md-button class="md-raised" ui-sref="main.game.category({country: '142'})" flex>France</md-button>
+        <md-button class="md-raised" ui-sref="main.game.category({country: '183'})" flex>Germany</md-button>
+        <md-button class="md-raised" ui-sref="main.game.category({country: '145'})" flex>Great Britain</md-button>
+        <md-button class="md-raised" ui-sref="main.game.category({country: '36'})" flex>Poland</md-button>
+        <md-button class="md-raised" ui-sref="main.game.category({country: '30'})" flex>United States</md-button>
+      </div>
+    </div>
+  </md-content>
+</div>
   <div layout="column" layout-align="start stretch" flex="none" ng-if="!$ctrl.error">
     <div class="game__subheader" layout="row" layout-align="center center">
       <div class="list" layout="row" layout-align="start center">
