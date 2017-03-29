@@ -7,20 +7,27 @@ const GamesCategoryComponent = { controller, template };
 
 function controller($mdToast, $q, $state, $stateParams, $window, WikiService, langService, wikidata) {
   const vm = this;
-  const id = $stateParams.country.includes('Q') ? $stateParams.country : `Q${$stateParams.country}`;
+  const id = getId();
 
   vm.countries = [
     { name: 'France', code: 'Q142' },
     { name: 'Germany', code: 'Q183' },
     { name: 'Great Britain', code: 'Q145' },
     { name: 'Poland', code: 'Q36' },
-    { name: 'the USA', code: 'Q30' },
+    { name: 'the United States', code: 'Q30' },
   ];
-  vm.country = id || 'Q36';
+  vm.country = id;
+  vm.isReminderShown = true;
   vm.loading = true;
 
   vm.reload = () => $state.go($state.current, { country: vm.country }, { reload: true });
   vm.saveCategory = saveCategory;
+
+  const regexes = {
+    Q30: /(20[01][0-9] in.*|Churches in .*|National Register of Historic Places in .*|Photographs of|Photographs taken|in Alabama|in Alaska|in Arizona|in Arkansas|in California|in Colorado|in Connecticut|in Delaware|in Florida|in Georgia (U.S. state)|in Hawaii|in Idaho|in Illinois|in Indiana|in Iowa|in Kansas|in Kentucky|in Louisiana|in Maine|in Maryland|in Massachusetts|in Michigan|in Minnesota|in Mississippi|in Missouri|in Montana|in Nebraska|in Nevada|in New Hampshire|in New Jersey|in New Mexico|in New York|in North Carolina|in North Dakota|in Ohio|in Oklahoma|in Oregon|in Pennsylvania|in Rhode Island|in South Carolina|in South Dakota|in Tennessee|in Texas|in Utah|in Vermont|in Virginia|in Washington, D.C.|in West Virginia|in Wisconsin|in Wyoming|in the United States)/gi,
+    Q36: /(20[01][0-9] in.*|Cultural heritage monuments in.*|in Greater Poland Voivodeship|in Kuyavian-Pomeranian Voivodeship|in Lesser Poland Voivodeship|in Lower Silesian Voivodeship|in Lublin Voivodeship|in Lubusz Voivodeship|in Łódź Voivodeship|in Masovian Voivodeship|in Opole Voivodeship|in Podlaskie Voivodeship|in Pomeranian Voivodeship|in Silesian Voivodeship|in Subcarpathian Voivodeship|in Świętokrzyskie Voivodeship|in Warmian-Masurian Voivodeship|in West Pomeranian Voivodeship|in Poland)/gi,
+    Q145: /(20[01][0-9] in.*|listed [a-z]* in.*|in Bedfordshire|in Berkshire|in Bristol|in Buckinghamshire|in Cambridgeshire|in Cheshire|in Cornwall|in County Durham|in Cumbria|in Derbyshire|in Devon|in Dorset|in East Sussex|in Essex|in Gloucestershire|in Greater Manchester|in Hampshire|in Herefordshire|in Hertfordshire|on the Isle of Wight|in Kent|in Lancashire|in Leicestershire|in Lincolnshire|in London|in Merseyside|in Middlesex|in Norfolk, England|in Northamptonshire|in Northumberland|in Nottinghamshire|in Oxfordshire|in Rutland|in Shropshire|in Somerset|in Staffordshire|in Suffolk|in Surrey|in Tyne and Wear|in Warwickshire|in the West Midlands|in West Sussex|in Wiltshire|in Worcestershire|in North Yorkshire|in South Yorkshire|in the East Riding of Yorkshire|in West Yorkshire|in England|in Scotland|in the United Kingdom)/gi,
+  };
 
   init();
 
@@ -37,12 +44,28 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
       });
   }
 
+  function getCategoryEligibility(name) {
+    const regex = regexes[vm.country];
+    if (!regex) { return true; }
+
+    regex.lastIndex = 0;
+    const matches = regex.exec(name.trim());
+    return !matches;
+  }
+
   function getCountry() {
     wikidata.get({ ids: id })
       .then((response) => {
         const entry = response.entities[id];
         vm.name = entry.labels.en.value;
       });
+  }
+
+  function getId() {
+    const param = $stateParams.country;
+    if (!param) { return false; }
+    if (param.includes('Q')) { return param; }
+    return `Q${param}`;
   }
 
   function getList() {
@@ -63,6 +86,8 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
   }
 
   function init() {
+    if (!vm.country) { return; }
+
     vm.loading = true;
     vm.list = [];
 
@@ -92,7 +117,12 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
       .then(list => getCategories(list.map(entry => entry.image.name)))
       .then((response) => {
         vm.list.forEach((element) => {
-          element.categories = response[element.image.name];
+          element.categories = response[element.image.name]
+            .map(category => ({
+              name: category,
+              isEligible: getCategoryEligibility(category),
+            }))
+            .filter(category => category.isEligible);
         });
         vm.loading = false;
       })
