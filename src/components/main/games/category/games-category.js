@@ -17,6 +17,7 @@ function controller($mdToast, $q, $state, $stateParams, $window, WikiService, la
     { name: 'the United States', code: 'Q30' },
   ];
   vm.country = id;
+  vm.isReminderShown = true;
   vm.loading = true;
 
   vm.reload = () => $state.go($state.current, { country: vm.country }, { reload: true });

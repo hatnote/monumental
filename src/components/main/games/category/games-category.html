@@ -1,4 +1,3 @@
-<div class="container" layout="column" layout-align="space-between stretch" flex>
 <div class="container" flex
       layout="column" layout-align="space-between stretch"
       ng-if="!$ctrl.country">
@@ -18,6 +17,16 @@
     </div>
   </md-content>
 </div>
+<div class="container" flex
+      layout="column" layout-align="space-between stretch"
+      ng-if="$ctrl.country">
+  <div class="game__reminder"
+        layout="column" layout-align="start stretch"
+        ng-if="$ctrl.isReminderShown">
+    <span>Please choose the category that is <strong>specifically</strong> for photos of the monument. If the category doesn't exist, you can skip it for now.</span>
+    <md-button ng-if="$ctrl.isReminderShown !== 'check'" ng-click="$ctrl.isReminderShown = 'check'">got it</md-button>
+    <md-button ng-if="$ctrl.isReminderShown === 'check'" ng-click="$ctrl.isReminderShown = false">you sure?</md-button>
+  </div>
   <div layout="column" layout-align="start stretch" flex="none" ng-if="!$ctrl.error">
     <div class="game__subheader" layout="row" layout-align="center center">
       <div class="list" layout="row" layout-align="start center">
@@ -33,7 +42,8 @@
             </md-input-container>
             <span>with image but without Wikimedia Commons category.</span>
           </span>
-          <small class="muted">Click plus next to category sugestion to add it.</small>
+          <p class="game__instructions">The goal of the game is to connect each monument on Wikidata with a category on Wikimedia Commons. For each monument (on the left), please choose the category (on the right) that is <strong>specifically for photos of the monument</strong>. If the category doesn't exist, you can skip it for now.</p>
+          <p class="game__instructions">Click the <md-icon>add_circle_outline</md-icon> button to add the category to a monument. You can click on the name of the category to view it on Commons.</p>
         </div>
         <div flex></div>
         <md-button ng-if="!$ctrl.loading">

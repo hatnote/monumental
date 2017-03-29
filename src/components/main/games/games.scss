@@ -8,11 +8,30 @@
   }
 }
 
+.game__reminder {
+  position: fixed;
+  width: 200px;
+  padding: 20px 20px 15px;
+  font-size: 85%;
+  z-index: 1;
+  right: 10px;
+  top: 10px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+}
+
 mo-game-category {
   .game__subheader {
     padding: 15px 25px;
+    z-index: 10;
     background: #fafafa;
     border-bottom: 1px solid $softGrey;
+
+    .game__instructions {
+      margin: 5px 0;
+      font-size: 90%;
+    }
 
     md-input-container {
       margin-bottom: 0;
