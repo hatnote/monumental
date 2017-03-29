@@ -210,7 +210,8 @@ const LangService = function ($q, localStorageService) {
     if (userLanguages.length) { return angular.copy(userLanguages); }
 
     const ls = localStorageService.get('languages');
-    const def = navigator.language || navigator.userLanguage;
+    let def = navigator.language || navigator.userLanguage;
+    def = def.split('-')[0];
 
     userLanguages = ls || [def];
     if (!userLanguages.includes('en')) { userLanguages.push('en'); }

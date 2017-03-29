@@ -67,7 +67,7 @@ def complete_login(request, consumer_token, cookie):
     access_token = handshaker.complete(req_token,
                                        request.query_string)
 
-    identity = handshaker.identify(access_token)
+    identity = handshaker.identify(access_token, leeway=1000.0) # handshaker.identify(access_token)
     
     userid = identity['sub']
     username = identity['username']
