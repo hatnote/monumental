@@ -1,7 +1,12 @@
+@import '../../styles/variables';
+@import '../../styles/responsive';
+
 .toolbar {
   padding: 0 5px;
   min-height: 54px;
   max-height: 54px;
+
+  @include x-small { padding-right: 10px; }
 
   .md-toolbar-tools-wide {
     max-width: none;

@@ -12,6 +12,8 @@ mo-monument {
     background: white;
     border-bottom: 1px solid $softGrey;
 
+    @include x-small { padding: 10px; }
+
     .monument__primary {
       margin-bottom: 20px;
       border-bottom: 1px solid $softGrey;
@@ -54,6 +56,8 @@ mo-monument {
     padding: 5px;
     margin-right: 25px;
     border: 1px solid $softGrey;
+
+    @include x-small { width: calc(100vw - 30px); height: calc(100vw - 30px); }
   }
 
   .monument__image-link {
@@ -78,11 +82,21 @@ mo-monument {
   .monument__title {
     margin-top: 0;
     margin-bottom: 0;
+
+    @include x-small {
+      margin-top: 10px;
+      line-height: 26px;
+      font-size: 25px;
+    }
   }
 
   .monument__subtitle {
     margin-top: 0; 
     margin-bottom: 15px;
+
+    @include x-small {
+      font-size: 20px;
+    }
   }
 
   .monument__place {
@@ -106,6 +120,8 @@ mo-monument {
       font-size: 15px;
       text-align: justify;
       line-height: 1.8;
+
+      @include x-small { font-size: 13px; }
 
       p:first-child {
         margin-top: 0;

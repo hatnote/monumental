@@ -1,9 +1,12 @@
 <md-toolbar class="toolbar" layout="column" layout-align="start center">
 	<div class="md-toolbar-tools"
         ng-class="{ 'md-toolbar-tools-wide': ('main.list' | includedByState) || ('main.map' | includedByState) }">
-    <div flex="20">
-      <md-button ui-sref="main.dashboard">
-        Monumental
+    <div flex="20" hide-xs>
+      <md-button ui-sref="main.dashboard">Monumental</md-button>
+    </div>
+    <div flex="none" hide-gt-xs>
+      <md-button class="md-icon-button" ui-sref="main.dashboard" aria-label="Dashboard">
+        <md-icon>menu</md-icon>
       </md-button>
     </div>
 		<md-autocomplete flex
@@ -21,9 +24,17 @@
         <span>{{item.description}}</span>
       </md-item-template>
 		</md-autocomplete>
-    <div class="text-right" flex="20">
-      <md-button ng-if="$ctrl.isLoggedIn" ng-click="$ctrl.settings = !$ctrl.settings">Logged In</md-button>
-      <md-button ng-if="!$ctrl.isLoggedIn" ng-click="$ctrl.login()">Login</md-button>
+    <div class="text-right" flex="20" hide-xs>
+      <md-button ng-if="$ctrl.isLoggedIn"
+                  ng-click="$ctrl.settings = !$ctrl.settings">
+        <md-icon>exit_to_app</md-icon>
+        <span>Logout</span>
+      </md-button>
+      <md-button ng-if="!$ctrl.isLoggedIn"
+                  ng-click="$ctrl.login()">
+        <md-icon>vpn_key</md-icon>
+        <span>Login</span>
+      </md-button>
     </div>
 	</div>
 </md-toolbar>
