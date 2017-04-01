@@ -7,7 +7,8 @@
         <h3 class="md-headline">Matching Wikidata entry with Wikimedia Commons category</h3>
         <h4 class="md-subhead muted">Monumental Wikidata Games</h4>
       </div>
-      <div layout="row" layout-align="center center">
+      <div layout="row" layout-align="center center"
+            layout-xs="column" layout-align-xs="start stretch">
         <md-button class="md-raised" ui-sref="main.game.category({country: '142'})" flex>France</md-button>
         <md-button class="md-raised" ui-sref="main.game.category({country: '183'})" flex>Germany</md-button>
         <md-button class="md-raised" ui-sref="main.game.category({country: '145'})" flex>Great Britain</md-button>
@@ -28,10 +29,14 @@
     <md-button ng-if="$ctrl.isReminderShown === 'check'" ng-click="$ctrl.isReminderShown = false">you sure?</md-button>
   </div>
   <div layout="column" layout-align="start stretch" flex="none" ng-if="!$ctrl.error">
-    <div class="game__subheader" layout="row" layout-align="center center">
-      <div class="list" layout="row" layout-align="start center">
+    <div class="game__subheader"
+          layout="row" layout-align="center center"
+          layout-xs="column" layout-align-xs="start stretch">
+      <div class="list"
+            layout="row" layout-align="start center"
+            layout-xs="column" layout-align-xs="start stretch">
         <div layout="column" layout-align="start start">
-          <span layout="row" layout-align="start center">
+          <span>
             <span>List of monuments in</span>
             <md-input-container>
               <md-select placeholder="Country"
@@ -72,17 +77,23 @@
                           layout="row" layout-align="center center"
                           ng-class="{ 'list__item--done' : item.success, 'list__item--error': item.error, 'list__item--loading': item.loading }"
                           ng-repeat="item in $ctrl.list">
-            <div class="md-list-item-text" layout="row" layout="row" layout-align="center center">
-              <div class="list__image" layout="row" layout-align="center center" flex="none">
-                <a class="list__image-link" layout="row" layout-align="center center"
-                    ng-href="//commons.wikimedia.org/wiki/File:{{ ::item.image.name }}" target="_blank">
-                  <img alt="{{ ::item.name.value }}" ng-src="{{ ::item.image.thumburl }}">
-                </a>
+            <div class="md-list-item-text"
+                  layout="row" layout-align="center center"
+                  layout-xs="column" layout-align-xs="start stretch">
+              <div layout="row" layout-align="start center" flex>
+                <div class="list__image"
+                      layout="row" layout-align="center center" flex="none">
+                  <a class="list__image-link"
+                      layout="row" layout-align="center center"
+                      ng-href="//commons.wikimedia.org/wiki/File:{{ ::item.image.name }}" target="_blank">
+                    <img alt="{{ ::item.name.value }}" ng-src="{{ ::item.image.thumburl }}">
+                  </a>
+                </div>
+                <p layout="column" layout-align="start start" flex>
+                  <a ui-sref="main.object({id: item.name.value_id.substring(1)})" target="_blank">{{ ::item.name.value }}</a>
+                  <span><span>{{ ::item.place }}</span><span ng-if="item.place && item.admin"> · </span><span>{{ ::item.admin }}</span></span>
+                </p>
               </div>
-              <p layout="column" layout-align="start start" flex>
-                <a ui-sref="main.object({id: item.name.value_id.substring(1)})" target="_blank">{{ ::item.name.value }}</a>
-                <span><span>{{ ::item.place }}</span><span ng-if="item.place && item.admin"> · </span><span>{{ ::item.admin }}</span></span>
-              </p>
               <div flex layout="column" layout-align="start stretch">
                 <p class="list__category muted" ng-if="!item.categories.length"><span class="muted">No suggestions</span></p>
                 <p class="list__category"
@@ -103,7 +114,7 @@
                     <md-tooltip md-direction="bottom">Click to see diff or revert edit</md-tooltip>
                     <md-icon>check_circle</md-icon>
                   </md-button>
-                  <span>
+                  <span flex flex-order-xs="-1">
                     <a ng-href="//commons.wikimedia.org/wiki/Category:{{ ::category.name }}" target="_blank">{{ ::category.name }}</a>
                   </span>
                 </p>

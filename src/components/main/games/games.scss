@@ -92,12 +92,15 @@ mo-game-category {
           color: $darkGrey;
           padding: 5px 20px 5px 0;
           
+          @include x-small { padding-right: 0; }
         }
 
         .md-button {
           min-width: 36px;
           min-height: 36px;
           margin: 0 10px 0 0;
+
+          @include x-small { margin: 0 0 0 10px; }
         }
       }
     }
@@ -106,6 +109,11 @@ mo-game-category {
   .list__category {
     margin-bottom: 5px !important;
     margin-right: 15px !important;
+
+    @include x-small {
+      padding-right: 0;
+      margin-right: 5px !important;
+    }
 
     &.list__category--underlined {
       border-bottom: 1px solid $softGrey;

@@ -1,8 +1,9 @@
 <div class="container" layout="column" layout-align="space-between stretch" flex>
   <md-content layout="column" layout-align="start center" flex>
     <div class="dashboard" layout="column" layout-align="start stretch">
-      <div layout="row" layout-align="start start">
-        <div class="dashboard__box" flex="60">
+      <div layout="row" layout-align="start start"
+            layout-xs="column" layout-align-xs="start stretch">
+        <div class="dashboard__box" flex="60" flex-xs="100" flex-order-xs="2">
           <h4 class="md-title">Examples</h4>
           <p>
             <a ui-sref="main.list({id: '38545'})">Adana</a> <small>(Turkey)</small> ·
@@ -123,7 +124,7 @@
             <a ui-sref="main.list({id: '580'})">Łódź</a> <small>(Poland)</small>
           </p>
         </div>
-        <div layout="column" layout-align="start stretch" flex="40">
+        <div layout="column" layout-align="start stretch" flex="40" flex-xs="100" flex-order-xs="1">
           <div class="dashboard__box">
             <h4 class="md-title">Showcases</h4>
             <div layout="column" layout-align="start stretch">

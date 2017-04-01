@@ -71,12 +71,21 @@ mo-monument {
     }
   }
 
+  .monument__data {
+    @include x-small { 
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+  }
+
   .monument__panel {
     margin: 15px 0;
     padding: 30px;
     background: white;
     border: 1px solid $softGrey;
     border-radius: 2px;
+
+    @include x-small { padding: 20px; }
   }
 
   .monument__title {
