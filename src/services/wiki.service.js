@@ -29,7 +29,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
   const imageParams = angular.extend({}, defaultParams, {
     prop: 'imageinfo',
     iiurlwidth: 300,
-    iiprop: ['timestamp', 'user', 'url', 'size'].join('|'),
+    iiprop: ['timestamp', 'user', 'url', 'size', 'dimensions', 'canonicaltitle', 'commonmetadata', 'extmetadata'].join('|'),
   });
 
   return service;
@@ -116,8 +116,12 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       params,
       cache: true,
     }).then((response) => {
-      const image = _.head(_.values(response.data.query.pages));
-      return angular.extend({}, image, { imageinfo: image.imageinfo[0] });
+      const file = _.head(_.values(response.data.query.pages));
+      const data = angular.extend({}, file, { imageinfo: file.imageinfo[0] });
+
+      const replacer = data.imageinfo.width > 1280 ? '/1280px-' : `/${data.imageinfo.width - 1}px-`;
+      data.imageinfo.thumburlbig = data.imageinfo.thumburl.replace(/\/[0-9]{2,3}px-/, replacer);
+      return data;
     });
   }
 

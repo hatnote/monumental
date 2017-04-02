@@ -9,6 +9,7 @@ import nativeName from './main/monument/components/native-name';
 import url from './main/monument/components/url';
 
 import toolbar from './toolbar/toolbar';
+import image from './image/image';
 
 import category from './main/games/category/games-category';
 
@@ -24,6 +25,7 @@ export default () => {
   url();
 
   toolbar();
+  image();
 
   category();
 };
