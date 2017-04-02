@@ -5,7 +5,7 @@ import template from './monument.html';
 
 const MonumentComponent = { controller, template };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, langService, leafletData, mapService, wikidata) {
+function controller($http, $mdDialog, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -16,8 +16,11 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
   vm.image = [];
   vm.lang = langs[0];
   vm.map = {};
+  vm.openImage = openImage;
 
-  getWikidata();
+  // init
+
+  init();
 
   // functions
 
@@ -56,9 +59,10 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     const image = getPropertyValue('P18');
     if (!image) { return; }
 
-    WikiService.getImage(image.value).then((response) => {
-      vm.image.push(response.imageinfo);
-    });
+    WikiService.getImage(image.value, { iiurlwidth: 640 })
+      .then((response) => {
+        vm.image.push(response.imageinfo);
+      });
   }
 
   function getInterwiki() {
@@ -119,6 +123,14 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
       const title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
       $window.document.title = `${title} – Monumental`;
     });
+  }
+
+  function init() {
+    getWikidata();
+  }
+
+  function openImage(image, event) {
+    imageService.openImage(image, event);
   }
 }
 

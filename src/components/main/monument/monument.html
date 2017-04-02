@@ -8,7 +8,7 @@
           <div class="monument__image">
             <a class="monument__image-link" layout="row" layout-align="center center"
                 ng-repeat="image in $ctrl.image"
-                ng-href="{{image.descriptionurl}}">
+                ng-click="$ctrl.openImage(image, $event)">
               <img ng-src="{{image.thumburl}}">
             </a>
           </div>
@@ -65,7 +65,7 @@
     </div>
     <div class="monument__subheader" layout="row" layout-align="center stretch">
       <div class="monument__images" ng-if="$ctrl.images">
-        <a ng-repeat="image in $ctrl.images" ng-href="{{image.descriptionurl}}">
+        <a ng-repeat="image in $ctrl.images" ng-click="$ctrl.openImage(image, $event)">
           <img ng-src="{{image.thumburl}}">
         </a>
       </div>
