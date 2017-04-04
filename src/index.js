@@ -7,6 +7,7 @@ import 'angular-local-storage';
 import 'angular-material';
 import 'angular-messages';
 import 'angular-sanitize';
+import 'angular-swipe';
 import 'angular-ui-router';
 import 'leaflet';
 import 'leaflet.markercluster';
@@ -33,6 +34,7 @@ angular
     'ngSanitize',
     'ui.router',
     'restangular',
+    'swipe',
     'infinite-scroll',
     'leaflet-directive',
     'LocalStorageModule',
