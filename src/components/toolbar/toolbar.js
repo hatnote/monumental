@@ -3,20 +3,36 @@ import template from './toolbar.html';
 
 const ToolbarComponent = { bindings: { wide: '=' }, controller, template };
 
-function controller($mdToast, $state, $window, WikiService, wikidata) {
+function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, WikiService, wikidata) {
   const vm = this;
   vm.isLoggedIn = false;
   vm.loading = true;
-  vm.search = {};
+  vm.mobile = {};
+  vm.search = { showSearch: false };
 
-  // functions
+  // actions
 
+  vm.goTo = goTo;
   vm.goToItem = goToItem;
   vm.login = login;
   vm.logout = logout;
+  vm.mobile.closeSearch = closeSearch;
+  vm.mobile.openSearch = openSearch;
+  vm.toggleSidebar = () => $mdSidenav('left').toggle();
   vm.querySearch = text => wikidata.getSearch(text);
 
   init();
+
+  // functions
+
+  function closeSearch() {
+    vm.mobile.showSearch = false;
+  }
+
+  function goTo(place) {
+    vm.toggleSidebar();
+    $timeout(() => $state.go(place), 150);
+  }
 
   function goToItem(item) {
     if (!item) { return; }
@@ -27,11 +43,15 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
       } else if (ids.includes('Q1496967')) {
         $state.go('main.list', { id: item.id.substring(1) });
       } else {
+        $state.go('main.object', { id: item.id.substring(1) });
+        /*
         $mdToast.show($mdToast.simple()
           .position('top right')
           .textContent(`${item.label} is not an architectural structure or territorial entity`)
           .hideDelay(2000));
+        */
       }
+      closeSearch();
     });
   }
 
@@ -49,6 +69,15 @@ function controller($mdToast, $state, $window, WikiService, wikidata) {
 
   function logout() {
     $window.location.pathname = `${$window.__env.baseUrl}/logout`;
+  }
+
+  function openSearch() {
+    vm.mobile.showSearch = true;
+    $timeout(() => {
+      const input = document.querySelector('#searchField');
+      angular.element(input)[0].focus();
+      return true;
+    }, 100);
   }
 }
 

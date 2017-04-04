@@ -51,3 +51,18 @@
     max-width: 980px;
   }
 }
+
+.md-sidenav-left {
+  .sidenav__header {
+    margin-top: -10px;
+    padding-top: 50px;
+    padding-bottom: 5px;
+    background: #2980b9;
+    color: white;
+    font-weight: bold;
+  }
+
+  .md-subheader {
+    background: transparent;
+  }
+}
