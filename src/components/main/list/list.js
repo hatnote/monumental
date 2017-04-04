@@ -1,6 +1,8 @@
 import './list.scss';
 import template from './list.html';
 
+import barcode from './../../../images/barcode.svg';
+
 const ListComponent = { controller, template };
 
 function controller($state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
@@ -12,8 +14,10 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   vm.filters = {};
   vm.image = [];
   vm.lang = langs[0];
-  vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
   vm.listParams = {};
+  vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
+  vm.showMyMap = () => { vm.contentScrolled = true; };
+  vm.showMyList = () => { vm.contentScrolled = false; };
 
   if (!id || id === 'Q') {
     vm.showMap = true;
