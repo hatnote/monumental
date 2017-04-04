@@ -13,22 +13,64 @@
             </a>
           </div>
         </div>
-        <div layout="column" layout-align="start stretch" flex>
+
+        <div layout="column" layout-align="start stretch" flex
+              ng-if="!$ctrl.monument">
           <div class="monument__primary"
                 layout="row" layout-align="center start"
                 layout-xs="column" layout-align-xs="start stretch">
-            <div flex ng-if="$ctrl.monument">
-              <h2 class="monument__title md-display-1">{{ ::$ctrl.monument.labels[$ctrl.lang] || "no name" }}</h2>
+            <div flex>
+              <h2 class="monument__title md-display-1"><span class="loading-line"></span></h2>
+              <h4 class="monument__subtitle md-headline muted"><span class="loading-line"></span></h4>
+            </div>
+            <div flex="none" hide-xs></div>
+          </div>
+          <div class="monument__secondary">
+            <div class="monument__place"><span class="loading-line"></span></div>
+            <div layout="row" layout-align="center start"
+                  layout-xs="column" layout-align-xs="start stretch">
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>photo</md-icon></div>
+                <span class="loading-line" flex></span>
+              </div>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>descriptionk</md-icon></div>
+                <span class="loading-line" flex></span>
+              </div>
+            </div>
+            <div layout="row" layout-align="center start"
+                  layout-xs="column" layout-align-xs="start stretch">
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>account_balance</md-icon></div>
+                <span class="loading-line" flex></span>
+              </div>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>link</md-icon></div>
+                <span class="loading-line" flex></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div layout="column" layout-align="start stretch" flex
+              ng-if="$ctrl.monument">
+          <div class="monument__primary"
+                layout="row" layout-align="center start">
+            <div flex>
+              <h2 class="monument__title md-display-1">{{ ::$ctrl.monument.labels[$ctrl.lang] || "missing label (" + $ctrl.lang + ")" }}</h2>
               <h4 class="monument__subtitle md-headline muted">
-                <mo-native-name monument="$ctrl.monument"></mo-native-name>
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
               </h4>
             </div>
-            <div flex="none" hide-xs>
-              <md-button class="md-primary" ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}" target="_blank">Wikidata</md-button>
+            <div flex="none">
+              <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
+                          ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}" target="_blank">
+                <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
+              </md-button>
             </div>
           </div>
           <div class="monument__secondary">
-            <mo-location class="monument__place" ng-if="$ctrl.monument" monument="$ctrl.monument"></mo-location>
+            <mo-location class="monument__place" monument="::$ctrl.monument"></mo-location>
             <div layout="row" layout-align="center start"
                   layout-xs="column" layout-align-xs="start stretch">
               <div flex-gt-xs="60">
@@ -43,7 +85,7 @@
               </div>
               <div flex-gt-xs="40">
                 <span><md-icon>description</md-icon></span>
-                <a ng-href="//wikidata.org/wiki/{{ $ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ $ctrl.monument.interwikis || 0 }} wikis</a>
+                <a ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ ::$ctrl.monument.interwikis || 0 }} wikis</a>
               </div>
             </div>
             <div layout="row" layout-align="center start"
@@ -57,7 +99,7 @@
                   </span>
                 </div>
               </div>
-              <mo-url ng-if="$ctrl.monument" monument="$ctrl.monument" flex-gt-xs="40"></mo-url>
+              <mo-url monument="::$ctrl.monument" flex-gt-xs="40"></mo-url>
             </div>
           </div>
         </div>

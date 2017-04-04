@@ -41,6 +41,13 @@ mo-monument {
     overflow: hidden;
     text-align: center;
 
+    @include x-small {
+      display: flex;
+      overflow: scroll;
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+
     img {
       display: inline-block;
       margin-right: 5px;
@@ -97,6 +104,10 @@ mo-monument {
       line-height: 26px;
       font-size: 25px;
     }
+
+    .loading-line {
+      height: 30px;
+    }
   }
 
   .monument__subtitle {
@@ -105,6 +116,10 @@ mo-monument {
 
     @include x-small {
       font-size: 20px;
+    }
+
+    .loading-line {
+      height: 24px;
     }
   }
 
@@ -168,5 +183,7 @@ mo-monument {
   
   .angular-leaflet-map {
     height: 600px;
+
+    @include x-small { height: 300px; }
   }
 }
