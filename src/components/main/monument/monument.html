@@ -73,9 +73,9 @@
             <mo-location class="monument__place" monument="::$ctrl.monument"></mo-location>
             <div layout="row" layout-align="center start"
                   layout-xs="column" layout-align-xs="start stretch">
-              <div flex-gt-xs="60">
-                <span><md-icon>photo</md-icon></span>
-                <span>
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>photo</md-icon></div>
+                <span flex>
                   <a ng-if="$ctrl.category" ng-href="//commons.wikimedia.org/wiki/{{ $ctrl.category.title }}" target="_blank">
                     {{ $ctrl.category.files }} images
                     <span ng-if="$ctrl.category.subcats">and {{ $ctrl.category.subcats }} subcategories</span>
@@ -83,19 +83,18 @@
                   <span class="muted" ng-if="!$ctrl.category">no Commons category</span>
                 </span>
               </div>
-              <div flex-gt-xs="40">
-                <span><md-icon>description</md-icon></span>
-                <a ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ ::$ctrl.monument.interwikis || 0 }} wikis</a>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none"><md-icon>description</md-icon></div>
+                <span flex><a ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}#sitelinks-wikipedia" target="_blank">{{ ::$ctrl.monument.interwikis || 0 }} wikis</a></span>
               </div>
             </div>
             <div layout="row" layout-align="center start"
                   layout-xs="column" layout-align-xs="start stretch">
               <div flex-gt-xs="60" layout="row" layout-align="start start">
-                <div flex="10"><span><md-icon>account_balance</md-icon></span></div>
-                <div flex>
+                <div flex="none"><md-icon>account_balance</md-icon></div>
+                <div flex layout="column" layout-align="start stretch">
                   <span ng-repeat="monType in $ctrl.monument.claims.P1435.values">
                     <a ng-href="http://www.wikidata.org/wiki/{{monType.value_id}}">{{ monType.value[$ctrl.lang] || monType.value.en }}</a>
-                    <br />
                   </span>
                 </div>
               </div>

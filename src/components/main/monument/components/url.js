@@ -1,10 +1,10 @@
 const UrlComponent = {
   bindings: { monument: '<' },
   controller,
-  template: `<div>
-    <span><md-icon>link</md-icon></span>
-    <span ng-if="::$ctrl.value"><a ng-href="{{ ::$ctrl.value }}" target="_blank">{{ ::$ctrl.label }}</a></span>
-    <span class="muted" ng-if="::!$ctrl.value">no official website</span>
+  template: `<div layout="row" layout-align="start start">
+    <div flex="none"><md-icon>link</md-icon></div>
+    <span ng-if="::$ctrl.value" flex><a ng-href="{{ ::$ctrl.value }}" target="_blank">{{ ::$ctrl.label }}</a></span>
+    <span class="muted" ng-if="::!$ctrl.value" flex>no official website</span>
   </div>`,
 };
 

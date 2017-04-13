@@ -25,6 +25,10 @@ mo-monument {
       }
       & > div {
         margin-bottom: 15px;
+
+        & > div {
+          margin-bottom: 5px;
+        }
       }
     }
   }
