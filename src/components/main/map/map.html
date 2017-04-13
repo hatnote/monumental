@@ -1,7 +1,12 @@
-<div class="container" layout="column" layout-align="space-between stretch" flex>
-  <md-content layout="row" layout-align="start stretch" flex>
-    <div class="list" layout="column" layout-align="start stretch" flex="none">
-      <div class="list__loading" layout="column" layout-align="center center"
+<div class="container" layout="column" layout-align="start stretch" flex>
+  <md-content class="content" flex
+                layout="row" layout-align="start stretch"
+                ng-class="$ctrl.contentScrolled ? 'content--scrolled' : 'content--unscrolled'">
+    <div class="list" flex="none" flex-xs="50"
+          layout="column" layout-align="start stretch"
+          ng-swipe-left="$ctrl.showMyMap()">
+      <div class="list__loading"
+            layout="column" layout-align="center center"
             ng-if="$ctrl.map.center.zoom <= 12">
         <h4 class="md-title">Zoom in</h4>
       </div>
@@ -13,26 +18,33 @@
             ng-if="$ctrl.map.center.zoom > 12 && !$ctrl.loading && !$ctrl.list.length">
         <h4 class="md-title">No results</h4>
       </div>
-      <md-virtual-repeat-container class="list__container" flex>
-        <md-list-item class="md-2-line"
-                        md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
-                        ui-sref="main.object({id: item.name.value_id.substring(1)})">
-          <div class="list__image" layout="row" layout-align="center center">
-            <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
-          </div>
-          <div class="md-list-item-text" layout="column">
-            <p>{{item.name.value}}</p>
-            <p class="muted">{{item.admin.value}}</p>
-          </div>
-        </md-list-item>
-      </md-virtual-repeat-container>
+      <div class="list__container" flex
+            layout="column" layout-align="start stretch">
+        <md-virtual-repeat-container flex>
+          <md-list-item class="md-2-line"
+                          md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
+                          ui-sref="main.object({id: item.name.value_id.substring(1)})">
+            <div class="list__image" layout="row" layout-align="center center">
+              <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
+            </div>
+            <div class="md-list-item-text" layout="column">
+              <p>{{ item.name.value }}</p>
+              <p class="muted">{{ item.admin.value }}</p>
+            </div>
+          </md-list-item>
+        </md-virtual-repeat-container>
+      </div>
+      <div class="list__swiper" ng-click="$ctrl.showMyMap()"></div>
     </div>
-    <div class="list__map" flex>
-      <leaflet ng-if="!$ctrl.loadingMap"
+    <div class="list__map" flex flex-xs="50">
+      <leaflet ng-if="!$ctrl.loadingMap" flex
                 markers="$ctrl.map.markers"
                 layers="$ctrl.map.layers"
                 url-hash-center="yes"
-                center="$ctrl.map.center" flex></leaflet>
+                center="$ctrl.map.center"></leaflet>
+      <div class="list__swiper"
+            ng-click="$ctrl.showMyList()"
+            ng-swipe-right="$ctrl.showMyList()"></div>
     </div>
   </md-content>
 </div>
