@@ -84,5 +84,16 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
 export default () => {
   angular
     .module('monumental')
-    .component('moToolbar', ToolbarComponent);
+    .component('moToolbar', ToolbarComponent)
+    .directive('moToolbarScroll', ($window) => {
+      let lastPosition = 0;
+      return (scope) => {
+        angular.element($window).bind('scroll', function () {
+          if (this.pageYOffset > lastPosition) { scope.isHidden = true; }
+          if (this.pageYOffset < lastPosition) { scope.isHidden = false; }
+          lastPosition = this.pageYOffset;
+          scope.$apply();
+        });
+      };
+    });
 };

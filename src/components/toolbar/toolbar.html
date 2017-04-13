@@ -22,7 +22,9 @@
     </md-list-item>
   </md-list>
 </md-sidenav>
-<md-toolbar class="toolbar" layout="column" layout-align="start center">
+<md-toolbar class="toolbar"
+              layout="column" layout-align="start center"
+              ng-class="isHidden ? 'toolbar--hidden' : 'toolbar--shown'" mo-toolbar-scroll>
 	<div class="md-toolbar-tools" hide-xs
         ng-class="{ 'md-toolbar-tools-wide': ('main.list' | includedByState) || ('main.map' | includedByState) }">
     <div flex="20">
