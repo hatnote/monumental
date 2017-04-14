@@ -25,7 +25,7 @@ body {
   width: 5px;
   background: transparent;
 
-  @include x-small { width: 0px; }
+  @include x-small { display: none; }
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.2);
@@ -87,6 +87,11 @@ small {
   }
 }
 
+.no-margin {
+  margin: 0;
+  padding: 0;
+}
+
 .invisible {
   width: 0;
   height: 0;
@@ -95,4 +100,11 @@ small {
 
 strong {
   font-weight: 500;
+}
+
+.loading-line {
+  display: block;
+  background: #f1f0f5;
+  height: 8px;
+  margin: 9px 25px 9px 5px;
 }
