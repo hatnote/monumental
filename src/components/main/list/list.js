@@ -16,6 +16,7 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   vm.lang = langs[0];
   vm.listParams = {};
   vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
+  vm.mobile = {};
   vm.showMyMap = () => { vm.contentScrolled = true; };
   vm.showMyList = () => { vm.contentScrolled = false; };
 
@@ -63,6 +64,8 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   }
 
   function init() {
+    vm.mobile.fullHeader = true;
+
     getPlace()
     .then(() => {
       const title = vm.place.labels[vm.lang] || vm.place.labels.en || vm.place.id;

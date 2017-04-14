@@ -68,6 +68,22 @@ mo-list {
       border-bottom: 1px solid $softGrey;
 
       @include x-small { margin-bottom: 5px; }
+
+      &.header__primary--compact {
+        margin-bottom: 0;
+        border-bottom: 0;
+
+        .header__subtitle {
+          margin-bottom: 0;
+        }
+
+        .md-icon-button {
+          width: 30px;
+          min-height: 30px;
+          height: 30px;
+          padding: 0px;
+        }
+      }
     }
 
     .header__secondary {
@@ -127,6 +143,15 @@ mo-list {
 
     @include x-small { padding: 10px 20px; }
 
+    .md-icon-button {
+      @include x-small {
+        width: 30px;
+        min-height: 30px;
+        height: 30px;
+        padding: 0px;
+      }
+    }
+
     md-input-container {
       margin-bottom: 0;
       margin-top: 0;
@@ -177,6 +202,7 @@ mo-list {
 
   .list__map {
     position: relative;
+    z-index: 10;
     background: white;
     border: 1px solid $softGrey;
     border-radius: 2px;

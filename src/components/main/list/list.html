@@ -16,7 +16,9 @@
           </div>
         </div>
       </div>
-      <div ng-if="$ctrl.place" layout="column" layout-align="start stretch" flex>
+      <div layout="column" layout-align="start stretch" flex
+            ng-if="$ctrl.place"
+            ng-show="$ctrl.mobile.fullHeader">
         <div class="header__primary" layout="row" layout-align="center start">
           <div flex>
             <h2 class="header__title md-display-1">{{ ::$ctrl.place.labels[$ctrl.lang] || "no name" }}</h2>
@@ -33,15 +35,41 @@
           <mo-location class="header__place" monument="::$ctrl.place"></mo-location>
         </div>
       </div>
+      <div layout="row" layout-align="start center" flex
+            ng-if="$ctrl.place"
+            ng-show="!$ctrl.mobile.fullHeader">
+        <div class="header__primary header__primary--compact" layout="row" layout-align="center start" flex>
+          <div flex>
+            <h4 class="header__subtitle md-headline">{{ ::$ctrl.place.labels[$ctrl.lang] || "no name" }}</h4>
+          </div>
+          <div flex="none">
+            <md-button class="md-icon-button" aria-label="Show header"
+                        ng-click="$ctrl.mobile.fullHeader = true">
+              <md-icon>keyboard_arrow_down</md-icon>
+            </md-button>
+          </div>
+        </div>
+      </div>
       <div ng-if="!$ctrl.place" layout="column" layout-align="start stretch" flex></div>
     </div>
-    <div class="list__subheader" layout="row" layout-align="start center">
+    <div class="list__subheader"
+          layout="row" layout-align="start center"
+          ng-if="$ctrl.mobile.fullHeader">
       <!--<md-input-container md-no-float>
         <input type="text" ng-model="$ctrl.filters.name" placeholder="Name">
       </md-input-container>-->
       <span ng-if="$ctrl.showMap">{{$ctrl.list.length}} results</span>
       <span ng-if="!$ctrl.showMap">Loading...</span>
       <div flex></div>
+      <!--
+      <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata">
+        <md-icon>filter_list</md-icon>
+      </md-button>
+      -->
+      <md-button class="md-icon-button" aria-label="Hide header" hide-gt-xs
+                  ng-click="$ctrl.mobile.fullHeader = false">
+        <md-icon>keyboard_arrow_up</md-icon>
+      </md-button>
     </div>
   </div>
   <md-content class="content" flex
@@ -50,7 +78,8 @@
     <div class="list" flex="none" flex-xs="50"
           layout="column" layout-align="start stretch" 
           ng-swipe-left="$ctrl.showMyMap()">
-      <div class="list__container" layout="column" layout-align="start stretch" flex>
+      <div class="list__container" flex
+            layout="column" layout-align="start stretch">
         <md-virtual-repeat-container flex>
           <md-list-item class="md-2-line"
                           md-virtual-repeat="item in $ctrl.list | orderBy: 'name.value'"
@@ -88,8 +117,13 @@
       <div class="list__swiper" ng-click="$ctrl.showMyMap()"></div>
     </div>
     <div class="list__map" flex flex-xs="50">
-      <leaflet ng-if="$ctrl.showMap" markers="$ctrl.map.markers" layers="::$ctrl.map.layers" center="::$ctrl.map.center" flex></leaflet>
-      <div class="list__swiper" ng-click="$ctrl.showMyList()" ng-swipe-right="$ctrl.showMyList()"></div>
+      <leaflet ng-if="$ctrl.showMap" flex
+                markers="$ctrl.map.markers"
+                layers="::$ctrl.map.layers"
+                center="::$ctrl.map.center"></leaflet>
+      <div class="list__swiper"
+            ng-click="$ctrl.showMyList()"
+            ng-swipe-right="$ctrl.showMyList()"></div>
     </div>
   </md-content>
 </div>
