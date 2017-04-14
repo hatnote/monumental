@@ -56,7 +56,7 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
   }
 
   function init() {
-    WikiService.getToken().then((response) => {
+    WikiService.getUserInfo().then((response) => {
       vm.isLoggedIn = response;
       vm.loading = false;
     });

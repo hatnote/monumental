@@ -9,9 +9,10 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     getCategoryMembers,
     getImage,
     getUserInfo,
-    getToken,
     setClaim,
   };
+
+  const appAPI = `${$window.__env.baseUrl}/api`;
 
   const defaultParams = {
     action: 'query',
@@ -125,25 +126,16 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     });
   }
 
-  function getUserInfo(extraParams) {
-    const params = angular.extend({}, defaultParams, {
-      meta: 'userinfo|globaluserinfo',
-    }, extraParams);
-    return $http.jsonp('https://wikidata.org/w/api.php', {
-      params,
-    }).then(response => response.data.query.globaluserinfo);
-  }
-
-  function getToken() {
-    return $http.get(`${$window.__env.baseUrl}/api`, {
+  function getUserInfo() {
+    return $http.get(appAPI, {
       params: {
         action: 'query',
-        meta: 'tokens',
+        meta: 'globaluserinfo',
         use_auth: 'true',
       },
     }).then((response) => {
       if (response.data && response.data.query) {
-        return response.data.query.tokens.csrftoken;
+        return response.data.query.globaluserinfo;
       }
       return false;
     });
@@ -152,7 +144,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
   function setClaim(params) {
     return $http({
       method: 'POST',
-      url: `${$window.__env.baseUrl}/api`,
+      url: appAPI,
       data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     }).then((response) => {

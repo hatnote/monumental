@@ -2,9 +2,10 @@
               md-component-id="left" md-disable-scroll-target="body" 
               md-swipe-left="$ctrl.toggleSidebar()"
               layout="column" layout-align="start stretch">
-  <md-list ng-cloak>
-    <md-list-item class="sidenav__header">
-      <p>Monumental</p>
+  <md-list flex
+            layout="column" layout-align="start stretch">
+    <md-list-item class="sidenav__header" flex="none">
+      <p>{{ $ctrl.isLoggedIn.name }}</p>
     </md-list-item>
     <md-list-item ng-click="$ctrl.goTo('main.dashboard')">
       <md-icon>home</md-icon>
@@ -16,6 +17,11 @@
       <md-icon>vpn_key</md-icon>
       <p>Login</p>
     </md-list-item>
+    <md-list-item ng-if="$ctrl.isLoggedIn" ng-click="$ctrl.logout()">
+      <md-icon>exit_to_app</md-icon>
+      <p>Logout</p>
+    </md-list-item>
+    <span flex></span>
     <md-list-item ng-if="$ctrl.isLoggedIn" ng-click="$ctrl.logout()">
       <md-icon>exit_to_app</md-icon>
       <p>Logout</p>
@@ -48,7 +54,7 @@
     <div class="text-right" flex="20">
       <md-button ng-if="$ctrl.isLoggedIn"
                   ng-click="$ctrl.settings = !$ctrl.settings">
-        Logged in
+        {{ $ctrl.isLoggedIn.name }}
       </md-button>
       <md-button ng-if="!$ctrl.isLoggedIn"
                   ng-click="$ctrl.login()">
