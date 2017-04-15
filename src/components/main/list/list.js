@@ -39,8 +39,8 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
     WHERE {
       ?item p:P1435 ?monument; wdt:P131* wd:${id}; wdt:P131 ?admin; wdt:P625 ?coord .
       OPTIONAL { ?item wdt:P18 ?image } 
-      OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0]}")) }
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
+      OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0].code}")) }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
     }
     GROUP BY ?item ?itemLabel
     ORDER BY ?itemLabel`);
@@ -68,7 +68,7 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
 
     getPlace()
     .then(() => {
-      const title = vm.place.labels[vm.lang] || vm.place.labels.en || vm.place.id;
+      const title = vm.place.labels[vm.lang.code] || vm.place.labels.en || vm.place.id;
       $window.document.title = `${title} – Monumental`;
 
       return getList();

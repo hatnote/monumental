@@ -120,7 +120,7 @@ function controller($http, $mdDialog, $q, $sce, $stateParams, $timeout, $window,
       getInterwiki();
       vm.loading = false;
 
-      const title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
+      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en || vm.monument.id;
       $window.document.title = `${title} – Monumental`;
     });
   }

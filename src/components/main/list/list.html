@@ -21,7 +21,14 @@
             ng-show="$ctrl.mobile.fullHeader">
         <div class="header__primary" layout="row" layout-align="center start">
           <div flex>
-            <h2 class="header__title md-display-1">{{ ::$ctrl.place.labels[$ctrl.lang] || "no name" }}</h2>
+            <h2 class="header__title md-display-1"
+                  ng-if="!$ctrl.place.labels[$ctrl.lang.code]">
+              <em>missing label in {{ ::$ctrl.lang.name }}</em>
+            </h2>
+            <h2 class="header__title md-display-1"
+                  ng-if="$ctrl.place.labels[$ctrl.lang.code]">
+              {{ ::$ctrl.place.labels[$ctrl.lang.code] }}
+            </h2>
             <h4 class="header__subtitle md-headline muted"><mo-native-name monument="$ctrl.place"></mo-native-name></h4>
           </div>
           <div flex="none">

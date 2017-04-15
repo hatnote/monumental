@@ -62,7 +62,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
         OPTIONAL { ?item wdt:P131 ?admin . }
         OPTIONAL { ?item wdt:P18 ?image . }
         ?item wdt:P1435 ?heritage .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
       }`, { timeout: canceler.promise });
 
     request.then((data) => {

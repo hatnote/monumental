@@ -152,20 +152,29 @@
           <div class="dashboard__box" layout="column" layout-align="start stretch">
             <h4 class="md-title">Set language</h4>
             <p layout="row" layout-align="start start">
-              <md-input-container>
-                <label>First language</label>
-                <input type="text" ng-model="$ctrl.languages[0]">
-              </md-input-container>
-              <md-input-container>
-                <label>Second language</label>
-                <input type="text" ng-model="$ctrl.languages[1]">
-              </md-input-container>
-              <md-input-container>
-                <label>Third language</label>
-                <input type="text" ng-model="$ctrl.languages[2]">
-              </md-input-container>
+              <md-chips ng-model="$ctrl.languages"
+                          md-max-chips="3"
+                          md-require-match="true">
+                <md-chip-template>
+                  <span>
+                    <span>{{ $chip.nativeName }}</span>
+                    <small>({{ $chip.code }})</small>
+                  </span>
+                </md-chip-template>
+                <md-autocomplete
+                    md-selected-item="$ctrl.lang.selectedItem.lang"
+                    md-items="item in $ctrl.searchLang($ctrl.lang.searchText)"
+                    md-search-text="$ctrl.lang.searchText"
+                    md-item-text="item.name"
+                    ng-hide="$ctrl.languages.length > 2">
+                  <md-item-template>
+                    <span md-highlight-text="$ctrl.lang.searchText">{{ item.nativeName }}</span>
+                    <small>({{ item.code }})</small>
+                  </md-item-template>
+                </md-autocomplete>
+              </md-chips>
             </p>
-            <md-button class="md-primary" ng-click="$ctrl.saveLanguages()">Save</md-button>
+            <md-button class="md-primary" ng-click="$ctrl.saveUserLanguages()">Save</md-button>
           </div>
         </div>
       </div>

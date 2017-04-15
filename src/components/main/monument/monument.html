@@ -57,7 +57,14 @@
           <div class="monument__primary"
                 layout="row" layout-align="center start">
             <div flex>
-              <h2 class="monument__title md-display-1">{{ ::$ctrl.monument.labels[$ctrl.lang] || "missing label (" + $ctrl.lang + ")" }}</h2>
+              <h2 class="monument__title md-display-1"
+                    ng-if="!$ctrl.monument.labels[$ctrl.lang.code]">
+                <em>missing label in {{ ::$ctrl.lang.name }}</em>
+              </h2>
+              <h2 class="monument__title md-display-1"
+                    ng-if="$ctrl.monument.labels[$ctrl.lang.code]">
+                {{ ::$ctrl.monument.labels[$ctrl.lang.code] }}
+              </h2>
               <h4 class="monument__subtitle md-headline muted">
                 <mo-native-name monument="::$ctrl.monument"></mo-native-name>
               </h4>
@@ -145,7 +152,7 @@
           <div class="monument__details-item"
               layout="row" layout-align="center stretch"
               ng-repeat="claim in $ctrl.monument.claims">
-            <span class="muted" flex="35">{{claim.property[$ctrl.lang]}}</span>
+            <span class="muted" flex="35">{{ claim.property[$ctrl.lang.code] || claim.property.en }}</span>
             <span flex="65"
                   layout="column" layout-align="start stretch">
               <span class="monument__details-value" ng-repeat="value in claim.values">
@@ -157,7 +164,7 @@
                 <span ng-if="value.value_type === 'time'">{{value.value.time.substring(1) | date : 'yyyy'}}</span>
                 <span ng-if="value.value_type === 'url'">{{value.value}}</span>
                 <a ng-if="value.value_type === 'wikibase-item'"
-                  ng-href="http://www.wikidata.org/wiki/{{value.value_id}}">{{value.value[$ctrl.lang] || value.value.en}}</a>
+                  ng-href="http://www.wikidata.org/wiki/{{value.value_id}}">{{value.value[$ctrl.lang.code] || value.value.en}}</a>
               </span>
             </span>
           </div>
