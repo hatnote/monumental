@@ -1,5 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
+
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
@@ -18,6 +20,10 @@ var config = {
       template: 'index_local.ejs',
       filename: path.join('..', 'index.html')
     }),
+    new CopyWebpackPlugin([
+      { from: 'manifest_local.json', to: path.join('..', 'manifest.json') },
+      { from: 'app-icons', to: 'app-icons' }
+    ]),
     function () {
       this.plugin('watch-run', function (watching, callback) {
         console.log('\n\n---- ' + new Date().toISOString().replace('T', ' ').replace(/\.[0-9]+Z/, '') + ' ----');
