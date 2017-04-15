@@ -94,6 +94,7 @@
                           ui-sref="main.object({id: item.name.value_id.substring(1)})">
             <div class="list__image" layout="row" layout-align="center center">
               <img ng-src="{{ item.image }}" alt="{{ item.name.value }}" ng-if="item.image">
+              <md-icon ng-if="!item.image">clear</md-icon>
             </div>
             <div class="md-list-item-text" layout="column">
               <p>{{ item.name.value }}</p>
