@@ -83,6 +83,10 @@ if (ENV === 'prod' || ENV === 'dev') {
       template: ENV === 'dev' ? 'index_dev.ejs' : 'index_prod.ejs',
       filename: path.join('..', 'index.html')
     }),
+    new CopyWebpackPlugin([
+      { from: 'manifest_dev.json', to: path.join('..', 'manifest.json') },
+      { from: 'app-icons', to: 'app-icons' }
+    ]),
     new ngAnnotatePlugin({
       add: true
     }),
