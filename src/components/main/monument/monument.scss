@@ -144,12 +144,15 @@ mo-monument {
       position:relative;
       max-height: 320px;
       overflow: hidden;
-      font-family: 'Merriweather', serif;
-      font-size: 15px;
-      text-align: justify;
-      line-height: 1.8;
 
-      @include x-small { font-size: 13px; }
+      & > div {
+        font-family: 'Merriweather', serif;
+        font-size: 15px;
+        text-align: justify;
+        line-height: 1.8;
+
+        @include x-small { font-size: 13px; }
+      }
 
       p:first-child {
         margin-top: 0;
@@ -157,6 +160,13 @@ mo-monument {
 
       &.article__text--long {
         max-height: none;
+      }
+
+      &.article__text--all {
+        min-height: 100px;
+        column-count: 2;
+
+        @include x-small { column-count: 1; }
       }
     }
 
