@@ -120,3 +120,20 @@
     </div>
   </md-content>
 </div>
+<footer layout="column" layout-align="center center" flex>
+  <md-content class="container small" flex
+                layout="row" layout-align="center stretch"
+                layout-xs="column" layout-align-xs="start stretch">
+    <div flex="75" flex-xs="100">
+      <p class="big">&copy; 2017 <a href="//github.com/yarl">Paweł Marynowski</a> and <a href="//github.com/slaporte">Stephen LaPorte</a> // <a href="//hatnote.com/">hatnote.com</a></p>
+      <p>Monumental is a free software available under <a href="//github.com/hatnote/monumental/blob/master/LICENSE">BSD 3-Clause License</a>. </p>
+      <p><a href="//github.com/hatnote/monumental">source code</a> &bull; <a href="//phabricator.wikimedia.org/project/view/2696/">report issue</a></p>
+    </div>
+    <div class="text-right" flex>
+      <p>
+        version <strong>{{ ::$ctrl.config.package.version }}</strong> &bull;
+        env <strong>{{ ::$ctrl.config.env.name }}</strong>
+      </p>
+    </div>
+  </md-content>
+</footer>

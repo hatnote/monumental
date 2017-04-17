@@ -63,7 +63,11 @@ a, a.link {
   color: $lightGrey;
 }
 
-small {
+.big {
+  font-size: larger;
+}
+
+small, .small {
   font-size: 95%;
 }
 

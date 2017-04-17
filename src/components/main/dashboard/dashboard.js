@@ -1,6 +1,8 @@
 import './dashboard.scss';
 import template from './dashboard.html';
 
+import pack from '../../../../package.json';
+
 const DashboardComponent = { controller, template };
 
 function controller($filter, $mdToast, $state, $window, WikiService, langService) {

@@ -3,6 +3,8 @@ import _ from 'lodash';
 import './monument.scss';
 import template from './monument.html';
 
+import pack from '../../../../package.json';
+
 const MonumentComponent = { controller, template };
 
 function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, wikidata) {
@@ -103,6 +105,11 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
   }
 
   function init() {
+    vm.config = {
+      env: $window.__env,
+      package: pack,
+    };
+
     vm.loading = true;
     wikidata.getById(id).then((data) => {
       vm.monument = _.sample(data);
