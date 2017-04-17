@@ -17,6 +17,64 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
 
   function init() {
     $window.document.title = 'Dashboard – Monumental';
+
+    vm.config = {
+      env: $window.__env,
+      package: pack,
+    };
+
+    vm.examples = [
+      {
+        name: 'Empire State Building',
+        id: 9188,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/640px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
+      },
+      {
+        name: 'Katedra Wawelska',
+        id: 638519,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/292_Krakow_Katedra_na_Wawelu_20070805.jpg/640px-292_Krakow_Katedra_na_Wawelu_20070805.jpg',
+      },
+      {
+        name: 'Church of the Holy Sepulchre',
+        id: 187702,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG/640px-The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG',
+      },
+      {
+        name: 'Buckingham Palace',
+        id: 42182,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Buckingham_Palace%2C_London_-_April_2009.jpg/640px-Buckingham_Palace%2C_London_-_April_2009.jpg',
+      },
+      {
+        name: 'Sydney Opera House',
+        id: 45178,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sydney_Opera_House_Sails.jpg/640px-Sydney_Opera_House_Sails.jpg',
+      },
+      {
+        name: 'Lincoln Memorial',
+        id: 213559,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg/640px-Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg',
+      },
+      {
+        name: 'Brandenburger Tor',
+        id: 82425,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Brandenburg_Gate_%288331820462%29.jpg/640px-Brandenburg_Gate_%288331820462%29.jpg',
+      },
+      {
+        name: 'Pałac Kultury i Nauki',
+        id: 167566,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/PKiN_widziany_z_WFC.jpg/640px-PKiN_widziany_z_WFC.jpg',
+      },
+      {
+        name: 'Tour Eiffel',
+        id: 243,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/640px-Tour_Eiffel_Wikimedia_Commons.jpg',
+      },
+      {
+        name: 'Duomo di Milano',
+        id: 18068,
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/876MilanoDuomo.JPG/640px-876MilanoDuomo.JPG',
+      },
+    ];
   }
 
   function saveUserLanguages() {
