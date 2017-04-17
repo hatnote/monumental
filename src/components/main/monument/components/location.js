@@ -5,7 +5,7 @@ const LocationComponent = {
               <span><md-icon>location_city</md-icon></span>
               <span>
                 <span ng-repeat="place in $ctrl.location">
-                  <a ui-sref="main.list({id: place.value_id.substring(1)})">{{place.value}}</a><span ng-if="!$last"> · </span>
+                  <a ui-sref="main.list({id: place.value_id.substring(1)})">{{ place.value }}</a><span ng-if="!$last"> · </span>
                 </span>
                 <span class="muted" ng-if="!$ctrl.location">No location provided</span>
               </span>

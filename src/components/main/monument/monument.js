@@ -3,21 +3,28 @@ import _ from 'lodash';
 import './monument.scss';
 import template from './monument.html';
 
+import pack from '../../../../package.json';
+
 const MonumentComponent = { controller, template };
 
-function controller($http, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, langService, leafletData, mapService, wikidata) {
+function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   const langs = langService.getUserLanguages();
 
   vm.getCommonsLink = getCommonsLink;
-  vm.getWikipedia = getWikipedia;
+  vm.getWikipediaArticle = getWikipediaArticle;
   vm.image = [];
   vm.lang = langs[0];
   vm.map = {};
+  vm.openArticleList = (menu, event) => menu.open(event);
+  vm.openImage = openImage;
+  vm.scrollTo = anchor => $anchorScroll(anchor);
 
-  getWikidata();
+  // init
+
+  init();
 
   // functions
 
@@ -36,10 +43,11 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     });
   }
 
-  function getWikipedia(lang, name) {
-    const language = lang.replace('wiki', '');
-    WikiService.getArticleHeader(language, name).then((data) => {
-      vm.article = $sce.trustAsHtml(data);
+  function getWikipediaArticle(wiki) {
+    vm.showAllArticles = false;
+    WikiService.getArticleHeader(wiki.code, wiki.title).then((data) => {
+      wiki.article = $sce.trustAsHtml(data);
+      vm.article = wiki;
       $timeout(() => {
         const height = document.querySelector('.article__text').offsetHeight;
         vm.isArticleLong = height === 320;
@@ -49,25 +57,44 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
 
   function getCommonsLink() {
     const name = vm.monument.claims.P373.values[0].value;
-    return `https://commons.wikimedia.org/wiki/Category:${encodeURIComponent(name)}`;
+    return `//commons.wikimedia.org/wiki/Category:${encodeURIComponent(name)}`;
   }
 
-  function getImage() {
-    const image = getPropertyValue('P18');
-    if (!image) { return; }
-
-    WikiService.getImage(image.value).then((response) => {
-      vm.image.push(response.imageinfo);
-    });
+  function getImage(image) {
+    WikiService.getImage(image, { iiurlwidth: 640 })
+      .then((response) => {
+        vm.image.push(response.imageinfo);
+      });
   }
 
   function getInterwiki() {
-    vm.shownInterwiki = ['de', 'en', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'zh'];
-    vm.monument.interwiki = _.mapValues(vm.monument.interwiki, wiki => ({
-      code: wiki.site.replace('wiki', ''),
-      title: wiki.title,
-      link: `https://${wiki.site.replace('wiki', '')}.wikipedia.org/wiki/${wiki.title}`,
-    }));
+    const country = getPropertyValue('P17');
+    const countryLanguages = langService.getNativeLanguages(country.value_id);
+
+    vm.interwiki = {};
+
+    vm.interwiki.all = Object.keys(vm.monument.interwiki)
+      .map(key => vm.monument.interwiki[key])
+      .map(element => ({
+        code: element.site.replace('wiki', ''),
+        title: element.title,
+        link: `//${element.site.replace('wiki', '')}.wikipedia.org/wiki/${element.title}`.replace(' ', '_'),
+      }))
+      .filter(element => !element.code.includes('quote') && !element.code.includes('commons'));
+
+    vm.interwiki.shown = langs
+      .map(lang => lang.code)
+      .concat(countryLanguages)
+      .filter((element, index, array) => array.indexOf(element) === index)
+      .map((lang) => {
+        const iw = vm.interwiki.all.find(element => element.code === lang);
+        return iw || { code: lang };
+      });
+
+    const article = vm.interwiki.shown.filter(iw => iw.title);
+    if (article.length) {
+      getWikipediaArticle(article[0]);
+    }
   }
 
   function getPropertyValue(prop) {
@@ -77,30 +104,37 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
     return false;
   }
 
-  function getWikidata() {
+  function init() {
+    vm.config = {
+      env: $window.__env,
+      package: pack,
+    };
+
     vm.loading = true;
     wikidata.getById(id).then((data) => {
       vm.monument = _.sample(data);
-      const claims = vm.monument.claims;
 
-      getImage();
-      if (vm.monument.claims.P373) {
-        getCategoryInfo(claims.P373.values[0].value);
-        getCategoryMembers(claims.P373.values[0].value);
+      if (getPropertyValue('P18')) {
+        const image = getPropertyValue('P18').value;
+        getImage(image);
+      }
+      if (getPropertyValue('P373')) {
+        const category = getPropertyValue('P373').value;
+        getCategoryInfo(category);
+        getCategoryMembers(category);
       }
 
-      vm.monument.interwikis = Object.keys(vm.monument.interwiki).length;
-      const articleInterwiki = vm.monument.interwiki[`${langs[0]}wiki`] || vm.monument.interwiki[`${langs[1]}wiki`] || vm.monument.interwiki[`${langs[2]}wiki`];
-      if (articleInterwiki) {
-        getWikipedia(articleInterwiki.site, articleInterwiki.title);
-      }
-      if (vm.monument.claims.P625) {
-        const value = vm.monument.claims.P625.values[0].value;
-        vm.map = mapService.getMapInstance({ center: {
-          lat: value.latitude,
-          lng: value.longitude,
-          zoom: 16,
-        } });
+      getInterwiki();
+
+      if (getPropertyValue('P625')) {
+        const value = getPropertyValue('P625').value;
+        vm.map = mapService.getMapInstance({
+          center: {
+            lat: value.latitude,
+            lng: value.longitude,
+            zoom: 16,
+          },
+        });
         vm.map.markers = {
           marker: {
             lat: value.latitude,
@@ -113,11 +147,18 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
           map.once('focus', () => { map.scrollWheelZoom.enable(); });
         });
       }
-      getInterwiki();
       vm.loading = false;
 
-      const title = vm.monument.labels[vm.lang] || vm.monument.labels.en || vm.monument.id;
+      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en || vm.monument.id;
       $window.document.title = `${title} – Monumental`;
+    });
+  }
+
+  function openImage(image, event) {
+    imageService.openImage({
+      image,
+      event,
+      list: vm.images,
     });
   }
 }
@@ -125,5 +166,20 @@ function controller($http, $q, $sce, $stateParams, $timeout, $window, localStora
 export default () => {
   angular
     .module('monumental')
-    .component('moMonument', MonumentComponent);
+    .component('moMonument', MonumentComponent)
+    .directive('loadSrc', () => ({
+      link: (scope, element, attrs) => {
+        let img = null;
+        const loadImage = () => {
+          element[0].src = '//upload.wikimedia.org/wikipedia/commons/f/f8/Ajax-loader%282%29.gif';
+          img = new Image();
+          img.src = attrs.loadSrc;
+          img.onload = () => { element[0].src = attrs.loadSrc; };
+        };
+        scope.$watch(() => attrs.loadSrc, (newVal, oldVal) => {
+          if (oldVal !== newVal) { loadImage(); }
+        });
+        loadImage();
+      },
+  }));
 };

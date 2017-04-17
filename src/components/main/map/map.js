@@ -3,10 +3,13 @@ import template from './map.html';
 
 const MapComponent = { controller, template };
 
-function controller($location, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
+function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const langs = langService.getUserLanguages();
+
+  let canceler = $q.defer();
+  let request = null;
 
   // bindings
 
@@ -15,6 +18,8 @@ function controller($location, $scope, $state, $stateParams, $timeout, $window, 
   vm.listParams = {};
   vm.loading = false;
   vm.loadingMap = true;
+  vm.showMyMap = () => { vm.contentScrolled = true; };
+  vm.showMyList = () => { vm.contentScrolled = false; };
 
   // activate
 
@@ -33,6 +38,9 @@ function controller($location, $scope, $state, $stateParams, $timeout, $window, 
           getDataBB(map.getBounds());
         }
       });
+      map.on('dragstart zoomstart', () => {
+        canceler.resolve();
+      });
     });
   }, 100);
 
@@ -42,7 +50,10 @@ function controller($location, $scope, $state, $stateParams, $timeout, $window, 
 
   function getDataBB(bounds) {
     vm.loading = true;
-    wikidata.getSPARQL(`SELECT ?item ?itemLabel ?admin ?adminLabel ?image ?coord ?heritage WHERE {
+    canceler.resolve();
+    canceler = $q.defer();
+
+    request = wikidata.getSPARQL(`SELECT ?item ?itemLabel ?admin ?adminLabel ?image ?coord ?heritage WHERE {
         SERVICE wikibase:box {
           ?item wdt:P625 ?coord .
           bd:serviceParam wikibase:cornerWest "Point(${bounds.getSouthWest().lng} ${bounds.getSouthWest().lat})"^^geo:wktLiteral .
@@ -51,18 +62,20 @@ function controller($location, $scope, $state, $stateParams, $timeout, $window, 
         OPTIONAL { ?item wdt:P131 ?admin . }
         OPTIONAL { ?item wdt:P18 ?image . }
         ?item wdt:P1435 ?heritage .
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.join(',')}" }
-      }`).then((data) => {
-        vm.map.markers = {};
-        // http://stackoverflow.com/a/36744732/1418878
-        vm.list = data
-          .map(element => setListElement(element))
-          .filter((element, index, array) => array.findIndex(t => t.name.value_id === element.name.value_id) === index);
-        vm.list.forEach((element) => {
-          vm.map.markers[element.name.value_id] = setMarker(element);
-        });
-        vm.loading = false;
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
+      }`, { timeout: canceler.promise });
+
+    request.then((data) => {
+      vm.map.markers = {};
+      // http://stackoverflow.com/a/36744732/1418878
+      vm.list = data
+        .map(element => setListElement(element))
+        .filter((element, index, array) => array.findIndex(t => t.name.value_id === element.name.value_id) === index);
+      vm.list.forEach((element) => {
+        vm.map.markers[element.name.value_id] = setMarker(element);
       });
+      vm.loading = false;
+    });
   }
 
   /**
@@ -80,7 +93,7 @@ function controller($location, $scope, $state, $stateParams, $timeout, $window, 
   function getMessage(element) {
     return `<md-list-item class="md-2-line" ui-sref="main.object({id: ${element.name.value_id.substring(1)}})">
         <div class="list__image" layout="row" layout-align="center center">
-          <img ng-src="{{'${element.image}'}}" alt="${element.name.value}" ng-if="${!!element.image}">
+          <img ng-src="{{ '${element.image}' }}" alt="${element.name.value}" ng-if="${!!element.image}">
         </div>
         <div class="md-list-item-text" layout="column">
           <p>${element.name.value}</p>

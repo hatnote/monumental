@@ -1,18 +1,8 @@
 @import '../../styles/variables';
 @import '../../styles/responsive';
 
-.toolbar {
-  .md-toolbar-tools {
-    max-width: 980px;
-    padding: 0;
+mo-main {
+  display: block;
 
-    md-autocomplete {
-      width: 300px;
-    }
-  }
-
-  &.toolbar--wide .md-toolbar-tools {
-    max-width: 100%;
-    padding-left: 15px;
-  }
+  @include x-small { padding-top: 54px; }
 }

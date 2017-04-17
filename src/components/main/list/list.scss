@@ -2,7 +2,57 @@
 @import '../../../styles/responsive';
 
 mo-list {
+  .container {
+    overflow: hidden;
+
+    & > md-content {
+      @include x-small { margin: 10px 10px 0; }
+    }
+  }
+
+  .content {
+    touch-action: none;
+    -webkit-transition: .3s ease all;
+    transition: .3s ease all;
+    
+    @include x-small { width: calc(200vw - 70px); }
+
+    &.content--scrolled {
+      -webkit-transform: translateX(-48%);
+      transform: translateX(-48%);
+
+      @include x-small {
+        .list__map .list__swiper {
+          content: "";
+          width: 35px;
+          left: -35px;
+          top: 0;
+          background: transparent;
+          position: absolute;
+          height: 100%;
+          z-index: 1010;
+        }
+      }
+    }
+
+    &.content--unscrolled {
+      @include x-small {
+        .list .list__swiper {
+          content: "";
+          width: 35px;
+          right: -35px;
+          top: 0;
+          background: transparent;
+          position: absolute;
+          height: 100%;
+          z-index: 1010;
+        }
+      }
+    }
+  }
+
   .list {
+    position: relative;
     width: 450px;
   }
 
@@ -11,9 +61,29 @@ mo-list {
     background: white;
     border-bottom: 1px solid $softGrey;
 
+    @include x-small { padding: 15px 20px; }
+
     .header__primary {
       margin-bottom: 10px;
       border-bottom: 1px solid $softGrey;
+
+      @include x-small { margin-bottom: 5px; }
+
+      &.header__primary--compact {
+        margin-bottom: 0;
+        border-bottom: 0;
+
+        .header__subtitle {
+          margin-bottom: 0;
+        }
+
+        .md-icon-button {
+          width: 30px;
+          min-height: 30px;
+          height: 30px;
+          padding: 0px;
+        }
+      }
     }
 
     .header__secondary {
@@ -50,11 +120,15 @@ mo-list {
       margin-bottom: 0;
       font-size: 32px;
       line-height: 32px;
+
+      @include x-small { font-size: 24px; line-height: 24px; }
     }
 
     .header__subtitle {
       margin-top: 0; 
       margin-bottom: 10px;
+
+      @include x-small { font-size: 20px; margin-bottom: 5px; }
     }
 
     .header__place {
@@ -66,6 +140,17 @@ mo-list {
     padding: 15px 25px;
     background: #fafafa;
     border-bottom: 1px solid $softGrey;
+
+    @include x-small { padding: 10px 20px; }
+
+    .md-icon-button {
+      @include x-small {
+        width: 30px;
+        min-height: 30px;
+        height: 30px;
+        padding: 0px;
+      }
+    }
 
     md-input-container {
       margin-bottom: 0;
@@ -84,8 +169,14 @@ mo-list {
     border: 1px solid $softGrey;
     border-radius: 2px;
 
+    @include x-small { margin-right: 0; }
+
     md-list-item.md-2-line {
       border-bottom: 1px solid $softGrey;
+
+      .md-button {
+        @include x-small { padding: 0 10px; }
+      }
     }
   }
 
@@ -95,6 +186,13 @@ mo-list {
     height: 75px;
     background: $softGrey;
     margin: 15px 15px 15px 0;
+
+    @include x-small { 
+      width: 65px;
+      min-width: 65px;
+      height: 65px;
+      margin: 10px 10px 10px 0;
+    }
     
     img {
       max-width: 100%;
@@ -103,9 +201,13 @@ mo-list {
   }
 
   .list__map {
+    position: relative;
+    z-index: 10;
     background: white;
     border: 1px solid $softGrey;
     border-radius: 2px;
+
+    @include x-small { margin-left: 10px; }
 
     .angular-leaflet-map {
       width: 100%;

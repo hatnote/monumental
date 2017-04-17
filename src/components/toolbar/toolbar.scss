@@ -1,10 +1,32 @@
+@import '../../styles/variables';
+@import '../../styles/responsive';
+
 .toolbar {
   padding: 0 5px;
   min-height: 54px;
   max-height: 54px;
+  height: 54px;
+  transition: all .2s ease-in-out;
 
-  .md-toolbar-tools-wide {
-    max-width: none;
+  @include x-small {
+    position: fixed;
+    top: 0;
+    z-index: 50;
+    padding-right: 10px;
+  }
+
+  &.toolbar--hidden {
+    @include x-small {
+      top: -55px;
+      transition: all .2s ease-in-out;
+    }
+  }
+
+  &.toolbar--shown {
+    @include x-small {
+      top: 0;
+      transition: all .2s ease-in-out;
+    }
   }
 
   md-autocomplete {
@@ -26,8 +48,14 @@
   }
   
   .md-toolbar-tools {
+    max-width: 980px;
     max-height: 54px;
     height: 54px;
+    padding: 0;
+  }
+  
+  .md-toolbar-tools-wide {
+    max-width: none;
   }
 }
 
@@ -44,5 +72,27 @@
 
   .toolbar__column {
     max-width: 980px;
+  }
+}
+
+.md-sidenav-backdrop {
+  position: fixed;
+}
+
+.md-sidenav-left {
+  position: fixed;
+
+  .sidenav__header {
+    max-height: 100px;
+    margin-top: -10px;
+    padding-top: 50px;
+    padding-bottom: 5px;
+    background: #2980b9;
+    color: white;
+    font-weight: bold;
+  }
+
+  .md-subheader {
+    background: transparent;
   }
 }

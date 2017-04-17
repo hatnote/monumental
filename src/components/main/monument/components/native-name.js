@@ -1,7 +1,7 @@
 const NativeNameComponent = {
   bindings: { monument: '=' },
   controller,
-  template: '<span ng-repeat="name in ::$ctrl.getNativeLabel()">{{ ::name }}<span ng-if="!$last"> · </span></span>',
+  template: '<span ng-repeat="name in ::$ctrl.getNativeLabel() track by $index">{{ ::name }}<span ng-if="!$last"> · </span></span>',
 };
 
 function controller(langService) {

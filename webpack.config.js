@@ -1,5 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
+
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
@@ -7,16 +9,28 @@ var package = require('./package.json');
 
 var config = {
   context: path.join(__dirname, 'src'),
-  entry: './index.js',
+  entry: ['babel-polyfill', './index.js'],
   output: {
     path: path.join(__dirname, 'monumental', 'static', 'assets'),
     publicPath: 'assets/',
     filename: 'bundle.js?v=' + package.version
   },
-  plugins: [new HtmlWebpackPlugin({
-    template: 'index_local.ejs',
-    filename: path.join('..', 'index.html')
-  })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index_local.ejs',
+      filename: path.join('..', 'index.html')
+    }),
+    new CopyWebpackPlugin([
+      { from: 'manifest_local.json', to: path.join('..', 'manifest.json') },
+      { from: 'app-icons', to: 'app-icons' }
+    ]),
+    function () {
+      this.plugin('watch-run', function (watching, callback) {
+        console.log('\n\n---- ' + new Date().toISOString().replace('T', ' ').replace(/\.[0-9]+Z/, '') + ' ----');
+        callback();
+      })
+    }
+  ],
   module: {
     loaders: [
       {
@@ -24,7 +38,8 @@ var config = {
         exclude: /node_modules/,
         loader: 'babel',
         query: {
-          presets: ['es2015']
+          plugins: ['transform-runtime'],
+          presets: ['es2015', 'stage-2']
         }
       },
       {
@@ -68,6 +83,10 @@ if (ENV === 'prod' || ENV === 'dev') {
       template: ENV === 'dev' ? 'index_dev.ejs' : 'index_prod.ejs',
       filename: path.join('..', 'index.html')
     }),
+    new CopyWebpackPlugin([
+      { from: 'manifest_dev.json', to: path.join('..', 'manifest.json') },
+      { from: 'app-icons', to: 'app-icons' }
+    ]),
     new ngAnnotatePlugin({
       add: true
     }),

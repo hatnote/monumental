@@ -7,6 +7,7 @@ import 'angular-local-storage';
 import 'angular-material';
 import 'angular-messages';
 import 'angular-sanitize';
+import 'angular-swipe';
 import 'angular-ui-router';
 import 'leaflet';
 import 'leaflet.markercluster';
@@ -33,6 +34,7 @@ angular
     'ngSanitize',
     'ui.router',
     'restangular',
+    'swipe',
     'infinite-scroll',
     'leaflet-directive',
     'LocalStorageModule',
@@ -42,6 +44,12 @@ angular
   .config(themeConfig)
   .config($logProvider => {
     $logProvider.debugEnabled(false);
+  })
+  .run(($rootScope, $state, $stateParams) => {
+    $rootScope.$on('$stateChangeSuccess', () => {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    });
   });
 
 
@@ -109,7 +117,7 @@ function themeConfig($mdThemingProvider, $provide) {
     600: '#2980b9',
   }));
 
-  tp.alwaysWatchTheme(true);
+  // tp.alwaysWatchTheme(true);
   tp.theme('default')
     .primaryPalette('belize')
     .accentPalette('orange');

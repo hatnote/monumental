@@ -12,7 +12,7 @@ const wdService = function ($http, $q, langService) {
     action: 'wbgetentities',
     format: 'json',
     props: ['info', 'labels', 'aliases', 'descriptions', 'claims', 'datatype', 'sitelinks'],
-    languages: langService.getUserLanguages(),
+    languages: langService.getUserLanguages().map(lang => lang.code),
     callback: 'JSON_CALLBACK',
   };
 
@@ -83,14 +83,15 @@ const wdService = function ($http, $q, langService) {
       search: text,
       type: 'item',
       language: defaultParams.languages[0],
+      uselang: defaultParams.languages[0],
     }).then(response => response.search);
   }
 
-  function getSPARQL(query) {
-    return $http.get('https://query.wikidata.org/sparql', {
+  function getSPARQL(query, params) {
+    return $http.get('https://query.wikidata.org/sparql', angular.extend({}, {
       params: { query: query.replace(/ {2,}/g, ' ') },
       cache: false,
-    }).then(data => data.data.results.bindings);
+    }, params)).then(data => data.data.results.bindings);
   }
 
   /**

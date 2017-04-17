@@ -1,14 +1,16 @@
 @import 'variables';
+@import 'responsive';
 
 html, body {
-  height: auto !important;
   min-width: 100%;
   min-height: 100%;
 }
 
 body {
   color: $darkGrey;
-  font: 16px Roboto, Arial, sans-serif; 
+  font: 16px Roboto, Arial, sans-serif;
+
+  @include x-small { font-size: 14px; }
 
   md-toast.md-bottom {
     position: fixed;
@@ -22,6 +24,8 @@ body {
 ::-webkit-scrollbar {
   width: 5px;
   background: transparent;
+
+  @include x-small { display: none; }
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.2);
@@ -38,6 +42,8 @@ body {
   & > md-content {
     margin: 20px;
     background: transparent;
+
+    @include x-small { margin: 20px 10px; }
   }
 }
 
@@ -57,7 +63,11 @@ a, a.link {
   color: $lightGrey;
 }
 
-small {
+.big {
+  font-size: larger;
+}
+
+small, .small {
   font-size: 95%;
 }
 
@@ -81,6 +91,11 @@ small {
   }
 }
 
+.no-margin {
+  margin: 0;
+  padding: 0;
+}
+
 .invisible {
   width: 0;
   height: 0;
@@ -89,4 +104,11 @@ small {
 
 strong {
   font-weight: 500;
+}
+
+.loading-line {
+  display: block;
+  background: #f1f0f5;
+  height: 8px;
+  margin: 9px 25px 9px 5px;
 }
