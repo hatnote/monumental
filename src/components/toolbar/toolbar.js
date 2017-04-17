@@ -40,7 +40,7 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
       const ids = response.map(prop => prop.value_id);
       if (ids.includes('Q811979')) {
         $state.go('main.object', { id: item.id.substring(1) });
-      } else if (ids.includes('Q1496967')) {
+      } else if (ids.includes('Q56061')) {
         $state.go('main.list', { id: item.id.substring(1) });
       } else {
         $state.go('main.object', { id: item.id.substring(1) });
