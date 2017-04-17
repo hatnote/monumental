@@ -33,7 +33,7 @@
     min-height: 80vh;
     text-align: center;
 
-    @include x-small { min-height: 45vh; }
+    @include x-small { min-height: 100vh; }
 
     img {
       max-width: 100%;
@@ -67,6 +67,15 @@
 
     .md-title {
       margin-top: 0;
+    }
+
+    .md-2-line {
+      padding: 0;
+
+      .material-icons {
+        margin-right: 20px;
+        margin-left: 5px;
+      }
     }
   }
 }

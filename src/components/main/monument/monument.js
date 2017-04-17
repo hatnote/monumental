@@ -148,7 +148,11 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
   }
 
   function openImage(image, event) {
-    imageService.openImage(image, event);
+    imageService.openImage({
+      image,
+      event,
+      list: vm.images,
+    });
   }
 }
 

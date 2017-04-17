@@ -3,16 +3,18 @@
     <md-dialog-content layout="row" layout-align="start stretch"
                         layout-xs="column" layout-align-xs="start stretch">
       <div class="dialog__image-container" flex flex-xs="none"
-            layout="row" layout-align="center center">
+            layout="row" layout-align="center center"
+            ng-swipe-right="nextImage()"
+            ng-swipe-left="prevImage()">
         <md-button class="md-icon-button dialog__close" ng-click="close()">
           <md-icon>close</md-icon>
         </md-button>
-        <img ng-if="loaded" ng-src="{{ ::image.thumburlbig }}">
+        <img load-src="{{ image.thumburlbig }}">
       </div>
       <div class="dialog__image-description"
          layout="column" layout-align="start stretch">
-        <h2 class="md-title">{{ ::image.canonicaltitle }}</h2>
-        <div>by {{ ::author | htmlToPlaintext }}</div>
+        <h2 class="md-title">{{ (description || image.canonicaltitle) | htmlToPlaintext }}</h2>
+        <div>{{ author | htmlToPlaintext }} / {{ license }}</div>
         <md-list flex>
           <md-list-item class="md-2-line">
             <md-icon>
@@ -20,8 +22,8 @@
               <md-tooltip>File upload date</md-tooltip>
             </md-icon>
             <div class="md-list-item-text">
-              <h3>{{ ::date | date }}</h3>
-              <p>{{ ::date | date:'EEEE' }}, {{ ::date | date:'H:mm' }}</p>
+              <h3>{{ date | date }}</h3>
+              <p>{{ date | date:'EEEE' }}, {{ date | date:'H:mm' }}</p>
             </div>
           </md-list-item>
           <md-list-item class="md-2-line">
@@ -31,15 +33,18 @@
             </md-icon>
             <div class="md-list-item-text">
               <h3>{{ (image.width * image.height) / 1000000 | number:2 }} Mpix</h3>
-              <p>{{ ::image.width }} × {{ ::image.height }}</p>
+              <p>{{ image.width }} × {{ image.height }}</p>
             </div>
           </md-list-item>
           <md-divider></md-divider>
-          <md-button class="md-primary" flex
-                      ng-href="{{ ::image.descriptionurl }}" target="_blank">
-            Wikimedia Commons
-          </md-button>
+          <md-list-item class="md-2-line">
+            <md-button class="md-primary" flex
+                        ng-href="{{ image.descriptionurl }}" target="_blank">
+              Wikimedia Commons
+            </md-button>
+          </md-list-item>
         </md-list>
+        <div flex></div>
       </div>
     </md-dialog-content>
   </form>
