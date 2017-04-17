@@ -16,13 +16,17 @@
   }
 
   &.toolbar--hidden {
-    top: -55px;
-    transition: all .2s ease-in-out;
+    @include x-small {
+      top: -55px;
+      transition: all .2s ease-in-out;
+    }
   }
 
   &.toolbar--shown {
-    top: 0;
-    transition: all .2s ease-in-out;
+    @include x-small {
+      top: 0;
+      transition: all .2s ease-in-out;
+    }
   }
 
   md-autocomplete {
