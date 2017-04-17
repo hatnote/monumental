@@ -45,6 +45,7 @@
         md-item-text="item.label"
         md-min-length="1"
         placeholder="Search for monument or location"
+        ng-model-options="{ debounce: 500 }"
         md-menu-class="autocomplete-custom-template">
       <md-item-template>
         <strong>{{item.label}}</strong>
