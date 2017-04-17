@@ -83,6 +83,7 @@ const wdService = function ($http, $q, langService) {
       search: text,
       type: 'item',
       language: defaultParams.languages[0],
+      uselang: defaultParams.languages[0],
     }).then(response => response.search);
   }
 
