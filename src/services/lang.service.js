@@ -61,6 +61,8 @@ const LangService = function ($filter, $q, localStorageService) {
     Q191: ['et'],
     Q115: ['am'],
     Q702: ['en'],
+    Q55: ['nl', 'fy'],
+    Q16: ['en', 'fr'],
     Q712: ['en'],
     Q33: ['fi', 'sv'],
     Q142: ['fr'],
