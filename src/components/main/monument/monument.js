@@ -166,5 +166,20 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
 export default () => {
   angular
     .module('monumental')
-    .component('moMonument', MonumentComponent);
+    .component('moMonument', MonumentComponent)
+    .directive('loadSrc', () => ({
+      link: (scope, element, attrs) => {
+        let img = null;
+        const loadImage = () => {
+          element[0].src = '//upload.wikimedia.org/wikipedia/commons/f/f8/Ajax-loader%282%29.gif';
+          img = new Image();
+          img.src = attrs.loadSrc;
+          img.onload = () => { element[0].src = attrs.loadSrc; };
+        };
+        scope.$watch(() => attrs.loadSrc, (newVal, oldVal) => {
+          if (oldVal !== newVal) { loadImage(); }
+        });
+        loadImage();
+      },
+  }));
 };

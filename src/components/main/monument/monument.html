@@ -9,7 +9,7 @@
             <a class="monument__image-link" layout="row" layout-align="center center"
                 ng-repeat="image in $ctrl.image"
                 ng-click="$ctrl.openImage(image, $event)">
-              <img ng-src="{{image.thumburl}}">
+              <img load-src="{{image.thumburl}}">
             </a>
           </div>
         </div>
