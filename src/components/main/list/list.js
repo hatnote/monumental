@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import './list.scss';
 import template from './list.html';
 
@@ -34,15 +36,20 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   }
 
   function getList() {
-    return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel
-    (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel) (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image)
+    return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
+    (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?instance ?instanceLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
       ?item p:P1435 ?monument; wdt:P131* wd:${id}; wdt:P131 ?admin; wdt:P625 ?coord .
       OPTIONAL { ?item wdt:P18 ?image } 
       OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0].code}")) }
+      # OPTIONAL { ?item wdt:P31 ?instance }
+      ?item wdt:P31 ?instance . ?item wdt:P31/wdt:P279* wd:Q44539
+      OPTIONAL { ?item wdt:P149 ?style }
+      OPTIONAL { ?item wdt:P84 ?architect }
+      # ?item wdt:P84 ?architect . ?item wdt:P84 wd:Q41508
       SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
     }
-    GROUP BY ?item ?itemLabel
+    GROUP BY ?item ?itemLabel ?instance ?instanceLabel ?style ?styleLabel ?architect ?architectLabel
     ORDER BY ?itemLabel`);
   }
 
@@ -76,20 +83,82 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
       .then(() => setTitle())
       .then(() => getList())
       .then((data) => {
-        vm.list = data.map(element => ({
-          name: {
-            value_id: element.item.value.substring(element.item.value.indexOf('/Q') + 1),
-            value: element.itemLabel.value,
-          },
-          admin: {
-            value_id: element.admin.value.substring(element.admin.value.indexOf('/Q') + 1),
-            value: element.adminLabel ? element.adminLabel.value : element.admin.value.substring(element.admin.value.indexOf('/Q') + 1),
-          },
-          coord: element.coord.value ? element.coord.value.replace('Point(', '').replace(')', '').split(' ') : false,
-          image: element.image ? element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file') + '&width=120' : false
-        }));
+        vm.list = data.map((element) => {
+          const obj = {
+            name: {
+              value_id: URItoID(element.item.value),
+              value: element.itemLabel.value,
+            },
+            admin: {
+              value_id: URItoID(element.admin.value),
+              value: element.adminLabel ? element.adminLabel.value : URItoID(element.admin.value),
+            },
+            architect: [],
+            style: [],
+            instance: [],
+          };
+          if (element.coord.value) {
+            const coord = element.coord.value.replace('Point(', '').replace(')', '').split(' ');
+            obj.coord = coord;
+          }
+          if (element.image) {
+            const image = `${element.image.value.replace('wiki/Special:FilePath', 'w/index.php?title=Special:Redirect/file')}&width=120`;
+            obj.image = image;
+          }
+          if (element.architect) {
+            obj.architect = [{
+              value_id: URItoID(element.architect.value),
+              value: element.architectLabel.value,
+            }];
+          }
+          if (element.style) {
+            obj.style = [{
+              value_id: URItoID(element.style.value),
+              value: element.styleLabel.value,
+            }];
+          }
+          if (element.instance) {
+            obj.instance = [{
+              value_id: URItoID(element.instance.value),
+              value: element.instanceLabel.value,
+            }];
+          }
+          return obj;
+        }).filter((element, index, array) => {
+          const firstIndex = array.findIndex(t => t.name.value_id === element.name.value_id);
+          if (firstIndex !== index) {
+            const firstElement = array[firstIndex];
+            ['architect', 'style', 'instance'].forEach((param) => {
+              if (element[param].length) {
+                firstElement[param].push(_.first(element[param]));
+                firstElement[param] = _.uniqBy(firstElement[param], 'value_id');
+              }
+            });
+            return false;
+          }
+          return true;
+        });
         return vm.list;
-      }).then((list) => {
+      })
+      .then((list) => {
+        const stats = {
+          images: 0,
+          architect: [],
+          style: [],
+          instance: [],
+        };
+        list.forEach((element) => {
+          if (element.image) { stats.images += 1; }
+          ['architect', 'style', 'instance'].forEach((param) => {
+            if (element[param].length) {
+              Array.prototype.push.apply(stats[param], element[param]);
+              stats[param] = _.uniqBy(stats[param], 'value_id');
+            }
+          });
+        });
+        return list;
+      })
+      .then((list) => {
         const bounds = [];
         list.forEach((element) => {
           if (element.coord) {
@@ -130,6 +199,10 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   function setTitle() {
     const title = vm.place.labels[vm.lang.code] || vm.place.labels.en || vm.place.id;
     $window.document.title = `${title} – Monumental`;
+  }
+
+  function URItoID(uri) {
+    return uri.substring(uri.indexOf('/Q') + 1);
   }
 }
 
