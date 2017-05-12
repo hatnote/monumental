@@ -7,7 +7,7 @@ import barcode from './../../../images/barcode.svg';
 
 const ListComponent = { controller, template };
 
-function controller($state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
+function controller($scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -17,7 +17,7 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
   vm.image = [];
   vm.lang = langs[0];
   vm.listParams = {};
-  vm.map = mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } });
+  vm.map = {};
   vm.mobile = {};
   vm.showMyMap = () => { vm.contentScrolled = true; };
   vm.showMyList = () => { vm.contentScrolled = false; };
@@ -39,11 +39,17 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
     return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
     (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?instance ?instanceLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
-      ?item p:P1435 ?monument; wdt:P131* wd:${id}; wdt:P131 ?admin; wdt:P625 ?coord .
+      hint:Query hint:optimizer "None" .
+      ?admin wdt:P131* wd:${id} .
+      ?item wdt:P131 ?admin .
+      ?item p:P1435 ?monument; wdt:P625 ?coord .
+      
       OPTIONAL { ?item wdt:P18 ?image } 
       OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0].code}")) }
-      # OPTIONAL { ?item wdt:P31 ?instance }
-      ?item wdt:P31 ?instance . ?item wdt:P31/wdt:P279* wd:Q44539
+      
+      OPTIONAL { ?item wdt:P31 ?instance }
+      # ?item wdt:P31 ?instance . ?instance wdt:P279* wd:Q1802963 .
+      
       OPTIONAL { ?item wdt:P149 ?style }
       OPTIONAL { ?item wdt:P84 ?architect }
       # ?item wdt:P84 ?architect . ?item wdt:P84 wd:Q41508
@@ -160,16 +166,18 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
       })
       .then((list) => {
         const bounds = [];
-        list.forEach((element) => {
+        const markers = {};
+        list.slice(0, 2000).forEach((element) => {
           if (element.coord) {
-            vm.map.markers[element.name.value_id] = {
+            markers[element.name.value_id] = {
+              data: element,
               lat: +element.coord[1],
               lng: +element.coord[0],
               message: `
                   <md-list-item class="md-2-line"
                       ui-sref="main.object({id: ${element.name.value_id.substring(1)}})">
                   <div class="list__image" layout="row" layout-align="center center">
-                    <img ng-src="{{'${element.image}'}}" alt="${element.name.value}" ng-if="${!!element.image}">
+                    <img ng-src="{{'${element.image}'}}" ng-if="${!!element.image}">
                   </div>
                   <div class="md-list-item-text" layout="column">
                     <p>${element.name.value}</p>
@@ -181,16 +189,26 @@ function controller($state, $stateParams, $timeout, $window, langService, leafle
             };
             bounds.push([+element.coord[1], +element.coord[0]]);
           }
+
+          vm.map = angular.extend({},
+            mapService.getMapInstance({ center: { lat: 49.4967, lng: 12.4805, zoom: 4 } }),
+            { markers: angular.copy(markers) });
         });
         $timeout(() => {
           vm.showMap = true;
-          leafletData.getMap().then(function (map) {
+          leafletData.getMap().then((map) => {
             if (bounds.length) {
               map.fitBounds(bounds, { padding: [25, 25] });
             } else if (vm.place.claims.P625) {
               const coords = vm.place.claims.P625.values[0].value;
               vm.map.center = { lat: coords.latitude, lng: coords.longitude, zoom: 10 };
             }
+          });
+          $scope.$on('leafletDirectiveMarker.mouseover', (event, marker) => {
+            marker.leafletObject.openPopup();
+          });
+          $scope.$on('leafletDirectiveMarker.mouseout', () => {
+            leafletData.getMap().then((map) => { map.closePopup(); });
           });
         });
       });

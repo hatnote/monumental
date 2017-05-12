@@ -25,12 +25,25 @@ const MapService = () => {
 
   function getMapInstance(options) {
     return angular.extend({
+      markersWatchOptions: {
+        doWatch: false,
+        isDeep: false,
+        individual: {
+          doWatch: false,
+          isDeep: false,
+        },
+      },
       center: {
         lat: 51.686,
         lng: 19.545,
         zoom: 7,
       },
       markers: {},
+      events: {
+        markers: {
+          enable: ['click', 'mouseover', 'mouseout'],
+        },
+      },
       layers: {
         baselayers: {
           wiki: {
@@ -64,6 +77,12 @@ const MapService = () => {
               showCoverageOnHover: false,
               zoomToBoundsOnClick: true,
               disableClusteringAtZoom: 17,
+              animate: false,
+              iconCreateFunction: cluster => new L.DivIcon({
+                html: `<div><span>${cluster.getChildCount()}</span></div>`,
+                className: 'marker-cluster marker-cluster-small',
+                iconSize: new L.Point(40, 40),
+              }),
             },
           },
         },

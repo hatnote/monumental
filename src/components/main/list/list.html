@@ -128,8 +128,10 @@
     <div class="list__map" flex flex-xs="50">
       <leaflet ng-if="$ctrl.showMap" flex
                 markers="$ctrl.map.markers"
+                markers-watch-options="$ctrl.map.markersWatchOptions"
                 layers="::$ctrl.map.layers"
-                center="::$ctrl.map.center"></leaflet>
+                center="::$ctrl.map.center"
+                event-broadcast="$ctrl.map.events"></leaflet>
       <div class="list__swiper"
             ng-click="$ctrl.showMyList()"
             ng-swipe-right="$ctrl.showMyList()"></div>
