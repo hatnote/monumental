@@ -77,7 +77,7 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.list', {
-      url: '/list/:id',
+      url: '/list/:id?heritage&image&instance',
       template: '<mo-list></mo-list>',
       resolve: {},
     })
@@ -120,7 +120,7 @@ function themeConfig($mdThemingProvider, $provide) {
   // tp.alwaysWatchTheme(true);
   tp.theme('default')
     .primaryPalette('belize')
-    .accentPalette('orange');
+    .accentPalette('grey');
 
   $provide.value('themeProvider', tp);
 }

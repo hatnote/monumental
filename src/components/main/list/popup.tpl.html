@@ -1,0 +1,9 @@
+<md-list-item class="md-2-line" ui-sref="main.object({id: ${mid.substring(1)}})">
+  <div class="list__image" layout="row" layout-align="center center">
+    <img ng-src="{{'${element.image}'}}" ng-if="${!!element.image}">
+  </div>
+  <div class="md-list-item-text" layout="column">
+    <p>${element.name.value}</p>
+    <p class="muted">${element.admin.value}</p>
+  </div>
+</md-list-item>

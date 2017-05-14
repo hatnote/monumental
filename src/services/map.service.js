@@ -26,7 +26,7 @@ const MapService = () => {
   function getMapInstance(options) {
     return angular.extend({
       markersWatchOptions: {
-        doWatch: false,
+        doWatch: true,
         isDeep: false,
         individual: {
           doWatch: false,
