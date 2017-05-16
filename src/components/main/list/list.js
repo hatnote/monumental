@@ -15,11 +15,15 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
   let langs = langService.getUserLanguages();
 
   vm.dict = {
-    instances: [
-      { label: 'Art', value: 'Q838948' },
-      { label: 'Cemetery', value: 'Q39614' },
-      { label: 'Place of worship', value: 'Q1370598' },
-      { label: 'Residential building', value: 'Q11755880' },
+    types: [
+      { label: 'Art', value: '838948' },
+      { label: 'Building', value: '41176' },
+      { label: 'Castle', value: '23413' },
+      { label: 'Cemetery', value: '39614' },
+      { label: 'Manor house', value: '879050' },
+      { label: 'Park', value: '22698' },
+      { label: 'Place of worship', value: '1370598' },
+      { label: 'Residential building', value: '11755880' },
     ],
   };
   vm.filter = angular.extend({ heritage: 1 }, $stateParams);
@@ -36,6 +40,7 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
   vm.filterMap = filterMap;
   vm.showMyMap = () => { vm.contentScrolled = true; };
   vm.showMyList = () => { vm.contentScrolled = false; };
+  vm.zoomToID = zoomToID;
 
   if (!id || id === 'Q') {
     vm.loading = false;
@@ -49,18 +54,17 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
       images: 0,
       architect: [],
       style: [],
-      instance: [],
+      type: [],
     };
     list.forEach((element) => {
       if (element.image) { stats.images += 1; }
-      ['architect', 'style', 'instance'].forEach((param) => {
+      ['architect', 'style', 'type'].forEach((param) => {
         if (element[param].length) {
           Array.prototype.push.apply(stats[param], element[param]);
           stats[param] = _.uniqBy(stats[param], 'value_id');
         }
       });
     });
-    console.log(stats);
     return stats;
   }
 
@@ -70,32 +74,43 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
     });
   }
 
-  function getList() {
-    const heritageOptions = ['MINUS { ?item p:P1435 ?monument . }', '?item p:P1435 ?monument .'];
-    const imageOptions = ['MINUS { ?item wdt:P18 ?image . }', '?item wdt:P18 ?image .'];
+  function getHeritageFilter() {
+    const query = '?item p:P1435 ?monument .';
+    const value = vm.filter.heritage;
+    if (angular.isUndefined(value)) { return `OPTIONAL { ${query} }`; }
+    if (parseInt(value, 10) === 0) { return `MINUS { ${query} }`; }
+    if (parseInt(value, 10) === 1) { return `${query}`; }
+    if (parseInt(value, 10) > 1) { return `?item wdt:P1435 wd:Q${value} .`; }
+    return '';
+  }
 
-    const heritage = heritageOptions[vm.filter.heritage] || 'OPTIONAL { ?item p:P1435 ?monument . }';
+  function getList() {
+    const imageOptions = ['MINUS { ?item wdt:P18 ?image . }', '?item wdt:P18 ?image .'];
     const image = imageOptions[vm.filter.image] || 'OPTIONAL { ?item wdt:P18 ?image . }';
 
+    const wikipediaOptions = ['FILTER NOT EXISTS { ?article schema:about ?item } .', 'FILTER EXISTS { ?article schema:about ?item } .'];
+    const wikipedia = wikipediaOptions[vm.filter.wikipedia] || '';
+
     return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
-    (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?instance ?instanceLabel ?style ?styleLabel ?architect ?architectLabel
+    (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
       hint:Query hint:optimizer "None" .
       ?admin wdt:P131* wd:${id} .
       ?item wdt:P131 ?admin .
       ?item wdt:P625 ?coord .
 
-      ${heritage}
+      ${getHeritageFilter()}
       ${image}
-      ${vm.filter.instance ? `?item wdt:P31 ?instance . ?instance wdt:P279* wd:${vm.filter.instance} .` : 'OPTIONAL { ?item wdt:P31?instance }'}
+      ${vm.filter.type ? `?item wdt:P31 ?type . ?type wdt:P279* wd:Q${vm.filter.type} .` : 'OPTIONAL { ?item wdt:P31 ?type }'}
 
       OPTIONAL { ?admin rdfs:label ?adminLabel . FILTER(LANG(?adminLabel) IN ("${langs[0].code}")) }
       OPTIONAL { ?item wdt:P149 ?style }
       OPTIONAL { ?item wdt:P84 ?architect }
       # ?item wdt:P84 ?architect . ?item wdt:P84 wd:Q41508
+      ${wikipedia}
       SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
     }
-    GROUP BY ?item ?itemLabel ?instance ?instanceLabel ?style ?styleLabel ?architect ?architectLabel
+    GROUP BY ?item ?itemLabel ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
     ORDER BY ?itemLabel`);
   }
 
@@ -209,7 +224,7 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
         },
         architect: [],
         style: [],
-        instance: [],
+        type: [],
       };
       if (element.coord.value) {
         const coord = element.coord.value.replace('Point(', '').replace(')', '').split(' ');
@@ -231,10 +246,10 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
           value: element.styleLabel.value,
         }];
       }
-      if (element.instance) {
-        obj.instance = [{
-          value_id: URItoID(element.instance.value),
-          value: element.instanceLabel.value,
+      if (element.type) {
+        obj.type = [{
+          value_id: URItoID(element.type.value),
+          value: element.typeLabel.value,
         }];
       }
       return obj;
@@ -242,7 +257,7 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
       const firstIndex = array.findIndex(t => t.name.value_id === element.name.value_id);
       if (firstIndex !== index) {
         const firstElement = array[firstIndex];
-        ['architect', 'style', 'instance'].forEach((param) => {
+        ['architect', 'style', 'type'].forEach((param) => {
           if (element[param].length) {
             firstElement[param].push(_.first(element[param]));
             firstElement[param] = _.uniqBy(firstElement[param], 'value_id');
@@ -294,6 +309,14 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
 
   function URItoID(uri) {
     return uri.substring(uri.indexOf('/Q') + 1);
+  }
+
+  function zoomToID(pinId) {
+    const marker = vm.map.markers[pinId];
+    leafletData.getMap().then((map) => {
+      map.setView([marker.lat, marker.lng], 17);
+    });
+    vm.map.markers[pinId].focus = true;
   }
 }
 

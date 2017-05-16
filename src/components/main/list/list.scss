@@ -165,7 +165,12 @@ mo-list {
       }
 
       md-select .md-select-value {
-        min-width: 200px;
+        min-width: 130px;
+      }
+
+      &.md-input-has-value label:not(.md-no-float) {
+        -webkit-transform: translate3d(-1px, 14px, 0) scale(0.75);
+        transform: translate3d(-1px, 14px, 0) scale(0.75);
       }
     }
   }
@@ -187,6 +192,18 @@ mo-list {
 
       .md-button {
         @include x-small { padding: 0 10px; }
+      }
+
+      .md-icon-button {
+        display: none;
+      }
+
+      &.md-2-line--active {
+        background-color: #e5e5e5;
+
+        .md-icon-button {
+          display: block;
+        }
       }
     }
   }

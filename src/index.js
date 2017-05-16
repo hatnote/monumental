@@ -77,7 +77,7 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.list', {
-      url: '/list/:id?heritage&image&instance',
+      url: '/list/:id?heritage&image&type&wikipedia',
       template: '<mo-list></mo-list>',
       resolve: {},
     })
