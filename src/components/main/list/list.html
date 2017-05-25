@@ -63,7 +63,13 @@
     <div class="list__subheader"
           layout="row" layout-align="start center"
           ng-if="$ctrl.mobile.fullHeader">
-      <span ng-if="$ctrl.loading !== 'data'">{{$ctrl.list.length}} results</span>
+      <div class="list__quick-filter" layout="row" layout-align="start center">
+        <md-input-container>
+          <label>Quick filter</label>
+          <input ng-model="$ctrl.searchText">
+        </md-input-container>
+        <span ng-if="$ctrl.loading !== 'data'">{{$ctrl.list.length}} results</span>
+      </div>
       <div flex></div>
       <div class="list__filter" layout="row" layout-align="center center">
 
@@ -127,7 +133,7 @@
             layout="column" layout-align="start stretch">
         <md-virtual-repeat-container md-top-index="$ctrl.topIndex" flex>
           <md-list-item class="md-2-line"
-                          md-virtual-repeat="item in $ctrl.list"
+                          md-virtual-repeat="item in $ctrl.list | filter:$ctrl.searchText"
                           ng-class = "{ 'md-2-line--active' : (item.hovered || $ctrl.highlighted === item.name.value_id) }"
                           ng-mouseenter="item.hovered = true"
                           ng-mouseleave="item.hovered = false"
