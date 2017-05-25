@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 import '../images/marker-red.png';
 import '../images/marker-shadow.png';
 
@@ -54,6 +56,8 @@ const MapService = () => {
               subdomains: ['a', 'b', 'c'],
               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
+              maxNativeZoom: 18,
+              maxZoom: 21,
             },
           },
           osm: {
@@ -64,6 +68,8 @@ const MapService = () => {
               subdomains: ['a', 'b', 'c'],
               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
+              maxNativeZoom: 19,
+              maxZoom: 21,
             },
           },
         },
