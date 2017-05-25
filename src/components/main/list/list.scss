@@ -173,6 +173,18 @@ mo-list {
         transform: translate3d(-1px, 14px, 0) scale(0.75);
       }
     }
+
+    .list__quick-filter {
+      md-input-container {
+        width: 410px;
+      }
+      span {
+        margin-left: 25px;
+        font-weight: 500;
+        font-size: 90%;
+        text-transform: uppercase;
+      }
+    }
   }
 
   md-checkbox, md-checkbox:last-of-type {
