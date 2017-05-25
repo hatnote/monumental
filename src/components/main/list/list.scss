@@ -194,14 +194,14 @@ mo-list {
         @include x-small { padding: 0 10px; }
       }
 
-      .md-icon-button {
+      .list__action {
         display: none;
       }
 
       &.md-2-line--active {
         background-color: #e5e5e5;
 
-        .md-icon-button {
+        .list__action {
           display: block;
         }
       }

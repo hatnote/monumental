@@ -137,7 +137,7 @@
                           ng-class = "{ 'md-2-line--active' : (item.hovered || $ctrl.highlighted === item.name.value_id) }"
                           ng-mouseenter="item.hovered = true"
                           ng-mouseleave="item.hovered = false"
-                          ui-sref="main.object({id: item.name.value_id.substring(1)})">
+                          ng-click="$ctrl.zoomToID(item.name.value_id)">
             <div class="list__image" layout="row" layout-align="center center">
               <img ng-src="{{ item.image }}" alt="{{ item.name.value }}" ng-if="item.image">
               <md-icon ng-if="!item.image">clear</md-icon>
@@ -146,14 +146,11 @@
               <p>{{ item.name.value }}</p>
               <p class="muted">{{ item.admin.value }}</p>
             </div>
-            <md-button class="md-icon-button" aria-label="Show on map"
-                        ng-click="$ctrl.zoomToID(item.name.value_id)">
-              <md-icon>place</md-icon>
-            </md-button>
-            <md-button class="md-icon-button" aria-label="Open in new tab"
+            <md-button class="md-button list__action" aria-label="Open in new tab"
                         ui-sref="main.object({id: item.name.value_id.substring(1)})"
                         target="_blank">
               <md-icon>open_in_new</md-icon>
+              <span>Open</span>
             </md-button>
           </md-list-item>
           <md-list-item class="md-2-line"
