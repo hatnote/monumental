@@ -8,7 +8,7 @@ import barcode from './../../../images/barcode.svg';
 
 const ListComponent = { controller, template };
 
-function controller($scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
+function controller($q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -172,7 +172,9 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
         vm.loading = 'map';
         loadMap(vm.list, { fitMap: true });
 
-        $scope.$on('leafletDirectiveMarker.mouseover', showPopup);
+        let timeout = null;
+        $scope.$on('leafletDirectiveMarker.mouseover', (event, marker) => { timeout = $timeout(() => { showPopup(event, marker); }, 250); });
+        $scope.$on('leafletDirectiveMarker.mouseout', () => { $timeout.cancel(timeout); });
         $scope.$on('leafletDirectiveMarker.click', showPopup);
       });
   }
@@ -313,10 +315,17 @@ function controller($scope, $state, $stateParams, $timeout, $window, langService
 
   function zoomToID(pinId) {
     const marker = vm.map.markers[pinId];
-    leafletData.getMap().then((map) => {
-      map.setView([marker.lat, marker.lng], 17);
+    $q.all({
+      map: leafletData.getMap(),
+      markers: leafletData.getMarkers(),
+    }).then((data) => {
+      data.map.setView([marker.lat, marker.lng], 17);
+      showPopup(null, {
+        leafletObject: data.markers[pinId],
+        leafletEvent: {},
+        model: marker,
+      });
     });
-    vm.map.markers[pinId].focus = true;
   }
 }
 
