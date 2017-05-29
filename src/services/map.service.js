@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 import '../images/marker-red.png';
 import '../images/marker-shadow.png';
 
@@ -25,12 +27,25 @@ const MapService = () => {
 
   function getMapInstance(options) {
     return angular.extend({
+      markersWatchOptions: {
+        doWatch: true,
+        isDeep: false,
+        individual: {
+          doWatch: false,
+          isDeep: false,
+        },
+      },
       center: {
         lat: 51.686,
         lng: 19.545,
         zoom: 7,
       },
       markers: {},
+      events: {
+        markers: {
+          enable: ['click', 'mouseover', 'mouseout'],
+        },
+      },
       layers: {
         baselayers: {
           wiki: {
@@ -41,6 +56,8 @@ const MapService = () => {
               subdomains: ['a', 'b', 'c'],
               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
+              maxNativeZoom: 18,
+              maxZoom: 21,
             },
           },
           osm: {
@@ -51,6 +68,8 @@ const MapService = () => {
               subdomains: ['a', 'b', 'c'],
               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
+              maxNativeZoom: 19,
+              maxZoom: 21,
             },
           },
         },
@@ -60,10 +79,15 @@ const MapService = () => {
             type: 'markercluster',
             visible: true,
             layerOptions: {
-              spiderfyOnMaxZoom: false,
               showCoverageOnHover: false,
               zoomToBoundsOnClick: true,
-              disableClusteringAtZoom: 17,
+              maxClusterRadius: zoom => 130 - (zoom * 5),
+              animate: false,
+              iconCreateFunction: cluster => new L.DivIcon({
+                html: `<div><span>${cluster.getChildCount()}</span></div>`,
+                className: 'marker-cluster marker-cluster-small',
+                iconSize: new L.Point(40, 40),
+              }),
             },
           },
         },

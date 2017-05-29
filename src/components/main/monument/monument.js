@@ -13,11 +13,12 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   const langs = langService.getUserLanguages();
 
-  vm.getCommonsLink = getCommonsLink;
-  vm.getWikipediaArticle = getWikipediaArticle;
   vm.image = [];
   vm.lang = langs[0];
   vm.map = {};
+
+  vm.getCommonsLink = getCommonsLink;
+  vm.getWikipediaArticle = getWikipediaArticle;
   vm.openArticleList = (menu, event) => menu.open(event);
   vm.openImage = openImage;
   vm.scrollTo = anchor => $anchorScroll(anchor);
@@ -181,5 +182,5 @@ export default () => {
         });
         loadImage();
       },
-  }));
+    }));
 };

@@ -51,6 +51,57 @@ mo-map {
     }
   }
 
+  .list__subheader {
+    padding: 15px 25px;
+    background: #fafafa;
+    border-bottom: 1px solid $softGrey;
+
+    @include x-small { padding: 10px 20px; }
+
+    .md-button {
+      margin: 0 5px;
+    }
+
+    .md-icon-button {
+      @include x-small {
+        width: 30px;
+        min-height: 30px;
+        height: 30px;
+        padding: 0px;
+      }
+    }
+
+    md-input-container {
+      margin: 0 5px;
+      padding: 0;
+
+      .md-errors-spacer {
+        display: none;
+      }
+
+      md-select .md-select-value {
+        min-width: 130px;
+      }
+
+      &.md-input-has-value label:not(.md-no-float) {
+        -webkit-transform: translate3d(-1px, 14px, 0) scale(0.75);
+        transform: translate3d(-1px, 14px, 0) scale(0.75);
+      }
+    }
+
+    .list__quick-filter {
+      md-input-container {
+        width: 410px;
+      }
+      span {
+        margin-left: 25px;
+        font-weight: 500;
+        font-size: 90%;
+        text-transform: uppercase;
+      }
+    }
+  }
+
   .list {
     position: relative;
     width: 450px;
@@ -69,6 +120,18 @@ mo-map {
 
       .md-button {
         @include x-small { padding: 0 10px; }
+      }
+
+      .list__action {
+        display: none;
+      }
+
+      &.md-2-line--active {
+        background-color: #e5e5e5;
+
+        .list__action {
+          display: block;
+        }
       }
     }
   }
@@ -130,24 +193,53 @@ mo-map {
 
     @include x-small { margin-left: 10px; }
 
+    .list__map--loading {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1010;
+      background: rgba(229, 229, 229, 0.5);
+    }
+
     .angular-leaflet-map {
       width: 100%;
       height: 100%;
     }
 
     .leaflet-popup-close-button {
-      z-index: 1;
-      padding: 5px;
+      display: none;
     }
 
     .leaflet-popup-content-wrapper {
+      padding: 0;
       border-radius: 2px;
     }
 
     .leaflet-popup-content {
-      min-width: 300px;
+      min-width: 250px;
       margin: 0;
       font: 16px Roboto, Arial, sans-serif;
+
+      .md-button {
+        padding: 0 !important;
+      }
+      
+      .md-list-item-text {
+        margin: 10px;
+        height: 60px;
+
+        p:first-child {
+          // max-height: 36px;
+          line-height: 1.4em;
+        }
+      }
+
+      .list__image {
+        margin: 0;
+        width: 80px;
+        min-width: 80px;
+        height: 80px;
+      }
     }
   }
 

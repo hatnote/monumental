@@ -218,7 +218,7 @@
             </md-button>
             -->
             <md-button class="md-primary" flex
-                        ng-href="#/map?c={{$ctrl.map.markers.marker.lat}}:{{$ctrl.map.markers.marker.lng}}:16">
+                        ui-sref="main.map({ heritage: 1, c: '{{$ctrl.map.markers.marker.lat.toFixed(4)}}:{{$ctrl.map.markers.marker.lng.toFixed(4)}}:16' })">
               <md-icon>map</md-icon> Show all monuments nearby
             </md-button>
           </div>

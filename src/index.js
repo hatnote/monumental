@@ -77,12 +77,12 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.list', {
-      url: '/list/:id',
+      url: '/list/:id?c&heritage&image&type&wikipedia',
       template: '<mo-list></mo-list>',
       resolve: {},
     })
     .state('main.map', {
-      url: '/map',
+      url: '/map?c&heritage&image&type&wikipedia',
       template: '<mo-map></mo-map>',
       resolve: {},
     })
@@ -120,7 +120,7 @@ function themeConfig($mdThemingProvider, $provide) {
   // tp.alwaysWatchTheme(true);
   tp.theme('default')
     .primaryPalette('belize')
-    .accentPalette('orange');
+    .accentPalette('grey');
 
   $provide.value('themeProvider', tp);
 }
