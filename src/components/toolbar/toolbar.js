@@ -38,10 +38,10 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
     if (!item) { return; }
     wikidata.getRecursive(item.id, 'wdt:P31/wdt:P279').then((response) => {
       const ids = response.map(prop => prop.value_id);
-      if (ids.includes('Q811979')) {
+      if (ids.includes('Q56061')) {
+        $state.go('main.list', { id: item.id.substring(1), heritage: 1, c: undefined });
+      } else if (ids.includes('Q811979')) {
         $state.go('main.object', { id: item.id.substring(1) });
-      } else if (ids.includes('Q56061')) {
-        $state.go('main.list', { id: item.id.substring(1), heritage: 1 });
       } else {
         $state.go('main.object', { id: item.id.substring(1) });
         /*
