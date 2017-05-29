@@ -21,7 +21,7 @@
           <h4 class="md-title">Example monuments</h4>
           <md-card ng-repeat="example in $ctrl.examples" ui-sref="main.object({id: example.id})">
             <div class="md-card-image" layout="row" layout-align="center center">
-              <img load-src="{{ ::example.img }}">
+              <img load-src="{{ ::example.img }}" title="Credit: {{ ::example.credit }}">
             </div>
             <md-card-title>
               <md-card-title-text>
