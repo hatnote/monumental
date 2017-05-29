@@ -14,6 +14,9 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   let langs = langService.getUserLanguages();
 
+  let canceler = $q.defer();
+  let request = null;
+
   vm.dict = {
     types: [
       { label: 'Art', value: '838948' },
@@ -90,13 +93,16 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   }
 
   function getList() {
+    canceler.resolve();
+    canceler = $q.defer();
+
     const imageOptions = ['MINUS { ?item wdt:P18 ?image . }', '?item wdt:P18 ?image .'];
     const image = imageOptions[vm.filter.image] || 'OPTIONAL { ?item wdt:P18 ?image . }';
 
     const wikipediaOptions = ['FILTER NOT EXISTS { ?article schema:about ?item } .', 'FILTER EXISTS { ?article schema:about ?item } .'];
     const wikipedia = wikipediaOptions[vm.filter.wikipedia] || '';
 
-    return wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
+    request = wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
     (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
       hint:Query hint:optimizer "None" .
@@ -116,7 +122,8 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
     }
     GROUP BY ?item ?itemLabel ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
-    ORDER BY ?itemLabel`);
+    ORDER BY ?itemLabel`, { timeout: canceler.promise });
+    return request;
   }
 
   function getPlace() {

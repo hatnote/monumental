@@ -136,8 +136,8 @@ const wdService = function ($http, $q, langService) {
     const snak = claim.mainsnak;
     return {
       value_type: snak.datatype,
-      value_id: snak.snaktype === 'novalue' ? false : snak.datavalue.value.id,
-      value: snak.snaktype === 'novalue' ? false : snak.datavalue.value,
+      value_id: snak.snaktype === 'novalue' || snak.snaktype === 'somevalue' ? false : snak.datavalue.value.id,
+      value: snak.snaktype === 'novalue' || snak.snaktype === 'somevalue' ? false : snak.datavalue.value,
       qualifiers: claim.qualifiers,
       rank: claim.rank,
     };
