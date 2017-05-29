@@ -77,12 +77,12 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     })
     .state('main.list', {
-      url: '/list/:id?heritage&image&type&wikipedia',
+      url: '/list/:id?c&heritage&image&type&wikipedia',
       template: '<mo-list></mo-list>',
       resolve: {},
     })
     .state('main.map', {
-      url: '/map',
+      url: '/map?c&heritage&image&type&wikipedia',
       template: '<mo-map></mo-map>',
       resolve: {},
     })
