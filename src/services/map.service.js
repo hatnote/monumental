@@ -79,10 +79,9 @@ const MapService = () => {
             type: 'markercluster',
             visible: true,
             layerOptions: {
-              spiderfyOnMaxZoom: false,
               showCoverageOnHover: false,
               zoomToBoundsOnClick: true,
-              disableClusteringAtZoom: 17,
+              maxClusterRadius: zoom => 130 - (zoom * 5),
               animate: false,
               iconCreateFunction: cluster => new L.DivIcon({
                 html: `<div><span>${cluster.getChildCount()}</span></div>`,
