@@ -32,6 +32,12 @@
             <h4 class="header__subtitle md-headline muted"><mo-native-name monument="$ctrl.place"></mo-native-name></h4>
           </div>
           <div flex="none">
+            <md-button class="md-icon-button" aria-label="Switch to map view"
+                        ng-disabled="$ctrl.map.center.zoom < 9"
+                        ui-sref="main.map($ctrl.filter)">
+              <md-icon>map</md-icon>
+              <md-tooltip>Switch to map view</md-tooltip>
+            </md-button>
             <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
                         ng-href="//wikidata.org/wiki/{{ ::$ctrl.place.id }}" target="_blank">
               <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
@@ -68,7 +74,7 @@
           <label>Quick filter</label>
           <input ng-model="$ctrl.searchText">
         </md-input-container>
-        <span ng-if="$ctrl.loading !== 'data'">{{$ctrl.list.length}} results</span>
+        <span ng-if="$ctrl.loading !== 'data'">{{ $ctrl.list.length }}{{ $ctrl.total > 2000 ? "+" : "" }} results</span>
       </div>
       <div flex></div>
       <div class="list__filter" layout="row" layout-align="center center">
@@ -176,7 +182,8 @@
                 markers="$ctrl.map.markers"
                 markers-watch-options="$ctrl.map.markersWatchOptions"
                 layers="::$ctrl.map.layers"
-                center="::$ctrl.map.center"
+                center="$ctrl.map.center"
+                url-hash-center="yes"
                 event-broadcast="$ctrl.map.events"></leaflet>
       <div class="list__swiper"
             ng-click="$ctrl.showMyList()"

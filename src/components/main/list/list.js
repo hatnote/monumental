@@ -8,7 +8,7 @@ import barcode from './../../../images/barcode.svg';
 
 const ListComponent = { controller, template };
 
-function controller($q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
+function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -48,6 +48,11 @@ function controller($q, $scope, $state, $stateParams, $timeout, $window, langSer
   }
 
   init();
+
+  $scope.$on('centerUrlHash', (event, centerHash) => {
+    vm.filter.c = centerHash;
+    $state.transitionTo('main.list', vm.filter, { notify: false });
+  });
 
   function createStats(list) {
     const stats = {
@@ -143,6 +148,7 @@ function controller($q, $scope, $state, $stateParams, $timeout, $window, langSer
       .then(data => parseList(data))
       .then((list) => {
         vm.stats = createStats(list);
+        vm.total = list.length;
         vm.list = list.slice(0, 2000);
         loadMap(vm.list);
       });
@@ -168,6 +174,7 @@ function controller($q, $scope, $state, $stateParams, $timeout, $window, langSer
       .then(data => parseList(data))
       .then((list) => {
         vm.stats = createStats(list);
+        vm.total = list.length;
         vm.list = list.slice(0, 2000);
         vm.loading = 'map';
         loadMap(vm.list, { fitMap: true });
@@ -199,7 +206,7 @@ function controller($q, $scope, $state, $stateParams, $timeout, $window, langSer
 
     vm.map.markers = markers;
 
-    if (options && options.fitMap) {
+    if (options && options.fitMap && vm.filter.c.includes(':7')) {
       $timeout(() => {
         leafletData.getMap().then((map) => {
           if (bounds.length) {

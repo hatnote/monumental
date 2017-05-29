@@ -178,7 +178,7 @@ mo-list {
       md-input-container {
         width: 410px;
       }
-      span {
+      & > span {
         margin-left: 25px;
         font-weight: 500;
         font-size: 90%;
