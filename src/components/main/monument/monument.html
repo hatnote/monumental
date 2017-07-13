@@ -63,7 +63,16 @@
               </h2>
               <h2 class="monument__title md-display-1"
                     ng-if="$ctrl.monument.labels[$ctrl.lang.code]">
-                {{ ::$ctrl.monument.labels[$ctrl.lang.code] }}
+
+                <md-input-container ng-if="$ctrl.edit.all">
+                  <input ng-model="$ctrl.monument.labels[$ctrl.lang.code].value">
+                </md-input-container>
+                <md-button ng-click="$ctrl.setLabel($ctrl.lang.code)" ng-if="$ctrl.edit.all">Set Name</md-button>
+
+                <span ng-if="!$ctrl.edit.all">{{ ::$ctrl.monument.labels[$ctrl.lang.code].value }}</span>
+                <md-button class="md-icon-button" ng-click="$ctrl.edit.all = !$ctrl.edit.all">
+                  <md-icon>create</md-icon>
+                </md-button>
               </h2>
               <h4 class="monument__subtitle md-headline muted">
                 <mo-native-name monument="::$ctrl.monument"></mo-native-name>
@@ -108,8 +117,10 @@
               <div flex-gt-xs="60" layout="row" layout-align="start start">
                 <div flex="none"><md-icon>account_balance</md-icon></div>
                 <div flex layout="column" layout-align="start stretch">
-                  <span ng-repeat="monType in $ctrl.monument.claims.P1435.values">
-                    <a ng-href="http://www.wikidata.org/wiki/{{monType.value_id}}">{{ monType.value[$ctrl.lang] || monType.value.en }}</a>
+                  <span ng-repeat="monument in $ctrl.monument.claims.P1435">
+                    <a ng-href="http://www.wikidata.org/wiki/{{monument.mainsnak.datavalue.value.id}}">
+                      {{ ::$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id][$ctrl.lang] ||$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id].en }}
+                    </a>
                   </span>
                 </div>
               </div>
@@ -172,6 +183,65 @@
                       ng-click="$ctrl.showArticleLong = true">
             Show more
           </md-button>
+        </div>
+      </div>
+
+      <div class="monument monument__panel" ng-if="$ctrl.monument">
+        <div class="monument__details">
+          <md-button class="md-icon-button pull-right" ng-click="$ctrl.edit.all = !$ctrl.edit.all">
+            <md-icon>create</md-icon>
+          </md-button>
+          <h4 class="monument__subtitle md-headline">Properties</h4>
+          <h5 class="monument__subtitle md-title">General data</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P31', 'P366', 'P186', 'P149']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Address details</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P669', 'P276']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+          <mo-property-coord
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P625'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-coord>
+
+          <h5 class="monument__subtitle md-title">Technical data</h5>
+          <mo-property-quantity
+            ng-repeat="prop in ['P2048', 'P2046', 'P1101', 'P1139', 'P1301']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-quantity>
+
+          <h5 class="monument__subtitle md-title">Timeline</h5>
+          <mo-property-item
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P793'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Heritage</h5>
+          <mo-property-item
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P1435'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">People</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P84', 'P287', 'P631', 'P193', 'P1028', 'P127']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
         </div>
       </div>
 

@@ -109,6 +109,29 @@ mo-monument {
       font-size: 25px;
     }
 
+    .md-icon-button {
+      height: 30px;
+      min-height: 30px;
+      width: 30px;
+      margin: -4px 0 0 2px;
+      padding: 0;
+    }
+
+    md-input-container {
+      margin-bottom: 0;
+      margin-top: -5px;
+      padding: 0;
+
+      .md-input {
+        padding: 0;
+        padding-bottom: 5px;
+      }
+
+      .md-errors-spacer {
+        display: none;
+      }
+    }
+
     .loading-line {
       height: 30px;
     }
@@ -191,6 +214,49 @@ mo-monument {
 
     .monument__details-value {
       line-height: 1.5;
+
+      .property__edit {
+        .md-button.md-primary {
+          min-width: 36px;
+          min-height: 36px;
+          margin: 0 10px 0 0;
+
+          @include x-small { margin: 0 0 0 10px; }
+        }
+
+        md-autocomplete md-autocomplete-wrap {
+          margin-top: -20px;
+
+          md-progress-linear.md-inline {
+            bottom: 15px;
+            right: 0;
+            left: 0;
+          }
+
+          md-input-container {
+            // margin-bottom: 0;
+            // margin-top: 0;
+            padding: 0;
+
+            label {
+              display: none;
+            }
+            .md-input {
+              padding: 0;
+              padding-bottom: 0;
+            }
+
+            .md-errors-spacer {
+              display: none;
+            }
+          }
+        }
+
+        & > md-input-container {
+          margin: 0;
+          padding: 0;
+        }
+      }
     }
   }
   

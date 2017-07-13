@@ -7,21 +7,24 @@ import pack from '../../../../package.json';
 
 const MonumentComponent = { controller, template };
 
-function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, wikidata) {
+function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, textService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   const langs = langService.getUserLanguages();
 
+  vm.edit = { all: false };
   vm.image = [];
   vm.lang = langs[0];
   vm.map = {};
+  vm.text = null;
 
   vm.getCommonsLink = getCommonsLink;
   vm.getWikipediaArticle = getWikipediaArticle;
   vm.openArticleList = (menu, event) => menu.open(event);
   vm.openImage = openImage;
   vm.scrollTo = anchor => $anchorScroll(anchor);
+  vm.setLabel = setLabel;
 
   // init
 
@@ -70,12 +73,12 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
 
   function getInterwiki() {
     const country = getPropertyValue('P17');
-    const countryLanguages = langService.getNativeLanguages(country.value_id);
+    const countryLanguages = langService.getNativeLanguages(country.id);
 
     vm.interwiki = {};
 
-    vm.interwiki.all = Object.keys(vm.monument.interwiki)
-      .map(key => vm.monument.interwiki[key])
+    vm.interwiki.all = Object.keys(vm.monument.sitelinks)
+      .map(key => vm.monument.sitelinks[key])
       .map(element => ({
         code: element.site.replace('wiki', ''),
         title: element.title,
@@ -99,10 +102,10 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
   }
 
   function getPropertyValue(prop) {
-    if (vm.monument.claims[prop] && vm.monument.claims[prop].values.length) {
-      return vm.monument.claims[prop].values[0];
-    }
-    return false;
+    if (!vm.monument.claims[prop]) return false;
+    const value = vm.monument.claims[prop][0];
+
+    return value.mainsnak.datavalue.value;
   }
 
   function init() {
@@ -112,23 +115,31 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
     };
 
     vm.loading = true;
-    wikidata.getById(id).then((data) => {
-      vm.monument = _.sample(data);
 
+    textService.getText().then((data) => {
+      vm.text = data;
+    });
+
+    wikidata.getById(id).then((data) => {
+      vm.monument = data;
+
+      // image
       if (getPropertyValue('P18')) {
-        const image = getPropertyValue('P18').value;
+        const image = getPropertyValue('P18');
         getImage(image);
       }
+      // commons category
       if (getPropertyValue('P373')) {
-        const category = getPropertyValue('P373').value;
+        const category = getPropertyValue('P373');
         getCategoryInfo(category);
         getCategoryMembers(category);
       }
 
       getInterwiki();
 
+      // coordinates
       if (getPropertyValue('P625')) {
-        const value = getPropertyValue('P625').value;
+        const value = getPropertyValue('P625');
         vm.map = mapService.getMapInstance({
           center: {
             lat: value.latitude,
@@ -150,8 +161,8 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
       }
       vm.loading = false;
 
-      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en || vm.monument.id;
-      $window.document.title = `${title} – Monumental`;
+      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en;
+      $window.document.title = `${title ? title.value : vm.monument.id} – Monumental`;
     });
   }
 
@@ -161,6 +172,13 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
       event,
       list: vm.images,
     });
+  }
+
+  function setLabel(lang) {
+    WikiService.setLabel(id, lang, vm.monument.labels[lang].value)
+      .then((response) => {
+        console.log(response);
+      });
   }
 }
 

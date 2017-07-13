@@ -26,8 +26,10 @@ function controller(wikidata) {
       id = vm.monument.id;
     } else if (claims.P131) {
       prop = 'wdt:P131';
-      const preferred = claims.P131.values.filter(value => value.rank === 'preferred');
-      id = preferred.length ? preferred[0].value_id : claims.P131.values[0].value_id;
+      const preferred = claims.P131.filter(value => value.rank === 'preferred');
+      id = preferred.length
+        ? preferred[0].mainsnak.datavalue.value.id
+        : claims.P131[0].mainsnak.datavalue.value.id;
     } else {
       return;
     }
