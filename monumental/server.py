@@ -63,15 +63,15 @@ def complete_login(request, consumer_token, cookie):
 
     req_token = RequestToken(cookie['request_token_key'],
                              cookie['request_token_secret'])
-    
+
     access_token = handshaker.complete(req_token,
                                        request.query_string)
 
     identity = handshaker.identify(access_token)
-    
+
     userid = identity['sub']
     username = identity['username']
-    
+
     cookie['userid'] = userid
     cookie['username'] = username
     # Is this OK to put in a cookie?
@@ -166,7 +166,13 @@ def create_app():
               ('/logout', logout),
               ('/complete_login', complete_login),
               ('/api', send_to_wd_api, render_basic),
-              ('/meta', MetaApplication())]
+              ('/meta', MetaApplication()),
+              # added to support the removal of the '#' in Angular URLs
+              StaticFileRoute('/list', STATIC_PATH + '/index.html'),
+              StaticFileRoute('/map', STATIC_PATH + '/index.html'),
+              StaticFileRoute('/object', STATIC_PATH + '/index.html'),
+              StaticFileRoute('/games', STATIC_PATH + '/index.html'),
+    ]
 
     config_file_name = 'config.local.yaml'
     config_file_path = os.path.join(os.path.dirname(CUR_PATH), config_file_name)
