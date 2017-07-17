@@ -159,7 +159,14 @@ def send_to_wd_api(request, cookie, consumer_token):
 def create_app():
     static_app = StaticApplication(STATIC_PATH)
 
-    routes = [StaticFileRoute('/', STATIC_PATH + '/index.html'),
+    def fe_app_route(path, ignore_trailing=True):
+        # added to support the removal of the '#' in Angular URLs
+        target = STATIC_PATH + '/index.html'
+        if ignore_trailing:
+            path = path + '/<_ignored*>'
+        return StaticFileRoute(path, target)
+
+    routes = [fe_app_route('/', ignore_trailing=False),
               ('/', static_app),
               ('/home', home, render_basic),
               ('/login', login),
@@ -167,11 +174,10 @@ def create_app():
               ('/complete_login', complete_login),
               ('/api', send_to_wd_api, render_basic),
               ('/meta', MetaApplication()),
-              # added to support the removal of the '#' in Angular URLs
-              StaticFileRoute('/list', STATIC_PATH + '/index.html'),
-              StaticFileRoute('/map', STATIC_PATH + '/index.html'),
-              StaticFileRoute('/object', STATIC_PATH + '/index.html'),
-              StaticFileRoute('/games', STATIC_PATH + '/index.html'),
+              fe_app_route('/list'),
+              fe_app_route('/map'),
+              fe_app_route('/object'),
+              fe_app_route('/games'),
     ]
 
     config_file_name = 'config.local.yaml'
