@@ -2,6 +2,7 @@ import angular from 'angular';
 import _ from 'lodash';
 
 import 'angular-animate';
+import 'angular-file-upload';
 import 'angular-leaflet-directive';
 import 'angular-local-storage';
 import 'angular-material';
@@ -14,12 +15,12 @@ import 'leaflet.markercluster';
 import 'ng-infinite-scroll';
 import 'restangular';
 
-import './styles/style.scss';
 import 'angular-material/angular-material.css';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'material-design-icons/iconfont/material-icons.css';
+import './styles/style.scss';
 
 import components from './components';
 import services from './services';
@@ -28,6 +29,7 @@ window._ = _;
 
 angular
   .module('monumental', [
+    'angularFileUpload',
     'ngAnimate',
     'ngMaterial',
     'ngMessages',
@@ -65,7 +67,7 @@ function localStorageConfig(localStorageServiceProvider) {
  * @param {any} $stateProvider
  * @param {any} $urlRouterProvider
  */
-function stateConfig($stateProvider, $urlRouterProvider) {
+function stateConfig($stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider
     .state('main', {
       template: '<mo-main></mo-main>',
@@ -102,6 +104,7 @@ function stateConfig($stateProvider, $urlRouterProvider) {
       resolve: {},
     });
   $urlRouterProvider.otherwise('/');
+  // $locationProvider.html5Mode(true);
 }
 
 /**
