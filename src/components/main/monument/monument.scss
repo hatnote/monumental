@@ -216,10 +216,16 @@ mo-monument {
       line-height: 1.5;
 
       .property__edit {
-        .md-button.md-primary {
+        &.property__edit--deleted {
+          md-input-container .md-input {
+            text-decoration: line-through;
+          }
+        }
+
+        .md-button {
           min-width: 36px;
           min-height: 36px;
-          margin: 0 10px 0 0;
+          margin: 0 10px 0 10px;
 
           @include x-small { margin: 0 0 0 10px; }
         }
