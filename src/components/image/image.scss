@@ -1,0 +1,81 @@
+@import '../../styles/variables';
+@import '../../styles/responsive';
+
+.dialog__image {
+  min-width: 80%;
+  border-radius: 0 !important;
+
+  @include x-small { 
+    width: 100vw; min-width: 100vw; max-width: 100vw;
+    height: 100%; min-height: 100%; max-height: 100%;
+  }
+   
+  md-dialog-content {
+    overflow: hidden;
+
+    @include x-small { overflow: visible; }
+  }
+
+  .dialog__close {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 15px;
+    opacity: .75;
+  }
+
+  .dialog__image-container {
+    position: relative;
+    background: black;
+    min-height: 80vh;
+    text-align: center;
+
+    @include x-small { min-height: 100vh; }
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+    }
+
+    .md-button md-icon.material-icons {
+      width: 40px;
+      height: 40px;
+      color: white;
+      font-size: 40px;
+    }
+
+    .md-button[disabled] md-icon.material-icons {
+      opacity: .5;
+    }
+  }
+
+  .dialog__image-description {
+    background: white;
+    width: 250px;
+    padding: 20px;
+    overflow: scroll;
+
+    @include x-small { 
+      width: auto;
+      overflow: visible;   
+    }
+
+    .md-title {
+      margin-top: 0;
+    }
+
+    .md-2-line {
+      padding: 0;
+
+      .material-icons {
+        margin-right: 20px;
+        margin-left: 5px;
+      }
+    }
+  }
+}

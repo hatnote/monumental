@@ -1,21 +1,21 @@
-const VersionService = function($timeout, $mdTheming, themeProvider) {
+const VersionService = function ($timeout, $mdTheming, themeProvider) {
   const service = {
     version: 'default',
-    getVersion: getVersion,
-    setVersion: setVersion
+    getVersion,
+    setVersion,
   };
 
   return service;
 
-  ////
+  //
 
   function getVersion() {
     return service.version;
   }
 
   function setVersion(version) {
-      themeProvider.setDefaultTheme(version);
-      service.version = version;
+    themeProvider.setDefaultTheme(version);
+    service.version = version;
   }
 };
 

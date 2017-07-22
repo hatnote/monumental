@@ -1,8 +1,15 @@
+$xsmall: 600px;
 $small: 960px;
 $large: 1280px;
 
+@mixin x-small {
+  @media (max-width: #{$xsmall - 1px}) {
+    @content;
+  }
+}
+
 @mixin small {
-  @media (max-width: #{$small - 1px}) {
+  @media (min-width: #{$xsmall}) and (max-width: #{$small - 1px}) {
     @content;
   }
 }

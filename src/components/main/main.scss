@@ -1,2 +1,8 @@
 @import '../../styles/variables';
 @import '../../styles/responsive';
+
+mo-main {
+  display: block;
+
+  @include x-small { padding-top: 54px; }
+}

@@ -1,0 +1,127 @@
+<div class="container" layout="column" layout-align="start stretch" flex>
+  <div layout="column" layout-align="start stretch" flex="none">
+    <div class="list__subheader"
+          layout="row" layout-align="start center">
+      <div class="list__quick-filter" layout="row" layout-align="start center">
+        <md-input-container>
+          <label>Quick filter</label>
+          <input ng-model="$ctrl.searchText">
+        </md-input-container>
+        <span ng-if="$ctrl.loading !== 'data'">{{ $ctrl.list.length }}{{ $ctrl.total > 2000 ? "+" : "" }} results</span>
+      </div>
+      <div flex></div>
+      <div class="list__filter" layout="row" layout-align="center center">
+        <md-input-container>
+          <label>Heritage status</label>
+          <md-select ng-model="$ctrl.filter.heritage" ng-change="$ctrl.filterMap()">
+            <md-option ng-value=""><span class="muted">Any</span></md-option>
+            <md-option ng-value="0">No</md-option>
+            <md-option ng-value="1">Yes</md-option>
+            <md-option ng-value="9259">World Heritage Site</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Type</label>
+          <md-select ng-model="$ctrl.filter.type" ng-change="$ctrl.filterMap()">
+            <md-option ng-value=""><span class="muted">Any</span></md-option>
+            <md-option ng-value="type.value"
+                        ng-repeat="type in $ctrl.dict.types">
+              {{ type.label }}
+            </md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Image</label>
+          <md-select ng-model="$ctrl.filter.image" ng-change="$ctrl.filterMap()">
+            <md-option ng-value=""><span class="muted">Any</span></md-option>
+            <md-option ng-value="1">Yes</md-option>
+            <md-option ng-value="0">No</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Wikipedia article</label>
+          <md-select ng-model="$ctrl.filter.wikipedia" ng-change="$ctrl.filterMap()">
+            <md-option ng-value=""><span class="muted">Any</span></md-option>
+            <md-option ng-value="1">Yes</md-option>
+            <md-option ng-value="0">No</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-button class="md-button md-primary" aria-label="Open in Wikidata" ng-if="false">
+          <md-icon>filter_list</md-icon>
+          Filter
+        </md-button>
+      </div>
+      <md-button class="md-icon-button" aria-label="Hide header" hide-gt-xs
+                  ng-click="$ctrl.mobile.fullHeader = false">
+        <md-icon>keyboard_arrow_up</md-icon>
+      </md-button>
+    </div>
+  </div>
+  <md-content class="content" flex
+                layout="row" layout-align="start stretch"
+                ng-class="$ctrl.contentScrolled ? 'content--scrolled' : 'content--unscrolled'">
+    <div class="list" flex="none" flex-xs="50"
+          layout="column" layout-align="start stretch"
+          ng-swipe-left="$ctrl.showMyMap()">
+      <div class="list__loading"
+            layout="column" layout-align="center center"
+            ng-if="$ctrl.map.center.zoom <= 10">
+        <h4 class="md-title">Zoom in</h4>
+      </div>
+      <div class="list__loading" layout="column" layout-align="center center"
+            ng-if="$ctrl.loading">
+        <div class="cssload-container">
+          <div class="cssload-speeding-wheel"></div>
+        </div>
+        <p>Loading data</p>
+      </div>
+      <div class="list__loading" layout="column" layout-align="center center"
+            ng-if="$ctrl.map.center.zoom > 10 && !$ctrl.loading && !$ctrl.list.length">
+        <h4 class="md-title">No results</h4>
+      </div>
+      <div class="list__container" flex
+            layout="column" layout-align="start stretch">
+        <md-virtual-repeat-container md-top-index="$ctrl.topIndex" flex>
+          <md-list-item class="md-2-line"
+                          md-virtual-repeat="item in $ctrl.list | filter:$ctrl.searchText"
+                          ng-class = "{ 'md-2-line--active' : (item.hovered || $ctrl.highlighted === item.name.value_id) }"
+                          ng-mouseenter="item.hovered = true"
+                          ng-mouseleave="item.hovered = false"
+                          ng-click="$ctrl.zoomToID(item.name.value_id)">
+            <div class="list__image" layout="row" layout-align="center center">
+              <img ng-src="{{item.image}}" alt="{{item.name.value}}" ng-if="item.image">
+              <md-icon ng-if="!item.image">clear</md-icon>
+            </div>
+            <div class="md-list-item-text" layout="column">
+              <p>{{ item.name.value }}</p>
+              <p class="muted">{{ item.admin.value }}</p>
+            </div>
+            <md-button class="md-button list__action" aria-label="Open in new tab"
+                        ui-sref="main.object({id: item.name.value_id.substring(1)})"
+                        target="_blank">
+              <md-icon>open_in_new</md-icon>
+              <span>Open</span>
+            </md-button>
+          </md-list-item>
+        </md-virtual-repeat-container>
+      </div>
+      <div class="list__swiper" ng-click="$ctrl.showMyMap()"></div>
+    </div>
+    <div class="list__map" flex flex-xs="50">
+      <leaflet ng-if="!$ctrl.loadingMap" flex
+                markers="$ctrl.map.markers"
+                markers-watch-options="$ctrl.map.markersWatchOptions"
+                layers="$ctrl.map.layers"
+                center="$ctrl.map.center"
+                url-hash-center="yes"
+                event-broadcast="$ctrl.map.events"></leaflet>
+      <div class="list__swiper"
+            ng-click="$ctrl.showMyList()"
+            ng-swipe-right="$ctrl.showMyList()"></div>
+    </div>
+  </md-content>
+</div>
