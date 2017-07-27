@@ -15,16 +15,16 @@ const PropertyCoordComponent = {
       <span class="monument__details-value"
               layout="column" layout-align="start"
               ng-repeat="value in ::$ctrl.claims[$ctrl.property]">
-        <span>
+        <a ui-sref="main.map({c: '{{value.mainsnak.datavalue.value.latitude}}:{{value.mainsnak.datavalue.value.longitude}}:16', heritage: '1'})">
           {{ ::value.mainsnak.datavalue.value.latitude | toDMS:'NS' }} &nbsp; {{ ::value.mainsnak.datavalue.value.longitude | toDMS:'EW' }}
-        </span>
+        </a>
         <small class="muted">
           {{ ::value.mainsnak.datavalue.value.latitude.toFixed(6) }} {{ ::value.mainsnak.datavalue.value.longitude.toFixed(6) }}
         </small>
       </span>
       <span class="monument__details-value"
               ng-if="!$ctrl.claims[$ctrl.property].length">
-        <span class="muted">unset</span>
+        <span class="muted">not provided</span>
       </span>
     </span>`,
 };

@@ -7,26 +7,33 @@ import pack from '../../../../package.json';
 
 const MonumentComponent = { controller, template };
 
-function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog, $mdMenu, $q, $rootScope, $sce, $scope, $stateParams, $timeout, $window, FileUploader, localStorageService, WikiService, imageService, langService, leafletData, mapService, textService, wikidata) {
+function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog, $mdMenu, $mdToast, $q, $rootScope, $sce, $scope, $state, $stateParams, $timeout, $window, FileUploader, localStorageService, WikiService, imageService, langService, leafletData, mapService, textService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   const langs = langService.getUserLanguages();
 
+  vm.actions = {
+    claims: [],
+    other: [],
+  };
+  vm.busy = false;
   vm.edit = { all: false };
   vm.image = [];
+  vm.isLoggedIn = false;
   vm.lang = langs[0];
   vm.map = {};
   vm.queue = [];
+  vm.stateParams = $stateParams;
   vm.text = null;
 
   vm.getCommonsLink = getCommonsLink;
   vm.getWikipediaArticle = getWikipediaArticle;
+  vm.labelChange = labelChange;
   vm.openArticleList = (menu, event) => menu.open(event);
   vm.openImage = openImage;
   vm.saveAll = saveAll;
   vm.scrollTo = anchor => $anchorScroll(anchor);
-  vm.setLabel = setLabel;
 
   // init
 
@@ -110,22 +117,39 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
     return value.mainsnak.datavalue.value;
   }
 
+  function labelChange(lang) {
+    vm.actions.other[0] = {
+      promise: setLabel,
+      value: lang,
+    };
+  }
+
   function saveAll() {
-    const promises = vm.actions.map(promise => promise.promise(promise.value));
-    $q.all(promises).then((data) => {
-      console.log('DONE', data);
-    }).catch((err) => {
-      console.error(err);
-    });
+    vm.busy = true;
+    const actions = [...vm.actions.claims, ...vm.actions.other];
+    let counter = actions.length;
+
+    actions.map(promise => promise.promise(promise.value)
+      .then((response) => {
+        counter -= 1;
+        if (!counter) {
+          $state.go($state.current, { id }, { reload: true });
+        }
+        return response;
+      })
+      .catch((err) => {
+        $mdToast.show($mdToast.simple().textContent(`Error: ${err}`).hideDelay(3000));
+        vm.busy = false;
+      }));
   }
 
   function recountQueue() {
     const claims = _.values(vm.monument.claims);
-    vm.actions = [];
+    vm.actions.claims = [];
     claims.forEach((claim) => {
       claim.forEach((value) => {
         if (value.action) {
-          vm.actions.push(value.action);
+          vm.actions.claims.push(value.action);
         }
       });
     });
@@ -136,6 +160,10 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
       env: $window.__env,
       package: pack,
     };
+
+    WikiService.getUserInfo().then((response) => {
+      vm.isLoggedIn = response;
+    });
 
     const queueListener = $rootScope.$on('recountQueue', () => recountQueue());
     $scope.$on('$destroy', () => queueListener());
@@ -201,10 +229,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   }
 
   function setLabel(lang) {
-    WikiService.setLabel(id, lang, vm.monument.labels[lang].value)
-      .then((response) => {
-        console.log(response);
-      });
+    return WikiService.setLabel(id, lang, vm.monument.labels[lang].newValue);
   }
 }
 

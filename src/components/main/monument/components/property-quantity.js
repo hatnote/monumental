@@ -2,6 +2,7 @@ const PropertyQuantityComponent = {
   bindings: {
     claims: '=',
     edit: '=',
+    hidden: '=',
     labels: '=',
     lang: '=',
     property: '=',
@@ -9,18 +10,22 @@ const PropertyQuantityComponent = {
   },
   controller,
   template: `
-    <span class="muted" flex="35">{{ ::($ctrl.text[$ctrl.property][$ctrl.lang.code] || $ctrl.text[$ctrl.property].en) }}</span>
+    <span class="muted" flex="35"
+            ng-if="$ctrl.edit.all || (!$ctrl.edit.all && !$ctrl.hidden)">
+      {{ ::($ctrl.text[$ctrl.property][$ctrl.lang.code] || $ctrl.text[$ctrl.property].en) }}
+    </span>
     <span flex="65"
           layout="column" layout-align="start stretch">
       <span class="monument__details-value"
               ng-repeat="value in ::$ctrl.propertyClaims">
-        <span ng-if="value.mainsnak.datavalue.value.amount && !$ctrl.edit.all">
-          {{ ::value.mainsnak.datavalue.value.amount }}
-        </span>
-        <span class="muted"
-                ng-if="!value.mainsnak.datavalue.value.amount && !$ctrl.edit.all && $first">
-          unset
-        </span>
+        <div class="monument__details-edit" ng-if="!$ctrl.edit.all && !$ctrl.hidden">
+          {{ ::value.mainsnak.datavalue.value.amount | number }}
+          <span class="muted">{{ ::($ctrl.text[value.mainsnak.datavalue.value.unit.substring(31)][$ctrl.lang.code] || $ctrl.text[value.mainsnak.datavalue.value.unit.substring(31)].en) }}</span>
+          <span class="muted"
+                  ng-if="!value.mainsnak.datavalue.value.amount && $first">
+            not provided
+          </span>
+        </div>
         <div class="property__edit"
               layout="row" layout-align="start start" 
               ng-if="$ctrl.edit.all"
@@ -32,7 +37,9 @@ const PropertyQuantityComponent = {
                     ng-change="$ctrl.queueEdit(value, $last)"
                     ng-disabled="value.action.type === 'remove'">
           </md-input-container>
-
+          <div ng-init="value.unit = value.mainsnak.datavalue.value.unit.substring(31)">
+            {{ $ctrl.text[value.unit][$ctrl.lang.code] || $ctrl.text[value.unit].en }}
+          </div>
           <md-button class="md-primary" aria-label="Category added"
                       ng-href="//wikidata.org/w/index.php?action=historysubmit&type=revision&diff={{ value.save }}" target="_blank"
                       ng-if="$ctrl.edit.all && value.save">
@@ -76,7 +83,7 @@ function controller($q, $rootScope, $stateParams, wikidata, WikiService) {
       property: vm.property,
       value: angular.toJson({
         amount: value.newValue,
-        unit: 'http://www.wikidata.org/entity/Q11573',
+        unit: value.unit ? `http://www.wikidata.org/entity/${value.unit}` : undefined,
       }),
     });
   }

@@ -7,9 +7,11 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     addClaimString,
     getArticleHeader,
     getFilesCategories,
+    getFormattedTime,
     getCategoryInfo,
     getCategoryMembers,
     getImage,
+    getLabel,
     getUserInfo,
     removeClaim,
     setClaimItem,
@@ -127,6 +129,17 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     }).then(response => response.data.query.pages);
   }
 
+  function getFormattedTime(value, lang) {
+    return wikidata.get({
+      action: 'wbformatvalue',
+      props: undefined,
+      options: angular.toJson({ lang }),
+      generate: 'text/plain',
+      property: 'P585',
+      datavalue: angular.toJson({ value, type: 'time' }),
+    }).then(response => response.result);
+  }
+
   function getImage(image, extraParams) {
     const params = angular.extend({}, imageParams, { titles: `File:${image}` }, extraParams);
     return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
@@ -140,6 +153,11 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       data.imageinfo.thumburlbig = data.imageinfo.thumburl.replace(/\/[0-9]{2,3}px-/, replacer);
       return data;
     });
+  }
+
+  function getLabel(id) {
+    return wikidata.getLabels([id])
+      .then(response => response[id]);
   }
 
   function getUserInfo() {

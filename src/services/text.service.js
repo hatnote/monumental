@@ -12,7 +12,9 @@ const TextService = ($q, wikidata) => {
       'P669', 'P276', 'P625',
       'P2048', 'P2046', 'P1101', 'P1139', 'P1301',
       'P84', 'P287', 'P631', 'P193', 'P1028', 'P127',
-      'P580', 'P582',
+      'P361', 'P527',
+      'P580', 'P582', 'P585', 'P805', 'P518', 'P670', 'P1706', // qualifiers
+      'Q11573', 'Q25343',
     ];
     return wikidata.getLabels(ids).then((data) => {
       texts = data;
