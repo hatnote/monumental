@@ -23,6 +23,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       { label: 'Building', value: '41176' },
       { label: 'Castle', value: '23413' },
       { label: 'Cemetery', value: '39614' },
+      { label: 'Library', value: '7075' },
       { label: 'Manor house', value: '879050' },
       { label: 'Park', value: '22698' },
       { label: 'Place of worship', value: '1370598' },
