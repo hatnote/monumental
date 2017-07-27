@@ -40,7 +40,7 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
     if (!item) { return; }
     wikidata.getRecursive(item.id, 'wdt:P31/wdt:P279').then((response) => {
       const ids = response.map(prop => prop.value_id);
-      if (ids.includes('Q56061')) {
+      if (ids.includes('Q56061') || ids.includes('Q5107')) {
         $state.go('main.list', { id: item.id.substring(1), heritage: 1, c: undefined });
       } else if (ids.includes('Q811979')) {
         $state.go('main.object', { id: item.id.substring(1) });
