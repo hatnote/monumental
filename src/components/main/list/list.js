@@ -10,7 +10,6 @@ const ListComponent = { controller, template };
 
 function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
-  const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   let langs = langService.getUserLanguages();
 
@@ -23,6 +22,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       { label: 'Building', value: '41176' },
       { label: 'Castle', value: '23413' },
       { label: 'Cemetery', value: '39614' },
+      { label: 'Library', value: '7075' },
       { label: 'Manor house', value: '879050' },
       { label: 'Park', value: '22698' },
       { label: 'Place of worship', value: '1370598' },
@@ -38,6 +38,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   vm.loading = 'data';
   vm.map = null;
   vm.mobile = {};
+  vm.stateParams = $stateParams;
   vm.stats = null;
 
   vm.filterMap = filterMap;
@@ -101,12 +102,15 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
 
     const wikipediaOptions = ['FILTER NOT EXISTS { ?article schema:about ?item } .', 'FILTER EXISTS { ?article schema:about ?item } .'];
     const wikipedia = wikipediaOptions[vm.filter.wikipedia] || '';
+    const admin = vm.isContinent
+      ? `?item wdt:P17 ?country . ?country wdt:P30 wd:${id} .`
+      : `?admin wdt:P131* wd:${id} .`;
 
     request = wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
     (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
-      hint:Query hint:optimizer "None" .
-      ?admin wdt:P131* wd:${id} .
+      ${vm.isContinent ? '' : 'hint:Query hint:optimizer "None" .'}
+      ${id === 'Q2' ? '' : admin}
       ?item wdt:P131 ?admin .
       ?item wdt:P625 ?coord .
 
@@ -128,19 +132,20 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
 
   function getPlace() {
     return wikidata.getById(id).then((data) => {
-      const first = Object.keys(data)[0];
-      vm.place = data[first];
+      vm.place = data;
+
+      if (vm.place.claims.P31 && vm.place.claims.P31.some(claim => claim.mainsnak.datavalue.value.id === 'Q5107')) {
+        vm.isContinent = true;
+        return false;
+      } else if (id === 'Q2') {
+        vm.isContinent = true;
+        return false;
+      }
 
       const claims = vm.place.claims;
-      if (vm.place.claims.P41) {
-        claims.P41.values.forEach(image => getImage(image.value));
-      } else if (vm.place.claims.P94) {
-        claims.P94.values.forEach(image => getImage(image.value));
-      }
       if (vm.place.claims.P17) {
-        const country = claims.P17.values[0];
-        const countryLanguages = langService.getNativeLanguages(country.value_id);
-
+        const country = claims.P17[0];
+        const countryLanguages = langService.getNativeLanguages(country.mainsnak.datavalue.value.id);
         if (!countryLanguages) { return false; }
         langs = langs.concat(countryLanguages.map(lang => ({ code: lang })));
       }
@@ -149,6 +154,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   }
 
   function filterMap() {
+    if (!vm.map) { return; }
     $state.transitionTo('main.list', vm.filter, { notify: false });
     vm.loading = 'map';
     getList()
@@ -169,7 +175,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       .then(() => {
         let center = { lat: 49.4967, lng: 12.4805, zoom: 4 };
         if (vm.place.claims.P625) {
-          const coords = vm.place.claims.P625.values[0].value;
+          const coords = vm.place.claims.P625[0].mainsnak.datavalue.value;
           center = { lat: coords.latitude, lng: coords.longitude, zoom: 7 };
         }
         return $timeout(() => {
@@ -206,7 +212,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
           lat: element.coord.lat,
           lng: element.coord.lng,
           layer: 'monuments',
-          icon,
+          icon: mapService.getMapIcon(element),
         };
         bounds.push(element.coord);
       });
@@ -287,7 +293,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   }
 
   function setTitle() {
-    const title = vm.place.labels[vm.lang.code] || vm.place.labels.en || vm.place.id;
+    const title = vm.place.labels[vm.lang.code].value || vm.place.labels.en.value || vm.place.id;
     $window.document.title = `${title} – Monumental`;
   }
 

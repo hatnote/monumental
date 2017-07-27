@@ -7,7 +7,6 @@ const MapComponent = { controller, template };
 
 function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
-  const icon = mapService.getMapIcon();
   const langs = langService.getUserLanguages();
 
   let canceler = $q.defer();
@@ -21,6 +20,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       { label: 'Building', value: '41176' },
       { label: 'Castle', value: '23413' },
       { label: 'Cemetery', value: '39614' },
+      { label: 'Library', value: '7075' },
       { label: 'Manor house', value: '879050' },
       { label: 'Park', value: '22698' },
       { label: 'Place of worship', value: '1370598' },
@@ -195,7 +195,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       lat: +element.coord[1],
       lng: +element.coord[0],
       layer: 'monuments',
-      icon,
+      icon: mapService.getMapIcon(element),
     };
   }
 

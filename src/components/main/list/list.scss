@@ -57,17 +57,17 @@ mo-list {
   }
 
   .list__header {
-    padding: 20px 25px;
+    padding: 20px 25px 10px;
     background: white;
     border-bottom: 1px solid $softGrey;
 
-    @include x-small { padding: 15px 20px; }
+    @include x-small { padding: 15px 20px 10px; }
 
     .header__primary {
-      margin-bottom: 10px;
-      border-bottom: 1px solid $softGrey;
+      // margin-bottom: 10px;
+      // border-bottom: 1px solid $softGrey;
 
-      @include x-small { margin-bottom: 5px; }
+      // @include x-small { margin-bottom: 5px; }
 
       &.header__primary--compact {
         margin-bottom: 0;
@@ -118,6 +118,7 @@ mo-list {
     .header__title {
       margin-top: 0;
       margin-bottom: 0;
+      margin-right: 10px;
       font-size: 32px;
       line-height: 32px;
 
@@ -126,7 +127,8 @@ mo-list {
 
     .header__subtitle {
       margin-top: 0; 
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      line-height: 24px;
 
       @include x-small { font-size: 20px; margin-bottom: 5px; }
     }

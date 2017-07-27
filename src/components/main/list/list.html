@@ -1,33 +1,18 @@
 <div class="container" layout="column" layout-align="start stretch" flex>
   <div layout="column" layout-align="start stretch" flex="none">
     <div class="list__header" layout="row" layout-align="center start">
-      <div flex="none" hide-xs>
-        <div class="header__image" ng-if="$ctrl.image.length">
-          <a class="header__image-link" layout="row" layout-align="center center"
-              ng-repeat="image in ::$ctrl.image"
-              ng-if="$first"
-              ng-href="{{ ::image.descriptionurl }}">
-            <img ng-src="{{ ::image.thumburl }}">
-          </a>
-        </div>
-        <div class="header__image" ng-if="!$ctrl.image.length">
-          <div class="header__image-link" layout="row" layout-align="center center">
-            <md-icon>close</md-icon>
-          </div>
-        </div>
-      </div>
       <div layout="column" layout-align="start stretch" flex
             ng-if="$ctrl.place"
             ng-show="$ctrl.mobile.fullHeader">
         <div class="header__primary" layout="row" layout-align="center start">
-          <div flex>
+          <div layout="row" layout-align="start end" flex>
             <h2 class="header__title md-display-1"
                   ng-if="!$ctrl.place.labels[$ctrl.lang.code]">
               <em>missing label in {{ ::$ctrl.lang.name }}</em>
             </h2>
             <h2 class="header__title md-display-1"
                   ng-if="$ctrl.place.labels[$ctrl.lang.code]">
-              {{ ::$ctrl.place.labels[$ctrl.lang.code] }}
+              {{ ::$ctrl.place.labels[$ctrl.lang.code].value }}
             </h2>
             <h4 class="header__subtitle md-headline muted"><mo-native-name monument="$ctrl.place"></mo-native-name></h4>
           </div>
@@ -44,9 +29,6 @@
               <md-tooltip>Show Wikidata entry</md-tooltip>
             </md-button>
           </div>
-        </div>
-        <div class="header__secondary">
-          <mo-location class="header__place" monument="::$ctrl.place"></mo-location>
         </div>
       </div>
       <div layout="row" layout-align="start center" flex

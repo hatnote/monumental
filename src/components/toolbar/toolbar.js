@@ -5,6 +5,8 @@ const ToolbarComponent = { bindings: { wide: '=' }, controller, template };
 
 function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, WikiService, wikidata) {
   const vm = this;
+  const baseUrl = $window.__env.baseUrl;
+
   vm.isLoggedIn = false;
   vm.loading = true;
   vm.mobile = {};
@@ -38,7 +40,7 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
     if (!item) { return; }
     wikidata.getRecursive(item.id, 'wdt:P31/wdt:P279').then((response) => {
       const ids = response.map(prop => prop.value_id);
-      if (ids.includes('Q56061')) {
+      if (ids.includes('Q56061') || ids.includes('Q5107')) {
         $state.go('main.list', { id: item.id.substring(1), heritage: 1, c: undefined });
       } else if (ids.includes('Q811979')) {
         $state.go('main.object', { id: item.id.substring(1) });
@@ -64,11 +66,12 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
 
   function login() {
     vm.loading = true;
-    $window.location.pathname = `${$window.__env.baseUrl}/login`;
+    const current = $window.location.href;
+    $window.location.href = `${baseUrl}/login?next=${encodeURIComponent(current)}`;
   }
 
   function logout() {
-    $window.location.pathname = `${$window.__env.baseUrl}/logout`;
+    $window.location.href = `${baseUrl}/logout`;
   }
 
   function openSearch() {

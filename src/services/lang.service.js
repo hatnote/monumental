@@ -198,6 +198,7 @@ const LangService = function ($filter, $q, localStorageService) {
     Q805: ['ar'],
     Q953: ['en'],
     Q954: ['en'],
+    Q148: ['zh'],
   };
   const languageList = [
     { code: 'en', name: 'English', nativeName: 'English' },
@@ -521,7 +522,7 @@ const LangService = function ($filter, $q, localStorageService) {
 
     const langs = ls || [def];
     if (!langs.includes('en')) { langs.push('en'); }
-    userLanguages = langs.map(lang => $filter('filter')(languageList, lang)[0]);
+    userLanguages = langs.map(lang => languageList.filter(l => l.code === lang)[0]);
     return angular.copy(userLanguages);
   }
 

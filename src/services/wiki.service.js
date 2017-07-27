@@ -3,13 +3,20 @@ import _ from 'lodash';
 const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wikidata) {
   const service = {
     addCategory,
+    addClaimItem,
+    addClaimString,
     getArticleHeader,
     getFilesCategories,
+    getFormattedTime,
     getCategoryInfo,
     getCategoryMembers,
     getImage,
+    getLabel,
     getUserInfo,
-    setClaim,
+    removeClaim,
+    setClaimItem,
+    setClaimQuantity,
+    setLabel,
   };
 
   const appAPI = `${$window.__env.baseUrl}/api`;
@@ -47,7 +54,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
         if (response) {
           return $q.reject('Category is already added');
         }
-        return setClaim({
+        return postWikidata({
           action: 'wbcreateclaim',
           format: 'json',
           entity: `${id}`,
@@ -57,6 +64,17 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
           value: `"${value}"`,
         });
       });
+  }
+
+  function setLabel(id, lang, value) {
+    return postWikidata({
+      action: 'wbsetlabel',
+      format: 'json',
+      id: `${id}`,
+      language: `${lang}`,
+      summary: '#monumental',
+      value: `${value}`,
+    });
   }
 
   function getArticleHeader(lang, title) {
@@ -111,6 +129,17 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     }).then(response => response.data.query.pages);
   }
 
+  function getFormattedTime(value, lang) {
+    return wikidata.get({
+      action: 'wbformatvalue',
+      props: undefined,
+      options: angular.toJson({ lang }),
+      generate: 'text/plain',
+      property: 'P585',
+      datavalue: angular.toJson({ value, type: 'time' }),
+    }).then(response => response.result);
+  }
+
   function getImage(image, extraParams) {
     const params = angular.extend({}, imageParams, { titles: `File:${image}` }, extraParams);
     return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
@@ -124,6 +153,11 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       data.imageinfo.thumburlbig = data.imageinfo.thumburl.replace(/\/[0-9]{2,3}px-/, replacer);
       return data;
     });
+  }
+
+  function getLabel(id) {
+    return wikidata.getLabels([id])
+      .then(response => response[id]);
   }
 
   function getUserInfo() {
@@ -141,10 +175,93 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     });
   }
 
-  function setClaim(params) {
+  function addClaimItem(value) {
+    return postWikidata({
+      action: 'wbcreateclaim',
+      format: 'json',
+      entity: value.entity,
+      property: value.property,
+      snaktype: 'value',
+      value: angular.toJson({
+        'entity-type': 'item',
+        'numeric-id': value.value,
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function addClaimString(value) {
+    return postWikidata({
+      action: 'wbcreateclaim',
+      format: 'json',
+      entity: value.entity,
+      property: value.property,
+      snaktype: 'value',
+      value: value.value,
+      summary: '#monumental',
+    });
+  }
+
+  function removeClaim(value) {
+    return postWikidata({
+      action: 'wbremoveclaims',
+      format: 'json',
+      claim: value.id,
+      summary: '#monumental',
+    });
+  }
+
+  function setClaimItem(value) {
+    return postWikidata({
+      action: 'wbsetclaim',
+      format: 'json',
+      claim: angular.toJson({
+        id: value.id,
+        type: 'claim',
+        mainsnak: {
+          snaktype: 'value',
+          property: value.property,
+          datavalue: {
+            type: 'wikibase-entityid',
+            value: {
+              'entity-type': 'item',
+              'numeric-id': value.value,
+            },
+          },
+        },
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function setClaimQuantity(value) {
+    return postWikidata({
+      action: 'wbsetclaim',
+      format: 'json',
+      claim: angular.toJson({
+        id: value.id,
+        type: 'claim',
+        mainsnak: {
+          snaktype: 'value',
+          property: value.property,
+          datavalue: {
+            type: 'quantity',
+            value: {
+              amount: value.value,
+              unit: value.unit,
+            },
+          },
+        },
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function postWikidata(params) {
     return $http({
       method: 'POST',
       url: appAPI,
+      // data: angular.extend({ use_auth: true }, params),
       data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     }).then((response) => {

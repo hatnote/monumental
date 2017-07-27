@@ -7,20 +7,32 @@ import pack from '../../../../package.json';
 
 const MonumentComponent = { controller, template };
 
-function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $stateParams, $timeout, $window, localStorageService, WikiService, imageService, langService, leafletData, mapService, wikidata) {
+function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog, $mdMenu, $mdToast, $q, $rootScope, $sce, $scope, $state, $stateParams, $timeout, $window, FileUploader, localStorageService, WikiService, imageService, langService, leafletData, mapService, textService, wikidata) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   const langs = langService.getUserLanguages();
 
+  vm.actions = {
+    claims: [],
+    other: [],
+  };
+  vm.busy = false;
+  vm.edit = { all: false };
   vm.image = [];
+  vm.isLoggedIn = false;
   vm.lang = langs[0];
   vm.map = {};
+  vm.queue = [];
+  vm.stateParams = $stateParams;
+  vm.text = null;
 
   vm.getCommonsLink = getCommonsLink;
   vm.getWikipediaArticle = getWikipediaArticle;
+  vm.labelChange = labelChange;
   vm.openArticleList = (menu, event) => menu.open(event);
   vm.openImage = openImage;
+  vm.saveAll = saveAll;
   vm.scrollTo = anchor => $anchorScroll(anchor);
 
   // init
@@ -70,12 +82,12 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
 
   function getInterwiki() {
     const country = getPropertyValue('P17');
-    const countryLanguages = langService.getNativeLanguages(country.value_id);
+    const countryLanguages = langService.getNativeLanguages(country.id);
 
     vm.interwiki = {};
 
-    vm.interwiki.all = Object.keys(vm.monument.interwiki)
-      .map(key => vm.monument.interwiki[key])
+    vm.interwiki.all = Object.keys(vm.monument.sitelinks)
+      .map(key => vm.monument.sitelinks[key])
       .map(element => ({
         code: element.site.replace('wiki', ''),
         title: element.title,
@@ -99,10 +111,48 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
   }
 
   function getPropertyValue(prop) {
-    if (vm.monument.claims[prop] && vm.monument.claims[prop].values.length) {
-      return vm.monument.claims[prop].values[0];
-    }
-    return false;
+    if (!vm.monument.claims[prop]) return false;
+    const value = vm.monument.claims[prop][0];
+
+    return value.mainsnak.datavalue.value;
+  }
+
+  function labelChange(lang) {
+    vm.actions.other[0] = {
+      promise: setLabel,
+      value: lang,
+    };
+  }
+
+  function saveAll() {
+    vm.busy = true;
+    const actions = [...vm.actions.claims, ...vm.actions.other];
+    let counter = actions.length;
+
+    actions.map(promise => promise.promise(promise.value)
+      .then((response) => {
+        counter -= 1;
+        if (!counter) {
+          $state.go($state.current, { id }, { reload: true });
+        }
+        return response;
+      })
+      .catch((err) => {
+        $mdToast.show($mdToast.simple().textContent(`Error: ${err}`).hideDelay(3000));
+        vm.busy = false;
+      }));
+  }
+
+  function recountQueue() {
+    const claims = _.values(vm.monument.claims);
+    vm.actions.claims = [];
+    claims.forEach((claim) => {
+      claim.forEach((value) => {
+        if (value.action) {
+          vm.actions.claims.push(value.action);
+        }
+      });
+    });
   }
 
   function init() {
@@ -111,24 +161,39 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
       package: pack,
     };
 
-    vm.loading = true;
-    wikidata.getById(id).then((data) => {
-      vm.monument = _.sample(data);
+    WikiService.getUserInfo().then((response) => {
+      vm.isLoggedIn = response;
+    });
 
+    const queueListener = $rootScope.$on('recountQueue', () => recountQueue());
+    $scope.$on('$destroy', () => queueListener());
+
+    vm.loading = true;
+
+    textService.getText().then((data) => {
+      vm.text = data;
+    });
+
+    wikidata.getById(id).then((data) => {
+      vm.monument = data;
+
+      // image
       if (getPropertyValue('P18')) {
-        const image = getPropertyValue('P18').value;
+        const image = getPropertyValue('P18');
         getImage(image);
       }
+      // commons category
       if (getPropertyValue('P373')) {
-        const category = getPropertyValue('P373').value;
+        const category = getPropertyValue('P373');
         getCategoryInfo(category);
         getCategoryMembers(category);
       }
 
       getInterwiki();
 
+      // coordinates
       if (getPropertyValue('P625')) {
-        const value = getPropertyValue('P625').value;
+        const value = getPropertyValue('P625');
         vm.map = mapService.getMapInstance({
           center: {
             lat: value.latitude,
@@ -150,8 +215,8 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
       }
       vm.loading = false;
 
-      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en || vm.monument.id;
-      $window.document.title = `${title} – Monumental`;
+      const title = vm.monument.labels[vm.lang.code] || vm.monument.labels.en;
+      $window.document.title = `${title ? title.value : vm.monument.id} – Monumental`;
     });
   }
 
@@ -161,6 +226,10 @@ function controller($anchorScroll, $http, $mdDialog, $mdMenu, $q, $sce, $statePa
       event,
       list: vm.images,
     });
+  }
+
+  function setLabel(lang) {
+    return WikiService.setLabel(id, lang, vm.monument.labels[lang].newValue);
   }
 }
 
@@ -182,5 +251,49 @@ export default () => {
         });
         loadImage();
       },
-    }));
+    }))
+    .directive('ngThumb', ['$window', function ($window) {
+      var helper = {
+        support: !!($window.FileReader && $window.CanvasRenderingContext2D),
+        isFile: function (item) {
+          return angular.isObject(item) && item instanceof $window.File;
+        },
+        isImage: function (file) {
+          var type = '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
+          return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        }
+      };
+
+      return {
+        restrict: 'A',
+        template: '<canvas/>',
+        link: function (scope, element, attributes) {
+          if (!helper.support) return;
+
+          var params = scope.$eval(attributes.ngThumb);
+
+          if (!helper.isFile(params.file)) return;
+          if (!helper.isImage(params.file)) return;
+
+          var canvas = element.find('canvas');
+          var reader = new FileReader();
+
+          reader.onload = onLoadFile;
+          reader.readAsDataURL(params.file);
+
+          function onLoadFile(event) {
+            var img = new Image();
+            img.onload = onLoadImage;
+            img.src = event.target.result;
+          }
+
+          function onLoadImage() {
+            var width = params.width || this.width / this.height * params.height;
+            var height = params.height || this.height / this.width * params.width;
+            canvas.attr({ width: width, height: height });
+            canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+          }
+        }
+      };
+    }]);
 };

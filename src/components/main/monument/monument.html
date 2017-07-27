@@ -1,3 +1,9 @@
+<div class="busy"
+      layout="column" layout-align="center center"
+      ng-if="$ctrl.busy">
+  <h3 class="md-headline">Saving</h3>
+  <md-progress-circular md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+</div>
 <div class="container" layout="column" layout-align="space-between stretch" flex>
   <div layout="column" layout-align="start stretch" flex>
     <div class="monument__header" layout="column" layout-align="center center">
@@ -11,6 +17,10 @@
                 ng-click="$ctrl.openImage(image, $event)">
               <img load-src="{{image.thumburl}}">
             </a>
+            <span class="monument__image-link" layout="row" layout-align="center center"
+                    ng-if="!$ctrl.image.length">
+              <md-icon>photo_camera</md-icon>
+            </span>
           </div>
         </div>
 
@@ -34,7 +44,7 @@
                 <span class="loading-line" flex></span>
               </div>
               <div flex-gt-xs="40" layout="row" layout-align="start start">
-                <div flex="none"><md-icon>descriptionk</md-icon></div>
+                <div flex="none"><md-icon>description</md-icon></div>
                 <span class="loading-line" flex></span>
               </div>
             </div>
@@ -56,24 +66,42 @@
               ng-if="$ctrl.monument">
           <div class="monument__primary"
                 layout="row" layout-align="center start">
-            <div flex>
-              <h2 class="monument__title md-display-1"
-                    ng-if="!$ctrl.monument.labels[$ctrl.lang.code]">
-                <em>missing label in {{ ::$ctrl.lang.name }}</em>
-              </h2>
+            <div flex ng-if="!$ctrl.edit.all">
               <h2 class="monument__title md-display-1"
                     ng-if="$ctrl.monument.labels[$ctrl.lang.code]">
-                {{ ::$ctrl.monument.labels[$ctrl.lang.code] }}
+                {{ ::$ctrl.monument.labels[$ctrl.lang.code].value }}
+              </h2>
+              <h2 class="monument__title md-display-1"
+                    ng-if="!$ctrl.monument.labels[$ctrl.lang.code]">
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
+              </h2>
+              <h4 class="monument__subtitle md-headline muted"
+                    ng-if="$ctrl.monument.labels[$ctrl.lang.code]">
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
+              </h4>
+            </div>
+            <div flex ng-if="$ctrl.edit.all">
+              <h2 class="monument__title md-display-1">
+                <md-input-container>
+                  <input ng-init="$ctrl.monument.labels[$ctrl.lang.code].newValue = $ctrl.monument.labels[$ctrl.lang.code].value"
+                          ng-model="$ctrl.monument.labels[$ctrl.lang.code].newValue"
+                          ng-change="$ctrl.labelChange($ctrl.lang.code)">
+                </md-input-container>
               </h2>
               <h4 class="monument__subtitle md-headline muted">
                 <mo-native-name monument="::$ctrl.monument"></mo-native-name>
               </h4>
             </div>
             <div flex="none">
-              <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
+              <md-button class="pull-right md-primary"
+                          ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+                          ng-click="$ctrl.edit.all = true">
+                <md-icon>create</md-icon> edit
+              </md-button>
+              <md-button class="pull-right" aria-label="Open in Wikidata"
                           ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}" target="_blank">
                 <md-tooltip>Show Wikidata entry</md-tooltip>
-                <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
+                <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon> wikidata
               </md-button>
             </div>
           </div>
@@ -108,8 +136,13 @@
               <div flex-gt-xs="60" layout="row" layout-align="start start">
                 <div flex="none"><md-icon>account_balance</md-icon></div>
                 <div flex layout="column" layout-align="start stretch">
-                  <span ng-repeat="monType in $ctrl.monument.claims.P1435.values">
-                    <a ng-href="http://www.wikidata.org/wiki/{{monType.value_id}}">{{ monType.value[$ctrl.lang] || monType.value.en }}</a>
+                  <span ng-repeat="monument in $ctrl.monument.claims.P1435">
+                    <a ng-href="http://www.wikidata.org/wiki/{{monument.mainsnak.datavalue.value.id}}">
+                      {{ ::$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id][$ctrl.lang] ||$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id].en }}
+                    </a>
+                  </span>
+                  <span ng-if="!$ctrl.monument.claims.P1435[0].id">
+                    <span class="muted">not registered as monument</span>
                   </span>
                 </div>
               </div>
@@ -177,36 +210,107 @@
 
       <div class="monument monument__panel" ng-if="$ctrl.monument">
         <div class="monument__details">
+          <md-button class="pull-right md-primary"
+                      ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+                      ng-click="$ctrl.edit.all = true">
+            <md-icon>create</md-icon> edit
+          </md-button>
+          <md-button class="pull-right"
+                      ng-if="$ctrl.edit.all"
+                      ng-click="$ctrl.edit.all = false">
+            cancel
+          </md-button>
+          <md-button class="md-primary pull-right"
+                      ng-if="$ctrl.edit.all"
+                      ng-disabled="$ctrl.actions.claims.length + $ctrl.actions.other.length === 0"
+                      ng-click="$ctrl.saveAll()">
+            <md-icon>save</md-icon> save all ({{ $ctrl.actions.claims.length + $ctrl.actions.other.length || '0' }})
+          </md-button>
           <h4 class="monument__subtitle md-headline">Properties</h4>
-          <div class="monument__details-item"
-              layout="row" layout-align="center stretch"
-              ng-repeat="claim in ::$ctrl.monument.claims">
-            <span class="muted" flex="35">{{ ::(claim.property[$ctrl.lang.code] || claim.property.en) }}</span>
-            <span flex="65"
-                  layout="column" layout-align="start stretch">
-              <span class="monument__details-value" ng-repeat="value in ::claim.values">
-                <span ng-if="::(value.value_type === 'commonsMedia')">{{ ::value.value }}</span>
-                <span ng-if="::(value.value_type === 'external-id')">{{ ::value.value }}</span>
-                <span ng-if="::(value.value_type === 'globe-coordinate')">{{ ::value.value.latitude }} / {{ ::value.value.longitude }}</span>
-                <span ng-if="::(value.value_type === 'quantity')">{{ ::value.value.amount }}</span>
-                <span ng-if="::(value.value_type === 'string')">{{ ::value.value }}</span>
-                <span ng-if="::(value.value_type === 'time')">{{ ::(value.value.time.substring(1) | date : 'yyyy') }}</span>
-                <span ng-if="::(value.value_type === 'url')">{{ ::value.value }}</span>
-                <a ng-if="::(value.value_type === 'wikibase-item')"
-                  ng-href="http://www.wikidata.org/wiki/{{ ::value.value_id }}">{{ ::(value.value[$ctrl.lang.code] || value.value.en) }}</a>
-              </span>
-            </span>
-          </div>
+          <h5 class="monument__subtitle md-title">General data</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P31', 'P366', 'P186', 'P149']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit" hidden="prop === 'P366'"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Address details</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P669', 'P276']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit" link="prop === 'P276' ? 'list' : false"></mo-property-item>
+          <mo-property-coord
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P625'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-coord>
+
+          <h5 class="monument__subtitle md-title">Technical data</h5>
+          <mo-property-quantity
+            ng-repeat="prop in ['P2048', 'P2046', 'P1101', 'P1139', 'P1301']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit" hidden="prop === 'P1139' || prop === 'P1301'"></mo-property-quantity>
+
+          <h5 class="monument__subtitle md-title">Timeline</h5>
+          <mo-property-item
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P793'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Heritage</h5>
+          <mo-property-item
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="'P1435'" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">People</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P84', 'P287', 'P631', 'P193', 'P1028', 'P127']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit"></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Relations</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P361', 'P527']"
+            layout="row" layout-align="center stretch"
+            class="monument__details-item"
+            property="prop" claims="$ctrl.monument.claims" labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang" text="$ctrl.text" edit="$ctrl.edit" link="true"></mo-property-item>
+
+          <md-button class="pull-right md-primary"
+                      ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+                      ng-click="$ctrl.edit.all = true">
+            <md-icon>create</md-icon> edit
+          </md-button>
+          <md-button class="pull-right"
+                      ng-if="$ctrl.edit.all"
+                      ng-click="$ctrl.edit.all = false">
+            cancel
+          </md-button>
+          <md-button class="md-primary pull-right"
+                      ng-if="$ctrl.edit.all"
+                      ng-disabled="$ctrl.actions.claims.length + $ctrl.actions.other.length === 0"
+                      ng-click="$ctrl.saveAll()">
+            <md-icon>save</md-icon> save all ({{ $ctrl.actions.claims.length + $ctrl.actions.other.length || '0' }})
+          </md-button>
         </div>
       </div>
 
-      <div class="monument monument__panel">
+      <div class="monument monument__panel"
+            ng-if="$ctrl.monument.claims.P625">
         <div class="monument__details">
           <h4 class="monument__subtitle md-headline">Map</h4>
-          <leaflet ng-if="$ctrl.monument.claims.P625"
-                    markers="::$ctrl.map.markers" layers="::$ctrl.map.layers" center="::$ctrl.map.center"></leaflet>
-          <div layout="row" layout-align="center center"
-                ng-if="$ctrl.monument.claims.P625">
+          <leaflet markers="::$ctrl.map.markers" layers="::$ctrl.map.layers" center="::$ctrl.map.center"></leaflet>
+          <div layout="row" layout-align="center center">
             <!--
             <md-button class="md-primary" flex
                         ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}" target="_blank">

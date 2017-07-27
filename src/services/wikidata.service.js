@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const wdService = function ($http, $q, langService) {
   const service = {
     get,
@@ -16,25 +18,17 @@ const wdService = function ($http, $q, langService) {
     callback: 'JSON_CALLBACK',
   };
 
-  /**
-   * Iterates over own enumerable string keyed properties of an object and
-   * invokes `func` for each property..
-   *
-   * @param {Object} object The object to iterate over
-   * @param {Function} func The function invoked per iteration
-   * @returns {Object} Returns `object`
-   */
-  function forOwn(object, func) {
-    let key;
-    for (key in object) {
-      if (!object.hasOwnProperty(key)) { continue; }
-      func.call(object, object[key], key);
+  function findProp(thing, array) {
+    if (angular.isArray(thing)) {
+      thing.forEach(element => findProp(element, array));
+    } else if (angular.isObject(thing)) {
+      thing.datatype === 'wikibase-item' && thing.datavalue
+        ? array.push(thing.datavalue.value.id)
+        : _.forOwn(thing, value => findProp(value, array));
     }
-    return object;
   }
 
   /**
-   * 
    * 
    * @param {Object} data
    * @returns {Promise}
@@ -112,77 +106,32 @@ const wdService = function ($http, $q, langService) {
     return result;
   }
 
-  function simplifyAliases(aliases) {
-    return mapValues(aliases, lang => lang.map(alias => alias.value));
-  }
-
-  function simplifyEntity(entity) {
-    return {
-      _raw: entity,
-      id: entity.id,
-      labels: simplifyLabels(entity.labels),
-      aliases: simplifyAliases(entity.aliases),
-      descriptions: simplifyLabels(entity.descriptions),
-      claims: simplifyClaims(entity.claims),
-      interwiki: entity.sitelinks,
-    };
-  }
-
   function simplifyLabels(labels) {
     return mapValues(labels, label => label.value);
-  }
-
-  function simplifyClaim(claim) {
-    const snak = claim.mainsnak;
-    return {
-      value_type: snak.datatype,
-      value_id: snak.snaktype === 'novalue' || snak.snaktype === 'somevalue' ? false : snak.datavalue.value.id,
-      value: snak.snaktype === 'novalue' || snak.snaktype === 'somevalue' ? false : snak.datavalue.value,
-      qualifiers: claim.qualifiers,
-      rank: claim.rank,
-    };
-  }
-
-  function simplifyClaims(claims) {
-    return mapValues(claims, claim => claim.map(simplifyClaim));
   }
 
   // function getIDs
 
   function getById(id) {
-    let entities = {};
+    let data = {};
+    const ids = [];
 
     return get({
       ids: id,
       languages: undefined,
     })
-      .then(response => mapValues(response.entities, entity => simplifyEntity(entity)))
-      .then((data) => {
-        entities = data;
-        const simplified = mapValues(data,
-          entity => mapValues(entity.claims,
-            claim => claim.map(value => value.value_id)));
-        let ids = [];
-        forOwn(simplified, (item) => {
-          ids.push.apply(ids, Object.keys(item));
-          forOwn(item, prop => ids.push.apply(ids, prop));
-        });
-        ids = ids.filter((item, pos, self) => item && self.indexOf(item) === pos);
+      .then((response) => {
+        data = _.sample(response.entities);
+        findProp(response, ids);
         return ids;
       })
-      .then(labelsIDs => getLabels(labelsIDs))
-      .then((labels) => {
-        forOwn(entities, (entity) => {
-          entity.claims = mapValues(entity.claims, (values, key) => ({
-            property_id: key,
-            property: labels[key],
-            values: values.map(value => labels[value.value_id] ?
-              angular.extend(value, { value: labels[value.value_id] }) :
-              value),
-            qualifiers: entity.qualifiers,
-          }));
-        });
-        return entities;
+      .then((response) => {
+        const unique = _.uniq(response);
+        return getLabels(unique);
+      })
+      .then((valuesLabels) => {
+        angular.extend(data, { valuesLabels });
+        return data;
       });
   }
 
