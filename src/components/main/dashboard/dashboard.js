@@ -5,8 +5,11 @@ import pack from '../../../../package.json';
 
 const DashboardComponent = { controller, template };
 
-function controller($filter, $mdToast, $state, $window, WikiService, langService) {
+function controller($filter, $mdToast, $state, $window, WikiService, langService, wikidata) {
   const vm = this;
+  const langs = langService.getUserLanguages();
+
+  vm.getImage = getImage;
   vm.lang = {};
   vm.languagesList = langService.getLanguagesList();
   vm.languages = langService.getUserLanguages();
@@ -24,6 +27,8 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
       env: $window.__env,
       package: pack,
     };
+
+    getNearestMonuments();
 
     vm.examples = [
       {
@@ -87,6 +92,47 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
         credit: 'MarkusMark / CC BY-SA 3.0',
       },
     ];
+  }
+
+  function geolocSuccess(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const request = wikidata.getSPARQL(`SELECT ?place ?placeLabel ?dist (SAMPLE(?image) AS ?image)
+      WHERE
+      {
+        SERVICE wikibase:around {
+            ?place wdt:P625 ?location .
+            bd:serviceParam wikibase:center "Point(${longitude} ${latitude})"^^geo:wktLiteral .
+            bd:serviceParam wikibase:radius "10" .
+        }
+        ?place wdt:P1435 ?monument .
+        OPTIONAL { ?place wdt:P18 ?image . }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
+        BIND(geof:distance("Point(${longitude} ${latitude})"^^geo:wktLiteral, ?location) as ?dist) 
+      }
+      GROUP BY ?place ?placeLabel ?dist
+      ORDER BY ?dist`);
+    request.then((data) => {
+      vm.nearby = data.slice(0, 15).map(item => ({
+        id: item.place.value.substring(32),
+        name: item.placeLabel.value,
+        imageName: item.image ? item.image.value.substring(51) : undefined,
+        distance: item.dist.value,
+      }));
+    });
+  }
+
+  function getImage(item) {
+    if (!item.imageName) { return; }
+    WikiService.getImage(decodeURIComponent(item.imageName), { iiurlwidth: 640 }).then((response) => {
+      item.image = response.imageinfo;
+    });
+  }
+
+  function getNearestMonuments() {
+    navigator.geolocation.getCurrentPosition(geolocSuccess, () => {
+      vm.nearby = 'error';
+    });
   }
 
   function saveUserLanguages() {

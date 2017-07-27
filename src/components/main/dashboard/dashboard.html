@@ -17,6 +17,29 @@
             <a href="//se.wikimedia.org">Wikimedia Sweden</a> and <a href="//www.wikilovesmonuments.org/">Wiki Loves Monuments</a> initiative.
           </p>
         </div>
+
+        <div class="dashboard__box" flex>
+          <h4 class="md-title">Monuments nearby</h4>
+          <p ng-if="!$ctrl.nearby">Enable localization to see monuments nearby</p>
+          <p ng-if="$ctrl.nearby && !$ctrl.nearby">No monuments nearby</p>
+          <p ng-if="$ctrl.nearby === 'error'">Error getting monuments nearby</p>
+          <md-card ng-repeat="example in $ctrl.nearby" ui-sref="main.object({id: example.id})">
+            <div class="md-card-image"
+                  layout="row" layout-align="center center"
+                  ng-init="$ctrl.getImage(example)">
+              <img ng-if="example.image"
+                    load-src="{{ ::example.image.thumburl }}"
+                    title="Uploaded by: {{ ::example.image.user }}">
+            </div>
+            <md-card-title>
+              <md-card-title-text>
+                <a>{{ ::example.name }}</a>
+                <small class="muted">{{ ::example.distance | number }} km away</small>
+              </md-card-title-text>
+            </md-card-title>
+          </md-card>
+        </div>
+
         <div class="dashboard__box" flex>
           <h4 class="md-title">Example monuments</h4>
           <md-card ng-repeat="example in $ctrl.examples" ui-sref="main.object({id: example.id})">
