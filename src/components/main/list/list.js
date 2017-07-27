@@ -101,12 +101,15 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
 
     const wikipediaOptions = ['FILTER NOT EXISTS { ?article schema:about ?item } .', 'FILTER EXISTS { ?article schema:about ?item } .'];
     const wikipedia = wikipediaOptions[vm.filter.wikipedia] || '';
+    const admin = vm.isContinent
+      ? `?item wdt:P17 ?country . ?country wdt:P30 wd:${id} .`
+      : `?admin wdt:P131* wd:${id} .`;
 
     request = wikidata.getSPARQL(`SELECT DISTINCT ?item ?itemLabel (SAMPLE(?admin) AS ?admin) (SAMPLE(?adminLabel) AS ?adminLabel)
     (SAMPLE(?coord) AS ?coord) (SAMPLE(?image) AS ?image) ?type ?typeLabel ?style ?styleLabel ?architect ?architectLabel
     WHERE {
-      hint:Query hint:optimizer "None" .
-      ?admin wdt:P131* wd:${id} .
+      ${vm.isContinent ? '' : 'hint:Query hint:optimizer "None" .'}
+      ${id === 'Q2' ? '' : admin}
       ?item wdt:P131 ?admin .
       ?item wdt:P625 ?coord .
 
