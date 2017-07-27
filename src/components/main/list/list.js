@@ -38,6 +38,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   vm.loading = 'data';
   vm.map = null;
   vm.mobile = {};
+  vm.stateParams = $stateParams;
   vm.stats = null;
 
   vm.filterMap = filterMap;

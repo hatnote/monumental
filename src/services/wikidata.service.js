@@ -30,7 +30,6 @@ const wdService = function ($http, $q, langService) {
 
   /**
    * 
-   * 
    * @param {Object} data
    * @returns {Promise}
    */
