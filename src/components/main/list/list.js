@@ -128,19 +128,20 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
 
   function getPlace() {
     return wikidata.getById(id).then((data) => {
-      const first = Object.keys(data)[0];
-      vm.place = data[first];
+      vm.place = data;
+
+      if (vm.place.claims.P31 && vm.place.claims.P31.some(claim => claim.mainsnak.datavalue.value.id === 'Q5107')) {
+        vm.isContinent = true;
+        return false;
+      } else if (id === 'Q2') {
+        vm.isContinent = true;
+        return false;
+      }
 
       const claims = vm.place.claims;
-      if (vm.place.claims.P41) {
-        claims.P41.values.forEach(image => getImage(image.value));
-      } else if (vm.place.claims.P94) {
-        claims.P94.values.forEach(image => getImage(image.value));
-      }
       if (vm.place.claims.P17) {
-        const country = claims.P17.values[0];
-        const countryLanguages = langService.getNativeLanguages(country.value_id);
-
+        const country = claims.P17[0];
+        const countryLanguages = langService.getNativeLanguages(country.mainsnak.datavalue.value.id);
         if (!countryLanguages) { return false; }
         langs = langs.concat(countryLanguages.map(lang => ({ code: lang })));
       }
@@ -149,6 +150,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   }
 
   function filterMap() {
+    if (!vm.map) { return; }
     $state.transitionTo('main.list', vm.filter, { notify: false });
     vm.loading = 'map';
     getList()
@@ -169,7 +171,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       .then(() => {
         let center = { lat: 49.4967, lng: 12.4805, zoom: 4 };
         if (vm.place.claims.P625) {
-          const coords = vm.place.claims.P625.values[0].value;
+          const coords = vm.place.claims.P625[0].mainsnak.datavalue.value;
           center = { lat: coords.latitude, lng: coords.longitude, zoom: 7 };
         }
         return $timeout(() => {
@@ -287,7 +289,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
   }
 
   function setTitle() {
-    const title = vm.place.labels[vm.lang.code] || vm.place.labels.en || vm.place.id;
+    const title = vm.place.labels[vm.lang.code].value || vm.place.labels.en.value || vm.place.id;
     $window.document.title = `${title} – Monumental`;
   }
 
