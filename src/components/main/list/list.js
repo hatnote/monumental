@@ -10,7 +10,6 @@ const ListComponent = { controller, template };
 
 function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, WikiService, wikidata) {
   const vm = this;
-  const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
   let langs = langService.getUserLanguages();
 
@@ -212,7 +211,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
           lat: element.coord.lat,
           lng: element.coord.lng,
           layer: 'monuments',
-          icon,
+          icon: mapService.getMapIcon(element),
         };
         bounds.push(element.coord);
       });

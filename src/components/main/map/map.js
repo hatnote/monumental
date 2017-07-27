@@ -7,7 +7,6 @@ const MapComponent = { controller, template };
 
 function controller($location, $q, $scope, $state, $stateParams, $timeout, $window, langService, leafletData, localStorageService, mapService, wikidata) {
   const vm = this;
-  const icon = mapService.getMapIcon();
   const langs = langService.getUserLanguages();
 
   let canceler = $q.defer();
@@ -196,7 +195,7 @@ function controller($location, $q, $scope, $state, $stateParams, $timeout, $wind
       lat: +element.coord[1],
       lng: +element.coord[0],
       layer: 'monuments',
-      icon,
+      icon: mapService.getMapIcon(element),
     };
   }
 

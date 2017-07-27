@@ -1,5 +1,6 @@
 import L from 'leaflet';
 
+import '../images/marker-green.png';
 import '../images/marker-red.png';
 import '../images/marker-shadow.png';
 
@@ -14,15 +15,15 @@ const MapService = () => {
   //
 
   function getMapIcon(options) {
-    return angular.extend({
-      iconUrl: 'assets/images/marker-red.png',
+    return {
+      iconUrl: `assets/images/marker-${options && options.image ? 'green' : 'red'}.png`,
       shadowUrl: 'assets/images/marker-shadow.png',
       iconSize: [29, 41],
       shadowSize: [41, 41],
       iconAnchor: [15, 41],
       shadowAnchor: [12, 41],
       popupAnchor: [0, -43],
-    }, options);
+    };
   }
 
   function getMapInstance(options) {

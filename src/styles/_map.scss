@@ -1,0 +1,8 @@
+.angular-leaflet-map {
+  .marker-cluster-small {
+    background-color: rgba(200, 200, 200, 0.6);
+    & > div {
+      background-color: rgba(200, 200, 200, 0.6);
+    }
+  }
+}
