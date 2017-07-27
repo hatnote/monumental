@@ -5,6 +5,8 @@ const ToolbarComponent = { bindings: { wide: '=' }, controller, template };
 
 function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, WikiService, wikidata) {
   const vm = this;
+  const baseUrl = $window.__env.baseUrl;
+
   vm.isLoggedIn = false;
   vm.loading = true;
   vm.mobile = {};
@@ -64,11 +66,12 @@ function controller($document, $mdSidenav, $mdToast, $state, $timeout, $window, 
 
   function login() {
     vm.loading = true;
-    $window.location.pathname = `${$window.__env.baseUrl}/login`;
+    const current = $window.location.href;
+    $window.location.href = `${baseUrl}/login?next=${encodeURIComponent(current)}`;
   }
 
   function logout() {
-    $window.location.pathname = `${$window.__env.baseUrl}/logout`;
+    $window.location.href = `${baseUrl}/logout`;
   }
 
   function openSearch() {
