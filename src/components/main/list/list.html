@@ -1,21 +1,6 @@
 <div class="container" layout="column" layout-align="start stretch" flex>
   <div layout="column" layout-align="start stretch" flex="none">
     <div class="list__header" layout="row" layout-align="center start">
-      <div flex="none" hide-xs>
-        <div class="header__image" ng-if="$ctrl.image.length">
-          <a class="header__image-link" layout="row" layout-align="center center"
-              ng-repeat="image in ::$ctrl.image"
-              ng-if="$first"
-              ng-href="{{ ::image.descriptionurl }}">
-            <img ng-src="{{ ::image.thumburl }}">
-          </a>
-        </div>
-        <div class="header__image" ng-if="!$ctrl.image.length">
-          <div class="header__image-link" layout="row" layout-align="center center">
-            <md-icon>close</md-icon>
-          </div>
-        </div>
-      </div>
       <div layout="column" layout-align="start stretch" flex
             ng-if="$ctrl.place"
             ng-show="$ctrl.mobile.fullHeader">
@@ -44,9 +29,6 @@
               <md-tooltip>Show Wikidata entry</md-tooltip>
             </md-button>
           </div>
-        </div>
-        <div class="header__secondary">
-          <mo-location class="header__place" monument="::$ctrl.place"></mo-location>
         </div>
       </div>
       <div layout="row" layout-align="start center" flex
