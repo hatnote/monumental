@@ -198,6 +198,7 @@ const LangService = function ($filter, $q, localStorageService) {
     Q805: ['ar'],
     Q953: ['en'],
     Q954: ['en'],
+    Q148: ['zh'],
   };
   const languageList = [
     { code: 'en', name: 'English', nativeName: 'English' },
