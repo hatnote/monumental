@@ -521,7 +521,7 @@ const LangService = function ($filter, $q, localStorageService) {
 
     const langs = ls || [def];
     if (!langs.includes('en')) { langs.push('en'); }
-    userLanguages = langs.map(lang => $filter('filter')(languageList, lang)[0]);
+    userLanguages = langs.map(lang => languageList.filter(l => l.code === lang)[0]);
     return angular.copy(userLanguages);
   }
 
