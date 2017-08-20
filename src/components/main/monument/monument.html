@@ -178,10 +178,92 @@
     <div class="monument__subheader" layout="row" layout-align="center stretch">
       <div class="monument__images" ng-if="$ctrl.images">
         <a ng-repeat="image in $ctrl.images" ng-click="$ctrl.openImage(image, $event)">
-          <img ng-src="{{image.thumburl}}">
+          <img class="image" ng-src="{{image.thumburl}}">
         </a>
       </div>
     </div>
+
+    <div class="monument__subheader" layout="row" layout-align="center stretch">
+      <div class="upload">
+        <div class="upload__add-files">
+          <div ng-show="$ctrl.uploader.isHTML5">
+            <div nv-file-drop="" uploader="$ctrl.uploader">
+              <div class="upload__drop-zone"
+                    layout="column" layout-align="center center"
+                    over-class="another-file-over-class"
+                    nv-file-over=""
+                    uploader="$ctrl.uploader">
+                <h5 class="md-title muted">Drop your files here</h5>
+                <input type="file"
+                        class="upload__input" name="file" id="file"
+                        nv-file-select=""
+                        uploader="$ctrl.uploader"
+                        multiple />
+                <label for="file" class="md-primary md-button">
+                  <md-icon>note_add</md-icon>
+                  Select files
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="monument__images"
+              layout="column" layout-align="start stretch"
+              ng-if="$ctrl.uploader.queue">
+          <div ng-repeat="image in $ctrl.uploader.queue"
+                layout="row" layout-align="start center">
+            <div class="image" ng-thumb="{ file: image._file, height: 87 }"></div>
+            <div flex>
+              <strong>{{ image.file.name }}</strong><br />
+              {{ image.file.size/1024/1024 |number:2 }} MiB
+            </div>
+            <div>
+              {{ (image.progress || 0) + '%' }}
+            </div>
+            <div>
+              <span ng-show="image.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+              <span ng-show="image.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+              <span ng-show="image.isError"><i class="glyphicon glyphicon-remove"></i></span>
+              <button type="button" class="btn btn-danger btn-xs" ng-click="image.remove()">
+                <span class="glyphicon glyphicon-trash"></span> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p>Queue length: {{ $ctrl.uploader.queue.length }}</p>
+          <div>
+            <div>
+              Queue progress: {{ $ctrl.uploader.progress + '%' }}
+            </div>
+            <button type="button"
+                      class="btn btn-success btn-s"
+                      ng-click="$ctrl.uploader.uploadAll()"
+                      ng-disabled="!$ctrl.uploader.getNotUploadedItems().length">
+              <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+            <button type="button"
+                      class="btn btn-warning btn-s"
+                      ng-click="$ctrl.uploader.cancelAll()"
+                      ng-disabled="!$ctrl.uploader.isUploading">
+              <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+            </button>
+            <button type="button"
+                      class="btn btn-danger btn-s"
+                      ng-click="$ctrl.uploader.clearQueue()"
+                      ng-disabled="!$ctrl.uploader.queue.length">
+              <span class="glyphicon glyphicon-trash"></span> Remove all
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
 
     <div class="monument__data"
           layout="column" layout-align="start center">

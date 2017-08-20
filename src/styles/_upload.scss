@@ -1,0 +1,31 @@
+.upload {
+  width: 980px;
+  max-width: 100%;
+
+  .monument__images {
+    height: auto;
+  }
+
+  .upload__drop-zone {
+    height: 150px;
+    border: dotted 3px lightgray;
+    text-align: center;
+
+    .md-title {
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+
+    .upload__input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+    .upload__input + label {
+      cursor: pointer;
+    }
+  }
+}
