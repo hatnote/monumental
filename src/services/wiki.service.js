@@ -10,12 +10,14 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     getFormattedTime,
     getCategoryInfo,
     getCategoryMembers,
+    getCategorySearch,
     getImage,
     getLabel,
     getUserInfo,
     removeClaim,
     setClaimItem,
     setClaimQuantity,
+    setClaimString,
     setLabel,
   };
 
@@ -115,6 +117,20 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       const images = response.data.query.categorymembers.map(image => image.title.substring(5));
       return images;
     });
+  }
+
+  function getCategorySearch(name) {
+    const params = angular.extend({}, defaultParams, {
+      action: 'query',
+      list: 'search',
+      srsearch: name,
+      srnamespace: 14,
+      srlimit: 20,
+      srprop: 'timestamp',
+    });
+    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
+      params,
+    }).then(response => response.data.query.search);
   }
 
   function getFilesCategories(files) {
@@ -250,6 +266,26 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
               amount: value.value,
               unit: value.unit,
             },
+          },
+        },
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function setClaimString(value) {
+    return postWikidata({
+      action: 'wbsetclaim',
+      format: 'json',
+      claim: angular.toJson({
+        id: value.id,
+        type: 'claim',
+        mainsnak: {
+          snaktype: 'value',
+          property: value.property,
+          datavalue: {
+            type: 'string',
+            value: value.value,
           },
         },
       }),

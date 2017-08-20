@@ -27,11 +27,13 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   vm.stateParams = $stateParams;
   vm.text = null;
 
+  vm.categoryChange = categoryChange;
   vm.getCommonsLink = getCommonsLink;
   vm.getWikipediaArticle = getWikipediaArticle;
   vm.labelChange = labelChange;
   vm.openArticleList = (menu, event) => menu.open(event);
   vm.openImage = openImage;
+  vm.queryCommonsCategory = queryCommonsCategory;
   vm.saveAll = saveAll;
   vm.scrollTo = anchor => $anchorScroll(anchor);
 
@@ -124,23 +126,45 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
     };
   }
 
-  function saveAll() {
-    vm.busy = true;
-    const actions = [...vm.actions.claims, ...vm.actions.other];
-    let counter = actions.length;
+  function categoryChange(value) {
+    if (value.searchSelected) {
+      value.save = undefined;
+    }
+    vm.actions.other[1] = {
+      type: 'save',
+      promise: value.id ? setClaimString : addClaimString,
+      value,
+    };
+  }
 
-    actions.map(promise => promise.promise(promise.value)
+  function queryCommonsCategory(text) {
+    return WikiService.getCategorySearch(text);
+  }
+
+  function saveSingle(actions, index) {
+    const promise = actions[index];
+    return promise.promise(promise.value)
       .then((response) => {
-        counter -= 1;
-        if (!counter) {
+        if (actions[index + 1]) {
+          saveSingle(actions, index + 1);
+        } else {
           $state.go($state.current, { id }, { reload: true });
         }
-        return response;
       })
       .catch((err) => {
         $mdToast.show($mdToast.simple().textContent(`Error: ${err}`).hideDelay(3000));
-        vm.busy = false;
-      }));
+        if (actions[index + 1]) {
+          saveSingle(actions, index + 1);
+        } else {
+          vm.busy = false;
+        }
+      });
+  }
+
+  function saveAll() {
+    vm.busy = true;
+    const actions = [...vm.actions.claims, ...vm.actions.other];
+    saveSingle(actions, 0);
   }
 
   function recountQueue() {
@@ -187,6 +211,8 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
         const category = getPropertyValue('P373');
         getCategoryInfo(category);
         getCategoryMembers(category);
+      } else {
+        vm.monument.claims.P373 = [{}];
       }
 
       getInterwiki();
@@ -230,6 +256,22 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
 
   function setLabel(lang) {
     return WikiService.setLabel(id, lang, vm.monument.labels[lang].newValue);
+  }
+
+  function setClaimString(value) {
+    return WikiService.setClaimString({
+      id: value.id,
+      property: value.mainsnak.property,
+      value: value.searchSelected.title,
+    });
+  }
+
+  function addClaimString(value) {
+    return WikiService.addClaimString({
+      entity: id,
+      property: 'P373',
+      value: value.searchSelected.title,
+    });
   }
 }
 

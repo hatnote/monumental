@@ -98,6 +98,11 @@
                           ng-click="$ctrl.edit.all = true">
                 <md-icon>create</md-icon> edit
               </md-button>
+              <md-button class="pull-right"
+                          ng-if="$ctrl.edit.all"
+                          ng-click="$ctrl.edit.all = false">
+                cancel
+              </md-button>
               <md-button class="pull-right" aria-label="Open in Wikidata"
                           ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}" target="_blank">
                 <md-tooltip>Show Wikidata entry</md-tooltip>
@@ -111,13 +116,31 @@
                   layout-xs="column" layout-align-xs="start stretch">
               <div flex-gt-xs="60" layout="row" layout-align="start start">
                 <div flex="none"><md-icon>photo</md-icon></div>
-                <span flex>
+                <span flex ng-if="!$ctrl.edit.all">
                   <a ng-if="$ctrl.category" ng-href="//commons.wikimedia.org/wiki/{{ $ctrl.category.title }}" target="_blank">
                     {{ $ctrl.category.files }} images
                     <span ng-if="$ctrl.category.subcats">and {{ $ctrl.category.subcats }} subcategories</span>
                   </a>
                   <span class="muted" ng-if="!$ctrl.category">no Commons category</span>
                 </span>
+                <md-autocomplete flex ng-if="$ctrl.edit.all"
+                    ng-init="$ctrl.monument.claims.P373[0].mainsnak.datavalue.newValue = $ctrl.monument.claims.P373[0].mainsnak.datavalue.value"
+                    md-input-name="autocompleteField"
+                    md-selected-item="$ctrl.monument.claims.P373[0].searchSelected"
+                    md-selected-item-change="$ctrl.categoryChange($ctrl.monument.claims.P373[0])"
+                    md-search-text="$ctrl.monument.claims.P373[0].search"
+                    md-items="item in $ctrl.queryCommonsCategory($ctrl.monument.claims.P373[0].search)"
+                    md-item-text="item.title.substring(9)"
+                    md-min-length="1"
+                    md-floating-label="label"
+                    md-escape-options="blur"
+                    md-dropdown-position="bottom"
+                    ng-disabled="value.action.type === 'remove'"
+                    ng-model-options="{ debounce: 500 }">
+                  <md-item-template>
+                    <strong>{{ item.title.substring(9) }}</strong>
+                  </md-item-template>
+                </md-autocomplete>
               </div>
               <div flex-gt-xs="40" layout="row" layout-align="start start">
                 <div flex="none"><md-icon>description</md-icon></div>
