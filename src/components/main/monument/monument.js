@@ -46,10 +46,6 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   var uploader = vm.uploader = new FileUploader({
     url: `${$window.__env.baseUrl}/api`,
     // url: 'https://commons.wikimedia.org/w/api.php',
-    headers: {
-      origin: 'https://www.mediawiki.org',
-      'Content-Type': 'multipart/form-data',
-    },
     withCredentials: true,
   });
 

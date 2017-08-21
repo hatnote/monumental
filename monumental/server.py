@@ -20,6 +20,7 @@ from requests_oauthlib import OAuth1
 
 
 DEFAULT_WIKI_API_URL = 'https://www.wikidata.org/w/api.php'
+COMMONS_WIKI_API_URL = 'https://commons.wikimedia.org/w/api.php'
 WIKI_OAUTH_URL = 'https://meta.wikimedia.org/w/index.php'
 CUR_PATH = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH = os.path.join(CUR_PATH, 'static')
@@ -110,7 +111,10 @@ def get_wd_token(request, cookie, consumer_token, token_type=None):
     return token
 
 
-def send_to_wd_api(request, cookie, consumer_token):
+def send_to_commons_api(request, cookie, consumer_token):
+    return send_to_wiki_api(request, cookie, consumer_token, api_url=COMMONS_WIKI_API_URL)
+
+def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_URL):
     """Sends GET or POST variables to the Wikidata API at
     http://wikidata.org/w/api.php.
 
@@ -142,9 +146,9 @@ def send_to_wd_api(request, cookie, consumer_token):
     method = request.method
 
     if method == 'GET':
-        resp = requests.get(DEFAULT_WIKI_API_URL, api_args, auth=auth)
+        resp = requests.get(api_url, api_args, auth=auth)
     elif method == 'POST':
-        resp = requests.post(DEFAULT_WIKI_API_URL, api_args, auth=auth)
+        resp = requests.post(api_url, api_args, auth=auth)
 
     try:
         resp_dict = resp.json()
@@ -159,13 +163,14 @@ def send_to_wd_api(request, cookie, consumer_token):
 def create_app():
     static_app = StaticApplication(STATIC_PATH)
 
-    routes = [StaticFileRoute('/', STATIC_PATH + '/index.html'),
-              ('/', static_app),
+    routes = [#StaticFileRoute('/', STATIC_PATH + '/index.html'),
+              #('/', static_app),
               ('/home', home, render_basic),
               ('/login', login),
               ('/logout', logout),
               ('/complete_login', complete_login),
-              ('/api', send_to_wd_api, render_basic),
+              ('/api', send_to_wiki_api, render_basic),
+              ('/commons', send_to_commons_api, render_basic),
               ('/meta', MetaApplication())]
 
     config_file_name = 'config.local.yaml'
