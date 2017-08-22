@@ -44,7 +44,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   // functions
 
   var uploader = vm.uploader = new FileUploader({
-    url: `${$window.__env.baseUrl}/api`,
+    url: `${$window.__env.baseUrl}/commons`,
     // url: 'https://commons.wikimedia.org/w/api.php',
     withCredentials: true,
   });
@@ -74,6 +74,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
       { comment: '#monumental' },
       { text: 'Initial text' },
       { watchlist: 'watch' },
+      { use_auth: true },
     ];
     fileItem.formData.push(...data);
   };

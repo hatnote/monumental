@@ -20,7 +20,7 @@ from requests_oauthlib import OAuth1
 
 
 DEFAULT_WIKI_API_URL = 'https://www.wikidata.org/w/api.php'
-COMMONS_WIKI_API_URL = 'https://commons.wikimedia.org/w/api.php'
+COMMONS_WIKI_API_URL = 'https://test.wikipedia.org/w/api.php'
 WIKI_OAUTH_URL = 'https://meta.wikimedia.org/w/index.php'
 CUR_PATH = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH = os.path.join(CUR_PATH, 'static')
@@ -84,7 +84,8 @@ def complete_login(request, consumer_token, cookie):
     return redirect(return_to_url)
 
 
-def get_wd_token(request, cookie, consumer_token, token_type=None):
+def get_wd_token(request, cookie, consumer_token, token_type=None,
+                 api_url=DEFAULT_WIKI_API_URL):
     params = {'action': 'query',
               'meta': 'tokens',
               'format': 'json'}
@@ -100,7 +101,7 @@ def get_wd_token(request, cookie, consumer_token, token_type=None):
     else:
         params['type'] = 'csrf'
 
-    raw_resp = requests.get(DEFAULT_WIKI_API_URL,
+    raw_resp = requests.get(api_url,
                             params=params,
                             auth=auth)
 
@@ -133,7 +134,7 @@ def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_U
             return resp_dict
 
         api_args.pop('use_auth')
-        token = get_wd_token(request, cookie, consumer_token)
+        token = get_wd_token(request, cookie, consumer_token, api_url=api_url)
         api_args['token'] = token
         auth = OAuth1(consumer_token.key,
                       client_secret=consumer_token.secret,
@@ -148,7 +149,7 @@ def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_U
     if method == 'GET':
         resp = requests.get(api_url, api_args, auth=auth)
     elif method == 'POST':
-        resp = requests.post(api_url, api_args, auth=auth)
+        resp = requests.post(api_url, api_args, auth=auth, files=request.files)
 
     try:
         resp_dict = resp.json()
@@ -163,8 +164,8 @@ def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_U
 def create_app():
     static_app = StaticApplication(STATIC_PATH)
 
-    routes = [#StaticFileRoute('/', STATIC_PATH + '/index.html'),
-              #('/', static_app),
+    routes = [StaticFileRoute('/', STATIC_PATH + '/index.html'),
+              ('/', static_app),
               ('/home', home, render_basic),
               ('/login', login),
               ('/logout', logout),
