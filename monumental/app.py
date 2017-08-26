@@ -19,10 +19,12 @@ from mwoauth import Handshaker, RequestToken, ConsumerToken
 from requests_oauthlib import OAuth1
 
 
-DEFAULT_WIKI_API_URL = 'https://www.wikidata.org/w/api.php'
+DEFAULT_WIKI_API_URL = 'https://commons.wikimedia.org/w/api.php'
 COMMONS_WIKI_API_URL = 'https://commons.wikimedia.org/w/api.php'
-WIKI_OAUTH_URL = 'https://meta.wikimedia.org/w/index.php'
-CUR_PATH = os.path.dirname(os.path.abspath(__file__))
+WIKIDATA_API_URL = 'https://www.wikidata.org/w/api.php'
+TEST_WIKI_API_URL = 'https://test.wikipedia.org/w/api.php'
+WIKI_OAUTH_URL = 'https://commons.wikimedia.org/w/index.php'
+CUR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_PATH = os.path.join(CUR_PATH, 'static')
 
 def home(cookie, request):
@@ -115,6 +117,13 @@ def get_wd_token(request, cookie, consumer_token, token_type=None,
 def send_to_commons_api(request, cookie, consumer_token):
     return send_to_wiki_api(request, cookie, consumer_token, api_url=COMMONS_WIKI_API_URL)
 
+def send_to_wikidata_api(request, cookie, consumer_token):
+    return send_to_wiki_api(request, cookie, consumer_token, api_url=WIKIDATA_API_URL)
+
+def send_to_test_api(request, cookie, consumer_token):
+    return send_to_wiki_api(request, cookie, consumer_token, api_url=TEST_WIKI_API_URL)
+
+
 def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_URL):
     """Sends GET or POST variables to the Wikidata API at
     http://wikidata.org/w/api.php.
@@ -172,9 +181,11 @@ def create_app():
               ('/complete_login', complete_login),
               ('/api', send_to_wiki_api, render_basic),
               ('/commons', send_to_commons_api, render_basic),
+              ('/wikidata', send_to_wikidata_api, render_basic),
+              ('/test', send_to_test_api, render_basic),
               ('/meta', MetaApplication())]
 
-    config_file_name = 'config.labs.yaml'
+    config_file_name = 'config.hatnote.yaml'
     config_file_path = os.path.join(CUR_PATH, config_file_name)
 
     config = yaml.load(open(config_file_path))
