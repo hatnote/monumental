@@ -1,10 +1,12 @@
 node_modules
 app
 static
+logs
 
 .vscode
 jsconfig.json
 
+config.hatnote.yaml
 config.local.yaml
 config.labs.yaml
 *.*~
