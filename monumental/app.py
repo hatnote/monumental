@@ -66,15 +66,15 @@ def complete_login(request, consumer_token, cookie):
 
     req_token = RequestToken(cookie['request_token_key'],
                              cookie['request_token_secret'])
-    
+
     access_token = handshaker.complete(req_token,
                                        request.query_string)
 
     identity = handshaker.identify(access_token)
-    
+
     userid = identity['sub']
     username = identity['username']
-    
+
     cookie['userid'] = userid
     cookie['username'] = username
     # Is this OK to put in a cookie?
@@ -173,7 +173,14 @@ def send_to_wiki_api(request, cookie, consumer_token, api_url=DEFAULT_WIKI_API_U
 def create_app():
     static_app = StaticApplication(STATIC_PATH)
 
-    routes = [StaticFileRoute('/', STATIC_PATH + '/index.html'),
+    def fe_app_route(path, ignore_trailing=True):
+        # added to support the removal of the '#' in Angular URLs
+        target = STATIC_PATH + '/index.html'
+        if ignore_trailing:
+            path = path + '/<_ignored*>'
+        return StaticFileRoute(path, target)
+
+    routes = [fe_app_route('/', ignore_trailing=False),  # TODO: necessary?
               ('/', static_app),
               ('/home', home, render_basic),
               ('/login', login),
@@ -183,7 +190,12 @@ def create_app():
               ('/commons', send_to_commons_api, render_basic),
               ('/wikidata', send_to_wikidata_api, render_basic),
               ('/test', send_to_test_api, render_basic),
-              ('/meta', MetaApplication())]
+              ('/meta', MetaApplication()),
+              fe_app_route('/list'),
+              fe_app_route('/map'),
+              fe_app_route('/object'),
+              fe_app_route('/games'),
+    ]
 
     config_file_name = 'config.hatnote.yaml'
     config_file_path = os.path.join(CUR_PATH, config_file_name)
