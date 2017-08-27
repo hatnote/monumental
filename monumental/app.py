@@ -24,8 +24,8 @@ COMMONS_WIKI_API_URL = 'https://commons.wikimedia.org/w/api.php'
 WIKIDATA_API_URL = 'https://www.wikidata.org/w/api.php'
 TEST_WIKI_API_URL = 'https://test.wikipedia.org/w/api.php'
 WIKI_OAUTH_URL = 'https://commons.wikimedia.org/w/index.php'
-CUR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_PATH = os.path.join(CUR_PATH, 'static')
+PROJ_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_PATH = os.path.join(PROJ_PATH, 'static')
 
 def home(cookie, request):
     headers = dict([(k, v) for k, v in
@@ -195,10 +195,11 @@ def create_app():
               fe_app_route('/map'),
               fe_app_route('/object'),
               fe_app_route('/games'),
+              fe_app_route('/ireland'),
     ]
 
     config_file_name = 'config.hatnote.yaml'
-    config_file_path = os.path.join(CUR_PATH, config_file_name)
+    config_file_path = os.path.join(PROJ_PATH, config_file_name)
 
     config = yaml.load(open(config_file_path))
 
