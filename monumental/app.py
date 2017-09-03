@@ -117,8 +117,10 @@ def get_wd_token(request, cookie, consumer_token, token_type=None,
 def send_to_commons_api(request, cookie, consumer_token):
     return send_to_wiki_api(request, cookie, consumer_token, api_url=COMMONS_WIKI_API_URL)
 
+
 def send_to_wikidata_api(request, cookie, consumer_token):
     return send_to_wiki_api(request, cookie, consumer_token, api_url=WIKIDATA_API_URL)
+
 
 def send_to_test_api(request, cookie, consumer_token):
     return send_to_wiki_api(request, cookie, consumer_token, api_url=TEST_WIKI_API_URL)
@@ -207,7 +209,13 @@ def create_app():
 
     root_path = config.get('root_path', '/')
 
+    # secure=True means cookie is HTTPS only
+    # http_only=True means cookie is not accessible to javascript
+    # TODO: make http_only contingent on whether or not we're in prod
+    # (local doesn't do https)
     scm_mw = SignedCookieMiddleware(secret_key=cookie_secret,
+                                    secure=True,
+                                    http_only=True,
                                     path=root_path)
     scm_mw.data_expiry = NEVER
 
