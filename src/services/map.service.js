@@ -55,7 +55,7 @@ const MapService = () => {
             url: '//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
             layerOptions: {
               subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              attribution: '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
               maxNativeZoom: 18,
               maxZoom: 21,
@@ -67,7 +67,7 @@ const MapService = () => {
             url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             layerOptions: {
               subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              attribution: '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
               continuousWorld: true,
               maxNativeZoom: 19,
               maxZoom: 21,

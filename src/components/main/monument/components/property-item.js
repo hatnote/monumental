@@ -24,7 +24,7 @@ const PropertyItemComponent = {
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
             <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
                 ng-if="false"
-                ng-href="http://www.wikidata.org/wiki/{{ ::value.mainsnak.datavalue.value.id }}" target="_blank">
+                ng-href="//www.wikidata.org/wiki/{{ ::value.mainsnak.datavalue.value.id }}" target="_blank">
               <md-tooltip>Show Wikidata entry</md-tooltip>
               <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
             </md-button>
