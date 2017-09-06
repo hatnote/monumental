@@ -116,14 +116,14 @@
                   layout-xs="column" layout-align-xs="start stretch">
               <div flex-gt-xs="60" layout="row" layout-align="start start">
                 <div flex="none"><md-icon>photo</md-icon></div>
-                <span flex ng-if="!$ctrl.edit.all">
+                <span flex ng-if="!$ctrl.edit.all || true">
                   <a ng-if="$ctrl.category" ng-href="//commons.wikimedia.org/wiki/{{ $ctrl.category.title }}" target="_blank">
                     {{ $ctrl.category.files }} images
                     <span ng-if="$ctrl.category.subcats">and {{ $ctrl.category.subcats }} subcategories</span>
                   </a>
                   <span class="muted" ng-if="!$ctrl.category">no Commons category</span>
                 </span>
-                <md-autocomplete flex ng-if="$ctrl.edit.all"
+                <md-autocomplete flex ng-if="$ctrl.edit.all && false"
                     ng-init="$ctrl.monument.claims.P373[0].mainsnak.datavalue.newValue = $ctrl.monument.claims.P373[0].mainsnak.datavalue.value"
                     md-input-name="autocompleteField"
                     md-selected-item="$ctrl.monument.claims.P373[0].searchSelected"
@@ -160,7 +160,7 @@
                 <div flex="none"><md-icon>account_balance</md-icon></div>
                 <div flex layout="column" layout-align="start stretch">
                   <span ng-repeat="monument in $ctrl.monument.claims.P1435">
-                    <a ng-href="http://www.wikidata.org/wiki/{{monument.mainsnak.datavalue.value.id}}">
+                    <a ng-href="//www.wikidata.org/wiki/{{monument.mainsnak.datavalue.value.id}}">
                       {{ ::$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id][$ctrl.lang] ||$ctrl.monument.valuesLabels[monument.mainsnak.datavalue.value.id].en }}
                     </a>
                   </span>
@@ -183,7 +183,7 @@
       </div>
     </div>
 
-    <div class="monument__subheader" layout="row" layout-align="center stretch">
+    <div class="monument__subheader" layout="row" layout-align="center stretch" ng-if="false">
       <div class="upload">
         <div class="upload__add-files">
           <div ng-show="$ctrl.uploader.isHTML5">
@@ -210,7 +210,7 @@
 
         <div class="monument__images"
               layout="column" layout-align="start stretch"
-              ng-if="$ctrl.uploader.queue">
+              ng-if="$ctrl.uploader.queue && false">
           <div ng-repeat="image in $ctrl.uploader.queue"
                 layout="row" layout-align="start center">
             <div class="image" ng-thumb="{ file: image._file, height: 87 }"></div>
@@ -232,7 +232,7 @@
           </div>
         </div>
 
-        <div>
+        <div ng-if="false">
           <p>Queue length: {{ $ctrl.uploader.queue.length }}</p>
           <div>
             <div>
@@ -260,10 +260,6 @@
         </div>
       </div>
     </div>
-
-
-
-
 
     <div class="monument__data"
           layout="column" layout-align="start center">

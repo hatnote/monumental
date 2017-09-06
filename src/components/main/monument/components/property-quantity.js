@@ -83,7 +83,7 @@ function controller($q, $rootScope, $stateParams, wikidata, WikiService) {
       property: vm.property,
       value: angular.toJson({
         amount: value.newValue,
-        unit: value.unit ? `http://www.wikidata.org/entity/${value.unit}` : undefined,
+        unit: value.unit ? `//www.wikidata.org/entity/${value.unit}` : undefined,
       }),
     });
   }
