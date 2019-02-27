@@ -1,0 +1,661 @@
+<div
+  class="busy"
+  layout="column"
+  layout-align="center center"
+  ng-if="$ctrl.busy"
+>
+  <h3 class="md-headline">Saving</h3>
+  <md-progress-circular
+    md-mode="indeterminate"
+    md-diameter="30px"
+  ></md-progress-circular>
+</div>
+<div
+  class="container"
+  layout="column"
+  layout-align="space-between stretch"
+  flex
+>
+  <div layout="column" layout-align="start stretch" flex>
+    <div class="monument__header" layout="column" layout-align="center center">
+      <div
+        class="monument"
+        layout="row"
+        layout-align="center start"
+        layout-xs="column"
+        layout-align-xs="start stretch"
+      >
+        <div flex="none">
+          <div class="monument__image">
+            <a
+              class="monument__image-link"
+              layout="row"
+              layout-align="center center"
+              ng-repeat="image in $ctrl.image"
+              ng-click="$ctrl.openImage(image, $event)"
+            >
+              <img load-src="{{ image.thumburl }}" />
+            </a>
+            <span
+              class="monument__image-link"
+              layout="row"
+              layout-align="center center"
+              ng-if="!$ctrl.image.length"
+            >
+              <md-icon>photo_camera</md-icon>
+            </span>
+          </div>
+        </div>
+
+        <div
+          layout="column"
+          layout-align="start stretch"
+          flex
+          ng-if="!$ctrl.monument"
+        >
+          <div
+            class="monument__primary"
+            layout="row"
+            layout-align="center start"
+            layout-xs="column"
+            layout-align-xs="start stretch"
+          >
+            <div flex>
+              <h2 class="monument__title md-display-1">
+                <span class="loading-line"></span>
+              </h2>
+              <h4 class="monument__subtitle md-headline muted">
+                <span class="loading-line"></span>
+              </h4>
+            </div>
+            <div flex="none" hide-xs></div>
+          </div>
+          <div class="monument__secondary">
+            <div class="monument__place">
+              <span class="loading-line"></span>
+            </div>
+            <div
+              layout="row"
+              layout-align="center start"
+              layout-xs="column"
+              layout-align-xs="start stretch"
+            >
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>photo</md-icon>
+                </div>
+                <span class="loading-line" flex></span>
+              </div>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>description</md-icon>
+                </div>
+                <span class="loading-line" flex></span>
+              </div>
+            </div>
+            <div
+              layout="row"
+              layout-align="center start"
+              layout-xs="column"
+              layout-align-xs="start stretch"
+            >
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>account_balance</md-icon>
+                </div>
+                <span class="loading-line" flex></span>
+              </div>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>link</md-icon>
+                </div>
+                <span class="loading-line" flex></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          layout="column"
+          layout-align="start stretch"
+          flex
+          ng-if="$ctrl.monument"
+        >
+          <div
+            class="monument__primary"
+            layout="row"
+            layout-align="center start"
+          >
+            <div flex ng-if="!$ctrl.edit.all">
+              <h2
+                class="monument__title md-display-1"
+                ng-if="$ctrl.monument.labels[$ctrl.lang.code]"
+              >
+                {{ ::$ctrl.monument.labels[$ctrl.lang.code].value }}
+              </h2>
+              <h2
+                class="monument__title md-display-1"
+                ng-if="!$ctrl.monument.labels[$ctrl.lang.code]"
+              >
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
+              </h2>
+              <h4
+                class="monument__subtitle md-headline muted"
+                ng-if="$ctrl.monument.labels[$ctrl.lang.code]"
+              >
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
+              </h4>
+            </div>
+            <div flex ng-if="$ctrl.edit.all">
+              <h2 class="monument__title md-display-1">
+                <md-input-container>
+                  <input
+                    ng-init="$ctrl.monument.labels[$ctrl.lang.code].newValue = $ctrl.monument.labels[$ctrl.lang.code].value"
+                    ng-model="$ctrl.monument.labels[$ctrl.lang.code].newValue"
+                    ng-change="$ctrl.labelChange($ctrl.lang.code)"
+                  />
+                </md-input-container>
+              </h2>
+              <h4 class="monument__subtitle md-headline muted">
+                <mo-native-name monument="::$ctrl.monument"></mo-native-name>
+              </h4>
+            </div>
+            <div flex="none">
+              <md-button
+                class="pull-right md-primary"
+                ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+                ng-click="$ctrl.edit.all = true"
+              >
+                <md-icon>create</md-icon> edit
+              </md-button>
+              <md-button
+                class="pull-right"
+                ng-if="$ctrl.edit.all"
+                ng-click="$ctrl.edit.all = false"
+              >
+                cancel
+              </md-button>
+              <md-button
+                class="pull-right"
+                aria-label="Open in Wikidata"
+                ng-href="//wikidata.org/wiki/{{ ::$ctrl.monument.id }}"
+                target="_blank"
+              >
+                <md-tooltip>Show Wikidata entry</md-tooltip>
+                <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
+                wikidata
+              </md-button>
+            </div>
+          </div>
+          <div class="monument__secondary">
+            <mo-location
+              class="monument__place"
+              monument="::$ctrl.monument"
+            ></mo-location>
+            <div
+              layout="row"
+              layout-align="center start"
+              layout-xs="column"
+              layout-align-xs="start stretch"
+            >
+              <div flex-gt-xs="60" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>photo</md-icon>
+                </div>
+                <span flex ng-if="!$ctrl.edit.all || true">
+                  <a
+                    ng-if="$ctrl.category"
+                    ng-href="//commons.wikimedia.org/wiki/{{
+                      $ctrl.category.title
+                    }}"
+                    target="_blank"
+                  >
+                    {{ $ctrl.category.files }} images
+                    <span ng-if="$ctrl.category.subcats"
+                      >and {{ $ctrl.category.subcats }} subcategories</span
+                    >
+                  </a>
+                  <span class="muted" ng-if="!$ctrl.category"
+                    >no Commons category</span
+                  >
+                </span>
+                <md-autocomplete
+                  flex
+                  ng-if="$ctrl.edit.all && false"
+                  ng-init="$ctrl.monument.claims.P373[0].mainsnak.datavalue.newValue = $ctrl.monument.claims.P373[0].mainsnak.datavalue.value"
+                  md-input-name="autocompleteField"
+                  md-selected-item="$ctrl.monument.claims.P373[0].searchSelected"
+                  md-selected-item-change="$ctrl.categoryChange($ctrl.monument.claims.P373[0])"
+                  md-search-text="$ctrl.monument.claims.P373[0].search"
+                  md-items="item in $ctrl.queryCommonsCategory($ctrl.monument.claims.P373[0].search)"
+                  md-item-text="item.title.substring(9)"
+                  md-min-length="1"
+                  md-floating-label="label"
+                  md-escape-options="blur"
+                  md-dropdown-position="bottom"
+                  ng-disabled="value.action.type === 'remove'"
+                  ng-model-options="{ debounce: 500 }"
+                >
+                  <md-item-template>
+                    <strong>{{ item.title.substring(9) }}</strong>
+                  </md-item-template>
+                </md-autocomplete>
+              </div>
+              <div flex-gt-xs="40" layout="row" layout-align="start start">
+                <div flex="none">
+                  <md-icon>description</md-icon>
+                </div>
+                <span flex>
+                  <a
+                    href=""
+                    ng-if="::($ctrl.interwiki.all.length)"
+                    ng-click="$ctrl.showAllArticles = true; $ctrl.scrollTo('wikipedia')"
+                  >
+                    {{ ::$ctrl.interwiki.all.length }} languages
+                  </a>
+                  <span class="muted" ng-if="::(!$ctrl.interwiki.all.length)"
+                    >no article</span
+                  >
+                </span>
+              </div>
+            </div>
+            <div
+              layout="row"
+              layout-align="center start"
+              layout-xs="column"
+              layout-align-xs="start stretch"
+            >
+              <div
+                flex-gt-xs="60"
+                layout="row"
+                layout-align="start start"
+              ></div>
+              <mo-url monument="::$ctrl.monument" flex-gt-xs="40"></mo-url>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="monument__subheader" layout="row" layout-align="center stretch">
+      <div class="monument__images" ng-if="$ctrl.images">
+        <a
+          ng-repeat="image in $ctrl.images"
+          ng-click="$ctrl.openImage(image, $event)"
+        >
+          <img class="image" ng-src="{{ image.thumburl }}" />
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="monument__subheader"
+      layout="row"
+      layout-align="center stretch"
+      ng-if="false"
+    >
+      <div class="upload">
+        <div class="upload__add-files">
+          <div ng-show="$ctrl.uploader.isHTML5">
+            <div nv-file-drop="" uploader="$ctrl.uploader">
+              <div
+                class="upload__drop-zone"
+                layout="column"
+                layout-align="center center"
+                over-class="another-file-over-class"
+                nv-file-over=""
+                uploader="$ctrl.uploader"
+              >
+                <h5 class="md-title muted">Drop your files here</h5>
+                <input
+                  type="file"
+                  class="upload__input"
+                  name="file"
+                  id="file"
+                  nv-file-select=""
+                  uploader="$ctrl.uploader"
+                  multiple
+                />
+                <label for="file" class="md-primary md-button">
+                  <md-icon>note_add</md-icon>
+                  Select files
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="monument__images"
+          layout="column"
+          layout-align="start stretch"
+          ng-if="$ctrl.uploader.queue && false"
+        >
+          <div
+            ng-repeat="image in $ctrl.uploader.queue"
+            layout="row"
+            layout-align="start center"
+          >
+            <div
+              class="image"
+              ng-thumb="{ file: image._file, height: 87 }"
+            ></div>
+            <div flex>
+              <strong>{{ image.file.name }}</strong
+              ><br />
+              {{ image.file.size / 1024 / 1024 | number: 2 }} MiB
+            </div>
+            <div>
+              {{ (image.progress || 0) + "%" }}
+            </div>
+            <div>
+              <span ng-show="image.isSuccess"
+                ><i class="glyphicon glyphicon-ok"></i
+              ></span>
+              <span ng-show="image.isCancel"
+                ><i class="glyphicon glyphicon-ban-circle"></i
+              ></span>
+              <span ng-show="image.isError"
+                ><i class="glyphicon glyphicon-remove"></i
+              ></span>
+              <button
+                type="button"
+                class="btn btn-danger btn-xs"
+                ng-click="image.remove()"
+              >
+                <span class="glyphicon glyphicon-trash"></span> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="false">
+          <p>Queue length: {{ $ctrl.uploader.queue.length }}</p>
+          <div>
+            <div>Queue progress: {{ $ctrl.uploader.progress + "%" }}</div>
+            <button
+              type="button"
+              class="btn btn-success btn-s"
+              ng-click="$ctrl.uploader.uploadAll()"
+              ng-disabled="!$ctrl.uploader.getNotUploadedItems().length"
+            >
+              <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning btn-s"
+              ng-click="$ctrl.uploader.cancelAll()"
+              ng-disabled="!$ctrl.uploader.isUploading"
+            >
+              <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger btn-s"
+              ng-click="$ctrl.uploader.clearQueue()"
+              ng-disabled="!$ctrl.uploader.queue.length"
+            >
+              <span class="glyphicon glyphicon-trash"></span> Remove all
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="monument__data" layout="column" layout-align="start center">
+      <div
+        id="wikipedia"
+        class="monument monument__panel monument__article"
+        layout="column"
+        layout-align="start stretch"
+        ng-if="$ctrl.interwiki.all.length"
+      >
+        <div class="article__header" layout="row" layout-align="start center">
+          <h4 class="monument__subtitle md-headline">Wikipedia</h4>
+          <span flex></span>
+          <md-button
+            class="md-primary md-icon-button"
+            ng-repeat="wiki in $ctrl.interwiki.shown"
+            ng-disabled="!wiki.title"
+            ng-click="$ctrl.getWikipediaArticle(wiki)"
+          >
+            {{ wiki.code }}
+          </md-button>
+          <md-button
+            class="md-icon-button"
+            ng-click="$ctrl.showAllArticles = !$ctrl.showAllArticles"
+          >
+            <md-icon>more_vert</md-icon>
+          </md-button>
+        </div>
+        <div
+          layout="column"
+          layout-align="start end"
+          class="article__text"
+          ng-class="{ 'article__text--long' : $ctrl.showArticleLong }"
+          ng-if="!$ctrl.showAllArticles"
+        >
+          <div ng-bind-html="$ctrl.article.article"></div>
+          <md-button
+            class="md-primary"
+            ng-href="{{ $ctrl.article.link }}"
+            target="_blank"
+            ng-if="$ctrl.article"
+          >
+            Read more on Wikipedia
+          </md-button>
+        </div>
+        <div
+          class="article__text article__text--long article__text--all"
+          ng-if="$ctrl.showAllArticles"
+        >
+          <div ng-repeat="wiki in $ctrl.interwiki.all">
+            <span class="muted">{{ wiki.code }}</span>
+            <a ng-href="{{ wiki.link }}" target="_blank">{{ wiki.title }}</a>
+          </div>
+        </div>
+        <div
+          class="article__more"
+          layout="column"
+          layout-align="center stretch"
+          ng-if="$ctrl.isArticleLong && !$ctrl.showArticleLong && !$ctrl.showAllArticles"
+        >
+          <md-button class="md-primary" ng-click="$ctrl.showArticleLong = true">
+            Show more
+          </md-button>
+        </div>
+      </div>
+
+      <div class="monument monument__panel" ng-if="$ctrl.monument">
+        <div class="monument__details">
+          <md-button
+            class="pull-right md-primary"
+            ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+            ng-click="$ctrl.edit.all = true"
+          >
+            <md-icon>create</md-icon> edit
+          </md-button>
+          <md-button
+            class="pull-right"
+            ng-if="$ctrl.edit.all"
+            ng-click="$ctrl.edit.all = false"
+          >
+            cancel
+          </md-button>
+          <md-button
+            class="md-primary pull-right"
+            ng-if="$ctrl.edit.all"
+            ng-disabled="$ctrl.actions.claims.length + $ctrl.actions.other.length === 0"
+            ng-click="$ctrl.saveAll()"
+          >
+            <md-icon>save</md-icon> save all ({{
+              $ctrl.actions.claims.length + $ctrl.actions.other.length || "0"
+            }})
+          </md-button>
+          <h4 class="monument__subtitle md-headline">Properties</h4>
+          <h5 class="monument__subtitle md-title">General data</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P31', 'P361', 'P527', 'P463']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+            hidden="prop === 'P366'"
+          ></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Address details</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P17', 'P276', 'P6375', 'P159']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+            link="prop === 'P276' ? 'list' : false"
+          ></mo-property-item>
+          <mo-property-coord
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="'P625'"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+          ></mo-property-coord>
+
+          <h5 class="monument__subtitle md-title">Timeline</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P112', 'P571', 'P793']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+          ></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Details</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P1037', 'P1174', 'P1436']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+          >
+          </mo-property-item>
+
+          <md-button
+            class="pull-right md-primary"
+            ng-if="!$ctrl.edit.all && $ctrl.isLoggedIn"
+            ng-click="$ctrl.edit.all = true"
+          >
+            <md-icon>create</md-icon> edit
+          </md-button>
+          <md-button
+            class="pull-right"
+            ng-if="$ctrl.edit.all"
+            ng-click="$ctrl.edit.all = false"
+          >
+            cancel
+          </md-button>
+          <md-button
+            class="md-primary pull-right"
+            ng-if="$ctrl.edit.all"
+            ng-disabled="$ctrl.actions.claims.length + $ctrl.actions.other.length === 0"
+            ng-click="$ctrl.saveAll()"
+          >
+            <md-icon>save</md-icon> save all ({{
+              $ctrl.actions.claims.length + $ctrl.actions.other.length || "0"
+            }})
+          </md-button>
+        </div>
+      </div>
+
+      <div class="monument monument__panel" ng-if="$ctrl.monument.claims.P625">
+        <div class="monument__details">
+          <h4 class="monument__subtitle md-headline">Map</h4>
+          <leaflet
+            markers="::$ctrl.map.markers"
+            layers="::$ctrl.map.layers"
+            center="::$ctrl.map.center"
+          ></leaflet>
+          <div layout="row" layout-align="center center">
+            <!--
+            <md-button class="md-primary" flex
+                        ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in Google Maps
+            </md-button>
+            <md-button class="md-primary" flex
+                        ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}" target="_blank">
+              <md-icon>map</md-icon> Show in OSM.org
+            </md-button>
+            -->
+            <md-button
+              class="md-primary"
+              flex
+              ui-sref="main.map({ heritage: 1, c: '{{
+                $ctrl.map.markers.marker.lat.toFixed(4)
+              }}:{{ $ctrl.map.markers.marker.lng.toFixed(4) }}:16' })"
+            >
+              <md-icon>map</md-icon> Show all monuments nearby
+            </md-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer layout="column" layout-align="center center" flex>
+  <md-content
+    class="container small"
+    flex
+    layout="row"
+    layout-align="center stretch"
+    layout-xs="column"
+    layout-align-xs="start stretch"
+  >
+    <div flex="75" flex-xs="100">
+      <p class="big">
+        &copy; 2017 <a href="//github.com/yarl">Paweł Marynowski</a> and
+        <a href="//github.com/slaporte">Stephen LaPorte</a> //
+        <a href="//hatnote.com/">hatnote.com</a>
+      </p>
+      <p>
+        Monumental is a free software available under
+        <a href="//github.com/hatnote/monumental/blob/master/LICENSE"
+          >BSD 3-Clause License</a
+        >.
+      </p>
+      <p>
+        <a href="//github.com/hatnote/monumental">source code</a> &bull;
+        <a href="//phabricator.wikimedia.org/project/view/2696/"
+          >report issue</a
+        >
+      </p>
+    </div>
+    <div class="text-right" flex>
+      <p>
+        version <strong>{{ ::$ctrl.config.package.version }}</strong> &bull; env
+        <strong>{{ ::$ctrl.config.env.name }}</strong>
+      </p>
+    </div>
+  </md-content>
+</footer>

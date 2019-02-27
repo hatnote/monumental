@@ -2,12 +2,38 @@ import _ from 'lodash';
 
 import './monument.scss';
 import template from './monument.html';
+import museumTemplate from './institution.html';
 
 import pack from '../../../../package.json';
 
 const MonumentComponent = { controller, template };
+const MuseumComponent = { controller, template: museumTemplate };
 
-function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog, $mdMenu, $mdToast, $q, $rootScope, $sce, $scope, $state, $stateParams, $timeout, $window, FileUploader, localStorageService, WikiService, imageService, langService, leafletData, mapService, textService, wikidata) {
+function controller(
+  $httpParamSerializerJQLike,
+  $anchorScroll,
+  $http,
+  $mdDialog,
+  $mdMenu,
+  $mdToast,
+  $q,
+  $rootScope,
+  $sce,
+  $scope,
+  $state,
+  $stateParams,
+  $timeout,
+  $window,
+  FileUploader,
+  localStorageService,
+  WikiService,
+  imageService,
+  langService,
+  leafletData,
+  mapService,
+  textService,
+  wikidata,
+) {
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
@@ -43,28 +69,28 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
 
   // functions
 
-  var uploader = vm.uploader = new FileUploader({
+  var uploader = (vm.uploader = new FileUploader({
     url: `${$window.__env.baseUrl}/commons`,
     // url: 'https://commons.wikimedia.org/w/api.php',
     withCredentials: true,
-  });
+  }));
 
   // FILTERS
 
   uploader.filters.push({
     name: 'imageFilter',
-    fn: function (item /*{File|FileLikeObject}*/, options) {
+    fn: function(item /*{File|FileLikeObject}*/, options) {
       var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
       return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-    }
+    },
   });
 
   // CALLBACKS
 
-  uploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
+  uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
     console.info('onWhenAddingFileFailed', item, filter, options);
   };
-  uploader.onAfterAddingFile = function (fileItem) {
+  uploader.onAfterAddingFile = function(fileItem) {
     console.info('onAfterAddingFile', fileItem);
     const data = [
       { action: 'upload' },
@@ -78,44 +104,44 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
     ];
     fileItem.formData.push(...data);
   };
-  uploader.onAfterAddingAll = function (addedFileItems) {
+  uploader.onAfterAddingAll = function(addedFileItems) {
     console.info('onAfterAddingAll', addedFileItems);
   };
-  uploader.onBeforeUploadItem = function (item) {
+  uploader.onBeforeUploadItem = function(item) {
     console.info('onBeforeUploadItem', item);
   };
-  uploader.onProgressItem = function (fileItem, progress) {
+  uploader.onProgressItem = function(fileItem, progress) {
     console.info('onProgressItem', fileItem, progress);
   };
-  uploader.onProgressAll = function (progress) {
+  uploader.onProgressAll = function(progress) {
     console.info('onProgressAll', progress);
   };
-  uploader.onSuccessItem = function (fileItem, response, status, headers) {
+  uploader.onSuccessItem = function(fileItem, response, status, headers) {
     console.info('onSuccessItem', fileItem, response, status, headers);
   };
-  uploader.onErrorItem = function (fileItem, response, status, headers) {
+  uploader.onErrorItem = function(fileItem, response, status, headers) {
     console.info('onErrorItem', fileItem, response, status, headers);
   };
-  uploader.onCancelItem = function (fileItem, response, status, headers) {
+  uploader.onCancelItem = function(fileItem, response, status, headers) {
     console.info('onCancelItem', fileItem, response, status, headers);
   };
-  uploader.onCompleteItem = function (fileItem, response, status, headers) {
+  uploader.onCompleteItem = function(fileItem, response, status, headers) {
     console.info('onCompleteItem', fileItem, response, status, headers);
   };
-  uploader.onCompleteAll = function () {
+  uploader.onCompleteAll = function() {
     console.info('onCompleteAll');
   };
 
   function getCategoryInfo(category) {
-    WikiService.getCategoryInfo(category).then((response) => {
+    WikiService.getCategoryInfo(category).then(response => {
       vm.category = response;
     });
   }
 
   function getCategoryMembers(category) {
-    WikiService.getCategoryMembers(category).then((data) => {
+    WikiService.getCategoryMembers(category).then(data => {
       const promises = data.map(image => WikiService.getImage(image, { iiurlheight: 75 }));
-      $q.all(promises).then((response) => {
+      $q.all(promises).then(response => {
         vm.images = response.map(image => image.imageinfo);
       });
     });
@@ -123,7 +149,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
 
   function getWikipediaArticle(wiki) {
     vm.showAllArticles = false;
-    WikiService.getArticleHeader(wiki.code, wiki.title).then((data) => {
+    WikiService.getArticleHeader(wiki.code, wiki.title).then(data => {
       wiki.article = $sce.trustAsHtml(data);
       vm.article = wiki;
       $timeout(() => {
@@ -139,10 +165,9 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   }
 
   function getImage(image) {
-    WikiService.getImage(image, { iiurlwidth: 640 })
-      .then((response) => {
-        vm.image.push(response.imageinfo);
-      });
+    WikiService.getImage(image, { iiurlwidth: 640 }).then(response => {
+      vm.image.push(response.imageinfo);
+    });
   }
 
   function getInterwiki() {
@@ -156,7 +181,10 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
       .map(element => ({
         code: element.site.replace('wiki', ''),
         title: element.title,
-        link: `//${element.site.replace('wiki', '')}.wikipedia.org/wiki/${element.title}`.replace(' ', '_'),
+        link: `//${element.site.replace('wiki', '')}.wikipedia.org/wiki/${element.title}`.replace(
+          ' ',
+          '_',
+        ),
       }))
       .filter(element => !element.code.includes('quote') && !element.code.includes('commons'));
 
@@ -164,7 +192,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
       .map(lang => lang.code)
       .concat(countryLanguages)
       .filter((element, index, array) => array.indexOf(element) === index)
-      .map((lang) => {
+      .map(lang => {
         const iw = vm.interwiki.all.find(element => element.code === lang);
         return iw || { code: lang };
       });
@@ -206,16 +234,22 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
 
   function saveSingle(actions, index) {
     const promise = actions[index];
-    return promise.promise(promise.value)
-      .then((response) => {
+    return promise
+      .promise(promise.value)
+      .then(response => {
         if (actions[index + 1]) {
           saveSingle(actions, index + 1);
         } else {
           $state.go($state.current, { id }, { reload: true });
         }
       })
-      .catch((err) => {
-        $mdToast.show($mdToast.simple().textContent(`Error: ${err}`).hideDelay(3000));
+      .catch(err => {
+        $mdToast.show(
+          $mdToast
+            .simple()
+            .textContent(`Error: ${err}`)
+            .hideDelay(3000),
+        );
         if (actions[index + 1]) {
           saveSingle(actions, index + 1);
         } else {
@@ -233,8 +267,8 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
   function recountQueue() {
     const claims = _.values(vm.monument.claims);
     vm.actions.claims = [];
-    claims.forEach((claim) => {
-      claim.forEach((value) => {
+    claims.forEach(claim => {
+      claim.forEach(value => {
         if (value.action) {
           vm.actions.claims.push(value.action);
         }
@@ -248,7 +282,7 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
       package: pack,
     };
 
-    WikiService.getUserInfo().then((response) => {
+    WikiService.getUserInfo().then(response => {
       vm.isLoggedIn = response;
     });
 
@@ -257,11 +291,11 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
 
     vm.loading = true;
 
-    textService.getText().then((data) => {
+    textService.getText().then(data => {
       vm.text = data;
     });
 
-    wikidata.getById(id).then((data) => {
+    wikidata.getById(id).then(data => {
       vm.monument = data;
 
       // image
@@ -297,9 +331,11 @@ function controller($httpParamSerializerJQLike, $anchorScroll, $http, $mdDialog,
             icon,
           },
         };
-        leafletData.getMap().then((map) => {
+        leafletData.getMap().then(map => {
           map.scrollWheelZoom.disable();
-          map.once('focus', () => { map.scrollWheelZoom.enable(); });
+          map.once('focus', () => {
+            map.scrollWheelZoom.enable();
+          });
         });
       }
       vm.loading = false;
@@ -342,6 +378,7 @@ export default () => {
   angular
     .module('monumental')
     .component('moMonument', MonumentComponent)
+    .component('moMuseum', MuseumComponent)
     .directive('loadSrc', () => ({
       link: (scope, element, attrs) => {
         let img = null;
@@ -349,56 +386,66 @@ export default () => {
           element[0].src = '//upload.wikimedia.org/wikipedia/commons/f/f8/Ajax-loader%282%29.gif';
           img = new Image();
           img.src = attrs.loadSrc;
-          img.onload = () => { element[0].src = attrs.loadSrc; };
+          img.onload = () => {
+            element[0].src = attrs.loadSrc;
+          };
         };
-        scope.$watch(() => attrs.loadSrc, (newVal, oldVal) => {
-          if (oldVal !== newVal) { loadImage(); }
-        });
+        scope.$watch(
+          () => attrs.loadSrc,
+          (newVal, oldVal) => {
+            if (oldVal !== newVal) {
+              loadImage();
+            }
+          },
+        );
         loadImage();
       },
     }))
-    .directive('ngThumb', ['$window', function ($window) {
-      var helper = {
-        support: !!($window.FileReader && $window.CanvasRenderingContext2D),
-        isFile: function (item) {
-          return angular.isObject(item) && item instanceof $window.File;
-        },
-        isImage: function (file) {
-          var type = '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
-          return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-        }
-      };
+    .directive('ngThumb', [
+      '$window',
+      function($window) {
+        var helper = {
+          support: !!($window.FileReader && $window.CanvasRenderingContext2D),
+          isFile: function(item) {
+            return angular.isObject(item) && item instanceof $window.File;
+          },
+          isImage: function(file) {
+            var type = '|' + file.type.slice(file.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+          },
+        };
 
-      return {
-        restrict: 'A',
-        template: '<canvas/>',
-        link: function (scope, element, attributes) {
-          if (!helper.support) return;
+        return {
+          restrict: 'A',
+          template: '<canvas/>',
+          link: function(scope, element, attributes) {
+            if (!helper.support) return;
 
-          var params = scope.$eval(attributes.ngThumb);
+            var params = scope.$eval(attributes.ngThumb);
 
-          if (!helper.isFile(params.file)) return;
-          if (!helper.isImage(params.file)) return;
+            if (!helper.isFile(params.file)) return;
+            if (!helper.isImage(params.file)) return;
 
-          var canvas = element.find('canvas');
-          var reader = new FileReader();
+            var canvas = element.find('canvas');
+            var reader = new FileReader();
 
-          reader.onload = onLoadFile;
-          reader.readAsDataURL(params.file);
+            reader.onload = onLoadFile;
+            reader.readAsDataURL(params.file);
 
-          function onLoadFile(event) {
-            var img = new Image();
-            img.onload = onLoadImage;
-            img.src = event.target.result;
-          }
+            function onLoadFile(event) {
+              var img = new Image();
+              img.onload = onLoadImage;
+              img.src = event.target.result;
+            }
 
-          function onLoadImage() {
-            var width = params.width || this.width / this.height * params.height;
-            var height = params.height || this.height / this.width * params.width;
-            canvas.attr({ width: width, height: height });
-            canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
-          }
-        }
-      };
-    }]);
+            function onLoadImage() {
+              var width = params.width || (this.width / this.height) * params.height;
+              var height = params.height || (this.height / this.width) * params.width;
+              canvas.attr({ width: width, height: height });
+              canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+            }
+          },
+        };
+      },
+    ]);
 };

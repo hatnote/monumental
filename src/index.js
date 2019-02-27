@@ -54,11 +54,8 @@ angular
     });
   });
 
-
 function localStorageConfig(localStorageServiceProvider) {
-  localStorageServiceProvider
-    .setPrefix('monumental')
-    .setStorageType('localStorage');
+  localStorageServiceProvider.setPrefix('monumental').setStorageType('localStorage');
 }
 
 /**
@@ -93,6 +90,11 @@ function stateConfig($stateProvider, $urlRouterProvider, $locationProvider) {
       template: '<mo-monument></mo-monument>',
       resolve: {},
     })
+    .state('main.museum', {
+      url: '/institution/:id',
+      template: '<mo-museum></mo-museum>',
+      resolve: {},
+    })
     .state('main.game', {
       abstract: true,
       url: '/games',
@@ -115,10 +117,13 @@ function stateConfig($stateProvider, $urlRouterProvider, $locationProvider) {
  */
 function themeConfig($mdThemingProvider, $provide) {
   const tp = $mdThemingProvider;
-  tp.definePalette('belize', tp.extendPalette('blue', {
-    500: '#2980b9',
-    600: '#2980b9',
-  }));
+  tp.definePalette(
+    'belize',
+    tp.extendPalette('blue', {
+      500: '#2980b9',
+      600: '#2980b9',
+    }),
+  );
 
   // tp.alwaysWatchTheme(true);
   tp.theme('default')
