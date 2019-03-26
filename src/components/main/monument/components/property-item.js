@@ -29,6 +29,13 @@ const PropertyItemComponent = {
               <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
             </md-button>
           </span>
+          <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.time"
+                ng-init="$ctrl.getFormattedTime(value.mainsnak.datavalue)">
+            {{ ::(value.mainsnak.datavalue.value.label[$ctrl.lang.code] || value.mainsnak.datavalue.value.label.en || value.mainsnak.datavalue.value.label) }}
+          </span>
+          <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.amount">
+            {{ ::(value.mainsnak.datavalue.value.amount.substring(1)) }}
+          </span>
           <a ui-sref="main.object({id: value.mainsnak.datavalue.value.id.substring(1)})"
               ng-if="value.mainsnak.datavalue.value.id && $ctrl.link === true">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
@@ -49,7 +56,7 @@ const PropertyItemComponent = {
             </div>
           </div>
           <span class="muted"
-                  ng-if="!value.mainsnak.datavalue.value.id && $first">
+                  ng-if="!value.mainsnak.datavalue.value && $first">
             not provided
           </span>
         </div>
@@ -131,18 +138,18 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   }
 
   function getFormattedTime(datavalue) {
-    if (!datavalue) { return; }
+    if (!datavalue) {
+      return;
+    }
 
     if (datavalue.type === 'time') {
-      WikiService.getFormattedTime(datavalue.value, vm.lang.code)
-        .then((response) => {
-          datavalue.value.label = response;
-        });
+      WikiService.getFormattedTime(datavalue.value, vm.lang.code).then((response) => {
+        datavalue.value.label = response;
+      });
     } else if (datavalue.type === 'wikibase-entityid') {
-      WikiService.getLabel(datavalue.value.id)
-        .then((response) => {
-          datavalue.value.label = response;
-        });
+      WikiService.getLabel(datavalue.value.id).then((response) => {
+        datavalue.value.label = response;
+      });
     } else if (datavalue.type === 'string') {
       datavalue.value = { label: datavalue.value };
     }
@@ -216,7 +223,5 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
 }
 
 export default () => {
-  angular
-    .module('monumental')
-    .component('moPropertyItem', PropertyItemComponent);
+  angular.module('monumental').component('moPropertyItem', PropertyItemComponent);
 };
