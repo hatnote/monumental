@@ -150,6 +150,7 @@
               <h2 class="monument__title md-display-1">
                 <md-input-container>
                   <input
+                    aria-label="Name"
                     ng-init="$ctrl.monument.labels[$ctrl.lang.code].newValue = $ctrl.monument.labels[$ctrl.lang.code].value"
                     ng-model="$ctrl.monument.labels[$ctrl.lang.code].newValue"
                     ng-change="$ctrl.labelChange($ctrl.lang.code)"

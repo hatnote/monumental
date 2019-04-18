@@ -4,6 +4,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
   const service = {
     addCategory,
     addClaimItem,
+    addClaimMonolingualText,
     addClaimString,
     getArticleHeader,
     getFilesCategories,
@@ -16,6 +17,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     getUserInfo,
     removeClaim,
     setClaimItem,
+    setClaimMonolingualText,
     setClaimQuantity,
     setClaimString,
     setLabel,
@@ -39,7 +41,16 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
   const imageParams = angular.extend({}, defaultParams, {
     prop: 'imageinfo',
     iiurlwidth: 300,
-    iiprop: ['timestamp', 'user', 'url', 'size', 'dimensions', 'canonicaltitle', 'commonmetadata', 'extmetadata'].join('|'),
+    iiprop: [
+      'timestamp',
+      'user',
+      'url',
+      'size',
+      'dimensions',
+      'canonicaltitle',
+      'commonmetadata',
+      'extmetadata',
+    ].join('|'),
   });
 
   return service;
@@ -47,7 +58,8 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
   // functions
 
   function addCategory(id, value) {
-    return wikidata.get({ ids: id })
+    return wikidata
+      .get({ ids: id })
       .then((response) => {
         const entry = response.entities[id];
         return entry.claims.P373;
@@ -86,37 +98,41 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       redirects: true,
       exintro: 1,
     });
-    return $http.jsonp(`https://${lang}.wikipedia.org/w/api.php`, {
-      params,
-      cache: true,
-    }).then((response) => {
-      return _.values(response.data.query.pages)[0].extract;
-    });
+    return $http
+      .jsonp(`https://${lang}.wikipedia.org/w/api.php`, {
+        params,
+        cache: true,
+      })
+      .then(response => _.values(response.data.query.pages)[0].extract);
   }
 
   function getCategoryInfo(category) {
-    const params = angular.extend({}, defaultParams, { 
+    const params = angular.extend({}, defaultParams, {
       prop: 'categoryinfo',
       titles: `Category:${category}`,
     });
-    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params,
-      cache: true,
-    }).then((response) => {
-      const page = _.sample(response.data.query.pages);
-      return angular.extend({}, page.categoryinfo, { title: page.title });
-    });
+    return $http
+      .jsonp('https://commons.wikimedia.org/w/api.php', {
+        params,
+        cache: true,
+      })
+      .then((response) => {
+        const page = _.sample(response.data.query.pages);
+        return angular.extend({}, page.categoryinfo, { title: page.title });
+      });
   }
 
   function getCategoryMembers(category) {
     const params = angular.extend({}, categoryFilesParams, { cmtitle: `Category:${category}` });
-    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params,
-      cache: true,
-    }).then((response) => {
-      const images = response.data.query.categorymembers.map(image => image.title.substring(5));
-      return images;
-    });
+    return $http
+      .jsonp('https://commons.wikimedia.org/w/api.php', {
+        params,
+        cache: true,
+      })
+      .then((response) => {
+        const images = response.data.query.categorymembers.map(image => image.title.substring(5));
+        return images;
+      });
   }
 
   function getCategorySearch(name) {
@@ -128,9 +144,11 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       srlimit: 20,
       srprop: 'timestamp',
     });
-    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params,
-    }).then(response => response.data.query.search);
+    return $http
+      .jsonp('https://commons.wikimedia.org/w/api.php', {
+        params,
+      })
+      .then(response => response.data.query.search);
   }
 
   function getFilesCategories(files) {
@@ -140,55 +158,63 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       cllimit: '250',
       titles: files.join('|'),
     });
-    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params,
-    }).then(response => response.data.query.pages);
+    return $http
+      .jsonp('https://commons.wikimedia.org/w/api.php', {
+        params,
+      })
+      .then(response => response.data.query.pages);
   }
 
   function getFormattedTime(value, lang) {
-    return wikidata.get({
-      action: 'wbformatvalue',
-      props: undefined,
-      options: angular.toJson({ lang }),
-      generate: 'text/plain',
-      property: 'P585',
-      datavalue: angular.toJson({ value, type: 'time' }),
-    }).then(response => response.result);
+    return wikidata
+      .get({
+        action: 'wbformatvalue',
+        props: undefined,
+        options: angular.toJson({ lang }),
+        generate: 'text/plain',
+        property: 'P585',
+        datavalue: angular.toJson({ value, type: 'time' }),
+      })
+      .then(response => response.result);
   }
 
   function getImage(image, extraParams) {
     const params = angular.extend({}, imageParams, { titles: `File:${image}` }, extraParams);
-    return $http.jsonp('https://commons.wikimedia.org/w/api.php', {
-      params,
-      cache: true,
-    }).then((response) => {
-      const file = _.head(_.values(response.data.query.pages));
-      const data = angular.extend({}, file, { imageinfo: file.imageinfo[0] });
+    return $http
+      .jsonp('https://commons.wikimedia.org/w/api.php', {
+        params,
+        cache: true,
+      })
+      .then((response) => {
+        const file = _.head(_.values(response.data.query.pages));
+        const data = angular.extend({}, file, { imageinfo: file.imageinfo[0] });
 
-      const replacer = data.imageinfo.width > 1280 ? '/1280px-' : `/${data.imageinfo.width - 1}px-`;
-      data.imageinfo.thumburlbig = data.imageinfo.thumburl.replace(/\/[0-9]{2,3}px-/, replacer);
-      return data;
-    });
+        const replacer =
+          data.imageinfo.width > 1280 ? '/1280px-' : `/${data.imageinfo.width - 1}px-`;
+        data.imageinfo.thumburlbig = data.imageinfo.thumburl.replace(/\/[0-9]{2,3}px-/, replacer);
+        return data;
+      });
   }
 
   function getLabel(id) {
-    return wikidata.getLabels([id])
-      .then(response => response[id]);
+    return wikidata.getLabels([id]).then(response => response[id]);
   }
 
   function getUserInfo() {
-    return $http.get(appAPI, {
-      params: {
-        action: 'query',
-        meta: 'globaluserinfo',
-        use_auth: 'true',
-      },
-    }).then((response) => {
-      if (response.data && response.data.query) {
-        return response.data.query.globaluserinfo;
-      }
-      return false;
-    });
+    return $http
+      .get(appAPI, {
+        params: {
+          action: 'query',
+          meta: 'globaluserinfo',
+          use_auth: 'true',
+        },
+      })
+      .then((response) => {
+        if (response.data && response.data.query) {
+          return response.data.query.globaluserinfo;
+        }
+        return false;
+      });
   }
 
   function addClaimItem(value) {
@@ -201,6 +227,21 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       value: angular.toJson({
         'entity-type': 'item',
         'numeric-id': value.value,
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function addClaimMonolingualText(value) {
+    return postWikidata({
+      action: 'wbcreateclaim',
+      format: 'json',
+      entity: value.entity,
+      property: value.property,
+      snaktype: 'value',
+      value: angular.toJson({
+        language: value.language,
+        text: value.value,
       }),
       summary: '#monumental',
     });
@@ -242,6 +283,29 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
             value: {
               'entity-type': 'item',
               'numeric-id': value.value,
+            },
+          },
+        },
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function setClaimMonolingualText(value) {
+    return postWikidata({
+      action: 'wbsetclaim',
+      format: 'json',
+      claim: angular.toJson({
+        id: value.id,
+        type: 'claim',
+        mainsnak: {
+          snaktype: 'value',
+          property: value.property,
+          datavalue: {
+            type: 'monolingualtext',
+            value: {
+              language: value.language,
+              text: value.value,
             },
           },
         },
@@ -301,14 +365,14 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       data: $httpParamSerializerJQLike(angular.extend({ use_auth: true }, params)),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     }).then((response) => {
-      if (response.data.status === 'exception') { return $q.reject(response.data.exception); }
+      if (response.data.status === 'exception') {
+        return $q.reject(response.data.exception);
+      }
       return response;
     });
   }
 };
 
 export default () => {
-  angular
-    .module('monumental')
-    .factory('WikiService', WikiService);
+  angular.module('monumental').factory('WikiService', WikiService);
 };

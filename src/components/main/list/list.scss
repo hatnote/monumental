@@ -1,21 +1,26 @@
-@import '../../../styles/variables';
-@import '../../../styles/responsive';
+@import "../../../styles/variables";
+@import "../../../styles/responsive";
 
-mo-list {
+mo-list,
+mo-institution-list {
   .container {
     overflow: hidden;
 
     & > md-content {
-      @include x-small { margin: 10px 10px 0; }
+      @include x-small {
+        margin: 10px 10px 0;
+      }
     }
   }
 
   .content {
     touch-action: none;
-    -webkit-transition: .3s ease all;
-    transition: .3s ease all;
-    
-    @include x-small { width: calc(200vw - 70px); }
+    -webkit-transition: 0.3s ease all;
+    transition: 0.3s ease all;
+
+    @include x-small {
+      width: calc(200vw - 70px);
+    }
 
     &.content--scrolled {
       -webkit-transform: translateX(-48%);
@@ -61,7 +66,9 @@ mo-list {
     background: white;
     border-bottom: 1px solid $softGrey;
 
-    @include x-small { padding: 15px 20px 10px; }
+    @include x-small {
+      padding: 15px 20px 10px;
+    }
 
     .header__primary {
       // margin-bottom: 10px;
@@ -122,15 +129,21 @@ mo-list {
       font-size: 32px;
       line-height: 32px;
 
-      @include x-small { font-size: 24px; line-height: 24px; }
+      @include x-small {
+        font-size: 24px;
+        line-height: 24px;
+      }
     }
 
     .header__subtitle {
-      margin-top: 0; 
+      margin-top: 0;
       margin-bottom: 0;
       line-height: 24px;
 
-      @include x-small { font-size: 20px; margin-bottom: 5px; }
+      @include x-small {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
     }
 
     .header__place {
@@ -143,7 +156,9 @@ mo-list {
     background: #fafafa;
     border-bottom: 1px solid $softGrey;
 
-    @include x-small { padding: 10px 20px; }
+    @include x-small {
+      padding: 10px 20px;
+    }
 
     .md-button {
       margin: 0 5px;
@@ -189,23 +204,28 @@ mo-list {
     }
   }
 
-  md-checkbox, md-checkbox:last-of-type {
+  md-checkbox,
+  md-checkbox:last-of-type {
     margin: 0 5px;
   }
-  
+
   .list__container {
     margin-right: 20px;
     background: white;
     border: 1px solid $softGrey;
     border-radius: 2px;
 
-    @include x-small { margin-right: 0; }
+    @include x-small {
+      margin-right: 0;
+    }
 
     md-list-item.md-2-line {
       border-bottom: 1px solid $softGrey;
 
       .md-button {
-        @include x-small { padding: 0 10px; }
+        @include x-small {
+          padding: 0 10px;
+        }
       }
 
       .list__action {
@@ -229,13 +249,13 @@ mo-list {
     background: $softGrey;
     margin: 15px 15px 15px 0;
 
-    @include x-small { 
+    @include x-small {
       width: 65px;
       min-width: 65px;
       height: 65px;
       margin: 10px 10px 10px 0;
     }
-    
+
     img {
       max-width: 100%;
       max-height: 100%;
@@ -249,7 +269,9 @@ mo-list {
     border: 1px solid $softGrey;
     border-radius: 2px;
 
-    @include x-small { margin-left: 10px; }
+    @include x-small {
+      margin-left: 10px;
+    }
 
     .list__map--loading {
       position: absolute;
@@ -281,7 +303,7 @@ mo-list {
       .md-button {
         padding: 0 !important;
       }
-      
+
       .md-list-item-text {
         margin: 10px;
         height: 60px;

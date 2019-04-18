@@ -1,12 +1,12 @@
-@import '../../styles/variables';
-@import '../../styles/responsive';
+@import "../../styles/variables";
+@import "../../styles/responsive";
 
 .toolbar {
   padding: 0 5px;
   min-height: 54px;
   max-height: 54px;
   height: 54px;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 
   @include x-small {
     position: fixed;
@@ -18,14 +18,14 @@
   &.toolbar--hidden {
     @include x-small {
       top: -55px;
-      transition: all .2s ease-in-out;
+      transition: all 0.2s ease-in-out;
     }
   }
 
   &.toolbar--shown {
     @include x-small {
       top: 0;
-      transition: all .2s ease-in-out;
+      transition: all 0.2s ease-in-out;
     }
   }
 
@@ -40,20 +40,28 @@
         color: white;
       }
 
-      ::-webkit-input-placeholder { color: rgba(255, 255, 255, 0.75); }
-      ::-moz-placeholder { color: rgba(255, 255, 255, 0.75); }
-      :-ms-input-placeholder { color: rgba(255, 255, 255, 0.75); }
-      :-moz-placeholder { color: rgba(255, 255, 255, 0.75); }
+      ::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      ::-moz-placeholder {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      :-ms-input-placeholder {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      :-moz-placeholder {
+        color: rgba(255, 255, 255, 0.75);
+      }
     }
   }
-  
+
   .md-toolbar-tools {
     max-width: 980px;
     max-height: 54px;
     height: 54px;
     padding: 0;
   }
-  
+
   .md-toolbar-tools-wide {
     max-width: none;
   }
@@ -65,7 +73,7 @@
 
 .toolbar__settings {
   position: absolute;
-  width: 100%;
+  width: 200px;
   z-index: 10;
   padding: 10px 25px;
   background: white;

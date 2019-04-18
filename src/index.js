@@ -80,6 +80,11 @@ function stateConfig($stateProvider, $urlRouterProvider, $locationProvider) {
       template: '<mo-list></mo-list>',
       resolve: {},
     })
+    .state('main.institutionList', {
+      url: '/institution-list/:id?c&image&type&wikipedia',
+      template: '<mo-institution-list></mo-institution-list>',
+      resolve: {},
+    })
     .state('main.map', {
       url: '/map?c&heritage&image&type&wikipedia',
       template: '<mo-map></mo-map>',

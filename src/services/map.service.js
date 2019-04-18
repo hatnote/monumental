@@ -27,78 +27,82 @@ const MapService = () => {
   }
 
   function getMapInstance(options) {
-    return angular.extend({
-      markersWatchOptions: {
-        doWatch: true,
-        isDeep: false,
-        individual: {
-          doWatch: false,
+    return angular.extend(
+      {
+        markersWatchOptions: {
+          doWatch: true,
           isDeep: false,
-        },
-      },
-      center: {
-        lat: 51.686,
-        lng: 19.545,
-        zoom: 7,
-      },
-      markers: {},
-      events: {
-        markers: {
-          enable: ['click', 'mouseover', 'mouseout'],
-        },
-      },
-      layers: {
-        baselayers: {
-          wiki: {
-            name: 'Wikimedia Maps',
-            type: 'xyz',
-            url: '//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
-            layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-              continuousWorld: true,
-              maxNativeZoom: 18,
-              maxZoom: 21,
-            },
-          },
-          osm: {
-            name: 'OpenStreetMap',
-            type: 'xyz',
-            url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-              continuousWorld: true,
-              maxNativeZoom: 19,
-              maxZoom: 21,
-            },
+          individual: {
+            doWatch: false,
+            isDeep: false,
           },
         },
-        overlays: {
-          monuments: {
-            name: 'Monuments',
-            type: 'markercluster',
-            visible: true,
-            layerOptions: {
-              showCoverageOnHover: false,
-              zoomToBoundsOnClick: true,
-              maxClusterRadius: zoom => 130 - (zoom * 5),
-              animate: false,
-              iconCreateFunction: cluster => new L.DivIcon({
-                html: `<div><span>${cluster.getChildCount()}</span></div>`,
-                className: 'marker-cluster marker-cluster-small',
-                iconSize: new L.Point(40, 40),
-              }),
+        center: {
+          lat: 51.686,
+          lng: 19.545,
+          zoom: 7,
+        },
+        markers: {},
+        events: {
+          markers: {
+            enable: ['click', 'mouseover', 'mouseout'],
+          },
+        },
+        layers: {
+          baselayers: {
+            wiki: {
+              name: 'Wikimedia Maps',
+              type: 'xyz',
+              url: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
+              layerOptions: {
+                subdomains: ['a', 'b', 'c'],
+                attribution:
+                  '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                continuousWorld: true,
+                maxNativeZoom: 18,
+                maxZoom: 21,
+              },
+            },
+            osm: {
+              name: 'OpenStreetMap',
+              type: 'xyz',
+              url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              layerOptions: {
+                subdomains: ['a', 'b', 'c'],
+                attribution:
+                  '&copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                continuousWorld: true,
+                maxNativeZoom: 19,
+                maxZoom: 21,
+              },
+            },
+          },
+          overlays: {
+            monuments: {
+              name: 'Monuments',
+              type: 'markercluster',
+              visible: true,
+              layerOptions: {
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true,
+                maxClusterRadius: zoom => 130 - zoom * 5,
+                animate: false,
+                iconCreateFunction: cluster =>
+                  new L.DivIcon({
+                    html: `<div><span>${cluster.getChildCount()}</span></div>`,
+                    className: 'marker-cluster marker-cluster-small',
+                    iconSize: new L.Point(40, 40),
+                  }),
+              },
             },
           },
         },
       },
-    }, options);
+      options,
+    );
   }
 };
 
 export default () => {
-  angular
-    .module('monumental')
-    .factory('mapService', MapService);
+  angular.module('monumental').factory('mapService', MapService);
 };

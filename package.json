@@ -1,6 +1,6 @@
 {
   "name": "monumental",
-  "version": "17.09.01",
+  "version": "19.04.01",
   "private": true,
   "description": "Monumental app",
   "main": "src/index.js",
@@ -8,7 +8,7 @@
     "start-live": "webpack-dev-server --content-base src --progress --colors",
     "start": "webpack --watch --content-base src --progress --colors",
     "build": "webpack --content-base src --progress",
-    "build-dev": "set NODE_ENV=dev&&webpack --content-base src --progress",
+    "build-dev": "NODE_ENV=dev webpack --content-base src --progress",
     "test": "echo OK"
   },
   "devDependencies": {
@@ -46,7 +46,7 @@
     "ng-annotate-loader": "^0.1.0",
     "ng-annotate-webpack-plugin": "^0.1.3",
     "nib": "^1.1.0",
-    "node-sass": "^3.7.0",
+    "node-sass": "^4.0.0",
     "raw-loader": "^0.5.1",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",

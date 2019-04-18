@@ -18,7 +18,7 @@ const PropertyItemComponent = {
     <span flex="65"
           layout="column" layout-align="start stretch">
       <span class="monument__details-value"
-              ng-repeat="value in ::$ctrl.propertyClaims">
+              ng-repeat="value in $ctrl.propertyClaims">
         <div class="monument__details-edit" ng-if="!$ctrl.edit.all && !$ctrl.hidden">
           <span ng-if="!$ctrl.link">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
@@ -32,6 +32,9 @@ const PropertyItemComponent = {
           <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.time"
                 ng-init="$ctrl.getFormattedTime(value.mainsnak.datavalue)">
             {{ ::(value.mainsnak.datavalue.value.label[$ctrl.lang.code] || value.mainsnak.datavalue.value.label.en || value.mainsnak.datavalue.value.label) }}
+          </span>
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'monolingualtext'">
+            {{ ::value.mainsnak.datavalue.value.text }} ({{ ::value.mainsnak.datavalue.value.language }})
           </span>
           <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.amount">
             {{ ::(value.mainsnak.datavalue.value.amount.substring(1)) }}
@@ -64,7 +67,18 @@ const PropertyItemComponent = {
               layout="row" layout-align="start start"
               ng-if="$ctrl.edit.all"
               ng-class="{'property__edit--deleted': value.action.type === 'remove'}">
+
+          <md-input-container flex ng-if="$ctrl.property === 'P6375'">
+            <input
+              aria-label="Name"
+              ng-init="value.search = value.mainsnak.datavalue.value.text"
+              ng-model="value.search"
+              ng-change="$ctrl.queueEdit(value)"
+            />
+          </md-input-container>
+
           <md-autocomplete flex
+              ng-if="$ctrl.property !== 'P6375'"
               ng-init="value.search = $ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id || ''"
               md-input-name="autocompleteField"
               md-selected-item="value.searchSelected"
@@ -130,11 +144,18 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   // functions
 
   function addClaim(value) {
-    return WikiService.addClaimItem({
-      entity: `Q${$stateParams.id}`,
-      property: vm.property,
-      value: +value.searchSelected.title.substring(1),
-    });
+    return value.searchSelected
+      ? WikiService.addClaimItem({
+        entity: `Q${$stateParams.id}`,
+        property: vm.property,
+        value: +value.searchSelected.title.substring(1),
+      })
+      : WikiService.addClaimMonolingualText({
+        entity: `Q${$stateParams.id}`,
+        property: vm.property,
+        value: value.search,
+        language: vm.lang.code,
+      });
   }
 
   function getFormattedTime(datavalue) {
@@ -214,11 +235,18 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   }
 
   function setClaim(value) {
-    return WikiService.setClaimItem({
-      id: value.id,
-      property: value.mainsnak.property,
-      value: +value.searchSelected.title.substring(1),
-    });
+    return value.searchSelected
+      ? WikiService.setClaimItem({
+        id: value.id,
+        property: value.mainsnak.property,
+        value: +value.searchSelected.title.substring(1),
+      })
+      : WikiService.setClaimMonolingualText({
+        id: value.id,
+        property: value.mainsnak.property,
+        value: value.search,
+        language: value.mainsnak.datavalue.value.language,
+      });
   }
 }
 
