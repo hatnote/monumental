@@ -125,8 +125,8 @@ function themeConfig($mdThemingProvider, $provide) {
   tp.definePalette(
     'belize',
     tp.extendPalette('blue', {
-      500: '#2980b9',
-      600: '#2980b9',
+      500: '#096',
+      600: '#096',
     }),
   );
 

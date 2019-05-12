@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#2980b9" />
+    <meta name="msapplication-navbutton-color" content="#2980b9" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2980b9" />
+    <link rel="manifest" href="manifest.json" />
+    <title>Monumental GLAM</title>
+    <link
+      href="https://tools-static.wmflabs.org/fontcdn/css?family=Roboto:300,400,500,700&subset=latin,latin-ext"
+      rel="stylesheet"
+    />
+    <link
+      href="https://tools-static.wmflabs.org/fontcdn/css?family=Merriweather&subset=cyrillic,cyrillic-ext,latin-ext"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body ng-app="monumental" ng-cloak>
+    <ui-view></ui-view>
+    <script>
+      (function(window) {
+        window.__env = window.__env || {};
+        window.__env.name = "glam";
+        window.__env.baseUrl = "//tools.wmflabs.org/monumental-glam";
+      })(this);
+    </script>
+  </body>
+</html>

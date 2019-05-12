@@ -20,7 +20,7 @@ const PropertyItemComponent = {
       <span class="monument__details-value"
               ng-repeat="value in $ctrl.propertyClaims">
         <div class="monument__details-edit" ng-if="!$ctrl.edit.all && !$ctrl.hidden">
-          <span ng-if="!$ctrl.link">
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'wikibase-item'">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
             <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
                 ng-if="false"
@@ -29,22 +29,32 @@ const PropertyItemComponent = {
               <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
             </md-button>
           </span>
-          <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.time"
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'time'"
                 ng-init="$ctrl.getFormattedTime(value.mainsnak.datavalue)">
             {{ ::(value.mainsnak.datavalue.value.label[$ctrl.lang.code] || value.mainsnak.datavalue.value.label.en || value.mainsnak.datavalue.value.label) }}
           </span>
           <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'monolingualtext'">
             {{ ::value.mainsnak.datavalue.value.text }} ({{ ::value.mainsnak.datavalue.value.language }})
           </span>
-          <span ng-if="!$ctrl.link && value.mainsnak.datavalue.value.amount">
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'string'">
+            {{ ::value.mainsnak.datavalue.value }}
+          </span>
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'external-id'">
+            {{ ::value.mainsnak.datavalue.value }}
+          </span>
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'quantity'">
             {{ ::(value.mainsnak.datavalue.value.amount.substring(1)) }}
           </span>
+          <a ng-if="!$ctrl.link && value.mainsnak.datatype === 'url'"
+              href="{{ ::value.mainsnak.datavalue.value }}" target="_blank">
+            {{ ::value.mainsnak.datavalue.value }}
+          </a>
           <a ui-sref="main.object({id: value.mainsnak.datavalue.value.id.substring(1)})"
-              ng-if="value.mainsnak.datavalue.value.id && $ctrl.link === true">
+              ng-if="$ctrl.link === true && value.mainsnak.datatype === 'wikibase-item'">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
           </a>
           <a ui-sref="main.list({id: value.mainsnak.datavalue.value.id.substring(1), heritage: 1})"
-              ng-if="value.mainsnak.datavalue.value.id && $ctrl.link === 'list'">
+              ng-if="$ctrl.link === 'list' && value.mainsnak.datatype === 'wikibase-item'">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
           </a>
           <div layout="row" layout-align="start center"
@@ -68,17 +78,17 @@ const PropertyItemComponent = {
               ng-if="$ctrl.edit.all"
               ng-class="{'property__edit--deleted': value.action.type === 'remove'}">
 
-          <md-input-container flex ng-if="$ctrl.property === 'P6375'">
+          <md-input-container flex ng-if="$ctrl.isStringy">
             <input
-              aria-label="Name"
-              ng-init="value.search = value.mainsnak.datavalue.value.text"
+              aria-label="Text Field"
+              ng-init="value.search = value.mainsnak.datavalue.value.text || value.mainsnak.datavalue.value"
               ng-model="value.search"
               ng-change="$ctrl.queueEdit(value)"
             />
           </md-input-container>
 
           <md-autocomplete flex
-              ng-if="$ctrl.property !== 'P6375'"
+              ng-if="!$ctrl.isStringy"
               ng-init="value.search = $ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id || ''"
               md-input-name="autocompleteField"
               md-selected-item="value.searchSelected"
@@ -132,11 +142,23 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   vm.queueRemove = queueRemove;
   vm.searchTextChange = searchTextChange;
 
-  // init
+  const dataTypes = {
+    P6375: 'monolingualtext',
+    P856: 'url',
+    P968: 'string',
+    P1329: 'string',
+    P2013: 'external-id',
+    P2002: 'external-id',
+    P2003: 'external-id',
+    P2397: 'external-id',
+  };
 
+  vm.isStringy = dataTypes[vm.property];
+
+  // init
   if (!vm.propertyClaims) {
     vm.claims[vm.property] = [{}];
-  } else {
+  } else if (dataTypes[vm.property] !== 'external-id') {
     vm.claims[vm.property].push({});
   }
   vm.propertyClaims = vm.claims[vm.property];
@@ -144,18 +166,39 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   // functions
 
   function addClaim(value) {
-    return value.searchSelected
-      ? WikiService.addClaimItem({
-        entity: `Q${$stateParams.id}`,
-        property: vm.property,
+    const type = dataTypes[vm.property];
+    const base = {
+      entity: `Q${$stateParams.id}`,
+      property: vm.property,
+    };
+
+    // wikibase-item
+    if (!type) {
+      return WikiService.addClaimItem({
+        ...base,
         value: +value.searchSelected.title.substring(1),
-      })
-      : WikiService.addClaimMonolingualText({
-        entity: `Q${$stateParams.id}`,
-        property: vm.property,
-        value: value.search,
-        language: vm.lang.code,
       });
+    }
+
+    if (type === 'monolingualtext') {
+      return WikiService.addClaim({
+        ...base,
+        datavalue: {
+          language: vm.lang.code || 'en',
+          text: value.search,
+        },
+      });
+    }
+
+    // rest stringy things
+    return WikiService.addClaim({
+      ...base,
+      datavalue: value.search,
+      /*       datavalue: {
+        type: 'string',
+        value: value.search,
+      }, */
+    });
   }
 
   function getFormattedTime(datavalue) {
@@ -234,19 +277,40 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
     }
   }
 
+  /**
+   *
+   * @param {*} value
+   */
   function setClaim(value) {
-    return value.searchSelected
-      ? WikiService.setClaimItem({
-        id: value.id,
-        property: value.mainsnak.property,
+    const type = dataTypes[value.mainsnak.property];
+    const base = {
+      id: value.id,
+      property: value.mainsnak.property,
+    };
+
+    // wikibase-item
+    if (!type) {
+      return WikiService.setClaimItem({
+        ...base,
         value: +value.searchSelected.title.substring(1),
-      })
-      : WikiService.setClaimMonolingualText({
-        id: value.id,
-        property: value.mainsnak.property,
-        value: value.search,
-        language: value.mainsnak.datavalue.value.language,
       });
+    }
+
+    if (type === 'monolingualtext') {
+      return WikiService.setClaim({
+        ...base,
+        datavalue: {
+          language: value.mainsnak.datavalue.value.language,
+          text: value.search,
+        },
+      });
+    }
+
+    // rest stringy things
+    return WikiService.setClaim({
+      ...base,
+      datavalue: value.search,
+    });
   }
 }
 

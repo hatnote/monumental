@@ -492,7 +492,7 @@
               $ctrl.actions.claims.length + $ctrl.actions.other.length || "0"
             }})
           </md-button>
-          <h4 class="monument__subtitle md-headline">Properties</h4>
+          <h4 class="monument__subtitle md-headline">Information</h4>
           <h5 class="monument__subtitle md-title">General data</h5>
           <mo-property-item
             ng-repeat="prop in ['P31', 'P361', 'P527', 'P463']"
@@ -510,7 +510,7 @@
 
           <h5 class="monument__subtitle md-title">Address details</h5>
           <mo-property-item
-            ng-repeat="prop in ['P17', 'P276', 'P6375', 'P159']"
+            ng-repeat="prop in ['P17', 'P6375', 'P159']"
             layout="row"
             layout-align="center stretch"
             class="monument__details-item"
@@ -534,9 +534,37 @@
             edit="$ctrl.edit"
           ></mo-property-coord>
 
+          <h5 class="monument__subtitle md-title">Contact details</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P856', 'P968', 'P1329']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+          ></mo-property-item>
+
+          <h5 class="monument__subtitle md-title">Social media</h5>
+          <mo-property-item
+            ng-repeat="prop in ['P2013', 'P2002', 'P2003']"
+            layout="row"
+            layout-align="center stretch"
+            class="monument__details-item"
+            property="prop"
+            claims="$ctrl.monument.claims"
+            labels="$ctrl.monument.valuesLabels"
+            lang="$ctrl.lang"
+            text="$ctrl.text"
+            edit="$ctrl.edit"
+          ></mo-property-item>
+
           <h5 class="monument__subtitle md-title">Timeline</h5>
           <mo-property-item
-            ng-repeat="prop in ['P112', 'P571', 'P793']"
+            ng-repeat="prop in ['P112', 'P571']"
             layout="row"
             layout-align="center stretch"
             class="monument__details-item"
@@ -635,7 +663,7 @@
   >
     <div flex="75" flex-xs="100">
       <p class="big">
-        &copy; 2017 <a href="//github.com/yarl">Paweł Marynowski</a> and
+        &copy; 2017-2019 <a href="//github.com/yarl">Paweł Marynowski</a> and
         <a href="//github.com/slaporte">Stephen LaPorte</a> //
         <a href="//hatnote.com/">hatnote.com</a>
       </p>

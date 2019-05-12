@@ -46,7 +46,7 @@ function controller(
   vm.busy = false;
   vm.edit = { all: false };
   vm.image = [];
-  vm.isLoggedIn = false;
+  vm.isLoggedIn = true;
   vm.lang = langs[0];
   vm.map = {};
   vm.queue = [];
@@ -274,6 +274,7 @@ function controller(
         }
       });
     });
+    console.log('ACTIONS', vm.actions.claims);
   }
 
   function init() {

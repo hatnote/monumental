@@ -16,7 +16,9 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
   vm.loading = false;
   vm.saveUserLanguages = saveUserLanguages;
   vm.searchLang = text => $filter('filter')(vm.languagesList, text);
-  vm.setLanguage = (lang) => { vm.languages.push(lang.code); };
+  vm.setLanguage = lang => {
+    vm.languages.push(lang.code);
+  };
 
   init();
 
@@ -34,61 +36,71 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
       {
         name: 'Empire State Building',
         id: 9188,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/640px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/640px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
         credit: 'Jiuguang Wang / CC BY-SA 2.0',
       },
       {
         name: 'Katedra Wawelska',
         id: 638519,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/292_Krakow_Katedra_na_Wawelu_20070805.jpg/640px-292_Krakow_Katedra_na_Wawelu_20070805.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/292_Krakow_Katedra_na_Wawelu_20070805.jpg/640px-292_Krakow_Katedra_na_Wawelu_20070805.jpg',
         credit: 'Jakub Hałun / CC BY-SA 3.0',
       },
       {
         name: 'Church of the Holy Sepulchre',
         id: 187702,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG/640px-The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG/640px-The_Church_of_the_Holy_Sepulchre-Jerusalem.JPG',
         credit: '@jlascar/flickr / CC BY 2.0',
       },
       {
         name: 'Buckingham Palace',
         id: 42182,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Buckingham_Palace%2C_London_-_April_2009.jpg/640px-Buckingham_Palace%2C_London_-_April_2009.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Buckingham_Palace%2C_London_-_April_2009.jpg/640px-Buckingham_Palace%2C_London_-_April_2009.jpg',
         credit: 'Diliff / CC BY-SA 3.0',
       },
       {
         name: 'Sydney Opera House',
         id: 45178,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sydney_Opera_House_Sails.jpg/640px-Sydney_Opera_House_Sails.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sydney_Opera_House_Sails.jpg/640px-Sydney_Opera_House_Sails.jpg',
         credit: 'Enochlau / CC BY-SA 3.0',
       },
       {
         name: 'Lincoln Memorial',
         id: 213559,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg/640px-Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg/640px-Aerial_view_of_Lincoln_Memorial_-_east_side_EDIT.jpeg',
         credit: 'Carol M. Highsmith / upstateNYer / PD',
       },
       {
         name: 'Brandenburger Tor',
         id: 82425,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Brandenburg_Gate_%288331820462%29.jpg/640px-Brandenburg_Gate_%288331820462%29.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Brandenburg_Gate_%288331820462%29.jpg/640px-Brandenburg_Gate_%288331820462%29.jpg',
         credit: 'Steve Collis / CC BY 2.0',
       },
       {
         name: 'Pałac Kultury i Nauki',
         id: 167566,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/PKiN_widziany_z_WFC.jpg/640px-PKiN_widziany_z_WFC.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/PKiN_widziany_z_WFC.jpg/640px-PKiN_widziany_z_WFC.jpg',
         credit: 'Nnb / GFDL',
       },
       {
         name: 'Tour Eiffel',
         id: 243,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/640px-Tour_Eiffel_Wikimedia_Commons.jpg',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg/640px-Tour_Eiffel_Wikimedia_Commons.jpg',
         credit: 'Benh LIEU SONG / CC BY-SA 3.0',
       },
       {
         name: 'Duomo di Milano',
         id: 18068,
-        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/876MilanoDuomo.JPG/640px-876MilanoDuomo.JPG',
+        img:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/876MilanoDuomo.JPG/640px-876MilanoDuomo.JPG',
         credit: 'MarkusMark / CC BY-SA 3.0',
       },
     ];
@@ -105,14 +117,16 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
             bd:serviceParam wikibase:center "Point(${longitude} ${latitude})"^^geo:wktLiteral .
             bd:serviceParam wikibase:radius "10" .
         }
-        ?place wdt:P1435 ?monument .
+        ?place wdt:P31 ?instance . ?instance wdt:P279* wd:Q1030034.
         OPTIONAL { ?place wdt:P18 ?image . }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs.map(lang => lang.code).join(',')}" }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs
+          .map(lang => lang.code)
+          .join(',')}" }
         BIND(geof:distance("Point(${longitude} ${latitude})"^^geo:wktLiteral, ?location) as ?dist) 
       }
       GROUP BY ?place ?placeLabel ?dist
       ORDER BY ?dist`);
-    request.then((data) => {
+    request.then(data => {
       vm.nearby = data.slice(0, 15).map(item => ({
         id: item.place.value.substring(32),
         name: item.placeLabel.value,
@@ -123,8 +137,10 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
   }
 
   function getImage(item) {
-    if (!item.imageName) { return; }
-    WikiService.getImage(decodeURIComponent(item.imageName), { iiurlwidth: 640 }).then((response) => {
+    if (!item.imageName) {
+      return;
+    }
+    WikiService.getImage(decodeURIComponent(item.imageName), { iiurlwidth: 640 }).then(response => {
       item.image = response.imageinfo;
     });
   }
@@ -136,16 +152,18 @@ function controller($filter, $mdToast, $state, $window, WikiService, langService
   }
 
   function saveUserLanguages() {
-    langService.setUserLanguages(vm.languages)
-      .then(() => {
-        $mdToast.show($mdToast.simple().textContent('Languages saved!').hideDelay(3000));
-        $state.reload();
-      });
+    langService.setUserLanguages(vm.languages).then(() => {
+      $mdToast.show(
+        $mdToast
+          .simple()
+          .textContent('Languages saved!')
+          .hideDelay(3000),
+      );
+      $state.reload();
+    });
   }
 }
 
 export default () => {
-  angular
-    .module('monumental')
-    .component('moDashboard', DashboardComponent);
+  angular.module('monumental').component('moDashboard', DashboardComponent);
 };

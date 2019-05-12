@@ -1,40 +1,72 @@
-<div class="container" layout="column" layout-align="space-between stretch" flex>
+<div
+  class="container"
+  layout="column"
+  layout-align="space-between stretch"
+  flex
+>
   <md-content layout="column" layout-align="start center" flex>
     <div class="dashboard" layout="column" layout-align="start stretch">
       <div layout="column" layout-align="start stretch">
         <div class="dashboard__box" flex>
           <div class="big">
-            Welcome to Monumental, the tool that allows you to explore built heritage and learn more about monuments.
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/b/b9/FindingGLAMs_logo.svg"
+            />
+            <h3>FindingGLAMs</h3>
+            <h5>
+              Crowdsource cultural heritage data around the world
+            </h5>
           </div>
           <p>
-            Enter the name of a monument in the search box above (for example, 'Empire State Building') to learn more or explore heritage
-            by entering a geographic region (for example, 'Berlin'). You can also click an example monument or city below.
+            Enter the name of a monument in the search box above (for example,
+            'Empire State Building') to learn more or explore heritage by
+            entering a geographic region (for example, 'Berlin'). You can also
+            click an example monument or city below.
           </p>
           <p>
-            The tool displays information and multimedia about cultural heritage monuments gathered through <a href="//wikidata.org">Wikidata</a>,
-            <a href="//wikipedia.org">Wikipedia</a> and <a href="//commons.wikimedia.org">Wikimedia Commons</a>. It is created as a part of
-            the <a href="//meta.wikimedia.org/wiki/Connected_Open_Heritage">Connected Open Heritage</a> project by
-            <a href="//se.wikimedia.org">Wikimedia Sweden</a> and <a href="//www.wikilovesmonuments.org/">Wiki Loves Monuments</a> initiative.
+            The tool displays information and multimedia about cultural heritage
+            monuments gathered through <a href="//wikidata.org">Wikidata</a>,
+            <a href="//wikipedia.org">Wikipedia</a> and
+            <a href="//commons.wikimedia.org">Wikimedia Commons</a>. It is
+            created as a part of the
+            <a href="//meta.wikimedia.org/wiki/Connected_Open_Heritage"
+              >Connected Open Heritage</a
+            >
+            project by <a href="//se.wikimedia.org">Wikimedia Sweden</a> and
+            <a href="//www.wikilovesmonuments.org/">Wiki Loves Monuments</a>
+            initiative.
           </p>
         </div>
 
         <div class="dashboard__box" flex>
-          <h4 class="md-title">Monuments nearby</h4>
-          <p ng-if="!$ctrl.nearby">Enable localization to see monuments nearby</p>
-          <p ng-if="$ctrl.nearby && !$ctrl.nearby">No monuments nearby</p>
-          <p ng-if="$ctrl.nearby === 'error'">Error getting monuments nearby</p>
-          <md-card ng-repeat="example in $ctrl.nearby" ui-sref="main.object({id: example.id})">
-            <div class="md-card-image"
-                  layout="row" layout-align="center center"
-                  ng-init="$ctrl.getImage(example)">
-              <img ng-if="example.image"
-                    load-src="{{ ::example.image.thumburl }}"
-                    title="Uploaded by: {{ ::example.image.user }}">
+          <h4 class="md-title">GLAMs nearby</h4>
+          <p ng-if="!$ctrl.nearby">
+            Enable localization to see monuments nearby
+          </p>
+          <p ng-if="$ctrl.nearby && !$ctrl.nearby">No GLAMs nearby</p>
+          <p ng-if="$ctrl.nearby === 'error'">Error getting GLAMs nearby</p>
+          <md-card
+            ng-repeat="example in $ctrl.nearby"
+            ui-sref="main.museum({id: example.id})"
+          >
+            <div
+              class="md-card-image"
+              layout="row"
+              layout-align="center center"
+              ng-init="$ctrl.getImage(example)"
+            >
+              <img
+                ng-if="example.image"
+                load-src="{{ ::example.image.thumburl }}"
+                title="Uploaded by: {{ ::example.image.user }}"
+              />
             </div>
             <md-card-title>
               <md-card-title-text>
                 <a>{{ ::example.name }}</a>
-                <small class="muted">{{ ::example.distance | number }} km away</small>
+                <small class="muted"
+                  >{{ ::example.distance | number }} km away</small
+                >
               </md-card-title-text>
             </md-card-title>
           </md-card>
@@ -42,9 +74,19 @@
 
         <div class="dashboard__box" flex>
           <h4 class="md-title">Example monuments</h4>
-          <md-card ng-repeat="example in $ctrl.examples" ui-sref="main.object({id: example.id})">
-            <div class="md-card-image" layout="row" layout-align="center center">
-              <img load-src="{{ ::example.img }}" title="Credit: {{ ::example.credit }}">
+          <md-card
+            ng-repeat="example in $ctrl.examples"
+            ui-sref="main.object({id: example.id})"
+          >
+            <div
+              class="md-card-image"
+              layout="row"
+              layout-align="center center"
+            >
+              <img
+                load-src="{{ ::example.img }}"
+                title="Credit: {{ ::example.credit }}"
+              />
             </div>
             <md-card-title>
               <md-card-title-text>
@@ -56,81 +98,110 @@
         <div class="dashboard__box" flex>
           <h4 class="md-title">Explore a city</h4>
           <div>
-            <a ui-sref="main.list({id: '1492', heritage: '1'})">Barcelona</a>&nbsp;·
+            <a ui-sref="main.list({id: '1492', heritage: '1'})">Barcelona</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '64', heritage: '1'})">Berlin</a>&nbsp;·
-            <a ui-sref="main.list({id: '2256', heritage: '1'})">Birmingham</a>&nbsp;·
-            <a ui-sref="main.list({id: '1780', heritage: '1'})">Bratislava</a>&nbsp;·
-            <a ui-sref="main.list({id: '24879', heritage: '1'})">Bremen</a>&nbsp;·
-            <a ui-sref="main.list({id: '239', heritage: '1'})">Brussels</a>&nbsp;·
-            <a ui-sref="main.list({id: '19660', heritage: '1'})">Bucharest</a>&nbsp;·
-            <a ui-sref="main.list({id: '1781', heritage: '1'})">Budapest</a>&nbsp;·
-            <a ui-sref="main.list({id: '365', heritage: '1'})">Cologne</a>&nbsp;·
-            <a ui-sref="main.list({id: '1295', heritage: '1'})">Dortmund</a>&nbsp;·
-            <a ui-sref="main.list({id: '1731', heritage: '1'})">Dresden</a>&nbsp;·
-            <a ui-sref="main.list({id: '1718', heritage: '1'})">Düsseldorf</a>&nbsp;·
+            <a ui-sref="main.list({id: '2256', heritage: '1'})">Birmingham</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1780', heritage: '1'})">Bratislava</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '24879', heritage: '1'})">Bremen</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '239', heritage: '1'})">Brussels</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '19660', heritage: '1'})">Bucharest</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1781', heritage: '1'})">Budapest</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '365', heritage: '1'})">Cologne</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1295', heritage: '1'})">Dortmund</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1731', heritage: '1'})">Dresden</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1718', heritage: '1'})">Düsseldorf</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '2066', heritage: '1'})">Essen</a>&nbsp;·
-            <a ui-sref="main.list({id: '1794', heritage: '1'})">Frankfurt</a>&nbsp;·
-            <a ui-sref="main.list({id: '52502', heritage: '1'})">Gothenburg</a>&nbsp;·
-            <a ui-sref="main.list({id: '9920', heritage: '1'})">Haarlem</a>&nbsp;·
-            <a ui-sref="main.list({id: '1055', heritage: '1'})">Hamburg</a>&nbsp;·
-            <a ui-sref="main.list({id: '1715', heritage: '1'})">Hanover</a>&nbsp;·
-            <a ui-sref="main.list({id: '1757', heritage: '1'})">Helsinki</a>&nbsp;·
-            <a ui-sref="main.list({id: '31487', heritage: '1'})">Kraków</a>&nbsp;·
+            <a ui-sref="main.list({id: '1794', heritage: '1'})">Frankfurt</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '52502', heritage: '1'})">Gothenburg</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '9920', heritage: '1'})">Haarlem</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1055', heritage: '1'})">Hamburg</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1715', heritage: '1'})">Hanover</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1757', heritage: '1'})">Helsinki</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '31487', heritage: '1'})">Kraków</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '1899', heritage: '1'})">Kyiv</a>&nbsp;·
-            <a ui-sref="main.list({id: '39121', heritage: '1'})">Leeds</a>&nbsp;·
-            <a ui-sref="main.list({id: '2079', heritage: '1'})">Leipzig</a>&nbsp;·
+            <a ui-sref="main.list({id: '39121', heritage: '1'})">Leeds</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '2079', heritage: '1'})">Leipzig</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '597', heritage: '1'})">Lisbon</a>&nbsp;·
             <a ui-sref="main.list({id: '580', heritage: '1'})">Łódź</a>&nbsp;·
-            <a ui-sref="main.list({id: '2807', heritage: '1'})">Madrid</a>&nbsp;·
-            <a ui-sref="main.list({id: '23482', heritage: '1'})">Marseille</a>&nbsp;·
+            <a ui-sref="main.list({id: '2807', heritage: '1'})">Madrid</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '23482', heritage: '1'})">Marseille</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '490', heritage: '1'})">Milan</a>&nbsp;·
-            <a ui-sref="main.list({id: '1726', heritage: '1'})">Munich</a>&nbsp;·
-            <a ui-sref="main.list({id: '8851', heritage: '1'})">Málaga</a> &nbsp;·
-            <a ui-sref="main.list({id: '2090', heritage: '1'})">Nuremberg</a>&nbsp;·
+            <a ui-sref="main.list({id: '1726', heritage: '1'})">Munich</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '8851', heritage: '1'})">Málaga</a>
+            &nbsp;·
+            <a ui-sref="main.list({id: '2090', heritage: '1'})">Nuremberg</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '90', heritage: '1'})">Paris</a>&nbsp;·
             <a ui-sref="main.list({id: '268', heritage: '1'})">Poznań</a>&nbsp;·
-            <a ui-sref="main.list({id: '1085', heritage: '1'})">Prague</a>&nbsp;·
+            <a ui-sref="main.list({id: '1085', heritage: '1'})">Prague</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '1773', heritage: '1'})">Riga</a>&nbsp;·
             <a ui-sref="main.list({id: '220', heritage: '1'})">Rome</a>&nbsp;·
-            <a ui-sref="main.list({id: '2680952', heritage: '1'})">Rotterdam</a>&nbsp;·
-            <a ui-sref="main.list({id: '8717', heritage: '1'})">Seville</a>&nbsp;·
-            <a ui-sref="main.list({id: '42448', heritage: '1'})">Sheffield</a>&nbsp;·
-            <a ui-sref="main.list({id: '506250', heritage: '1'})">Stockholm</a>&nbsp;·
-            <a ui-sref="main.list({id: '1022', heritage: '1'})">Stuttgart</a>&nbsp;·
+            <a ui-sref="main.list({id: '2680952', heritage: '1'})">Rotterdam</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '8717', heritage: '1'})">Seville</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '42448', heritage: '1'})">Sheffield</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '506250', heritage: '1'})">Stockholm</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1022', heritage: '1'})">Stuttgart</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '495', heritage: '1'})">Turin</a>&nbsp;·
-            <a ui-sref="main.list({id: '8818', heritage: '1'})">Valencia</a>&nbsp;·
-            <a ui-sref="main.list({id: '1741', heritage: '1'})">Vienna</a>&nbsp;·
-            <a ui-sref="main.list({id: '216', heritage: '1'})">Vilnius</a>&nbsp;·
+            <a ui-sref="main.list({id: '8818', heritage: '1'})">Valencia</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '1741', heritage: '1'})">Vienna</a
+            >&nbsp;·
+            <a ui-sref="main.list({id: '216', heritage: '1'})">Vilnius</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '270', heritage: '1'})">Warsaw</a>&nbsp;·
-            <a ui-sref="main.list({id: '1799', heritage: '1'})">Wrocław</a>&nbsp;·
+            <a ui-sref="main.list({id: '1799', heritage: '1'})">Wrocław</a
+            >&nbsp;·
             <a ui-sref="main.list({id: '10305', heritage: '1'})">Zaragoza</a>
           </div>
         </div>
-        <div class="dashboard__box" flex>
-          <h4 class="md-title">More</h4>
-          <div layout="column" layout-align="start stretch">
-            <p layout="column" layout-align="start stretch">
-              <a ui-sref="main.list({id: '15', heritage: '1'})">all monuments in Africa</a>
-              <a ui-sref="main.list({id: '46', c: '50.7920:14.8975:4', heritage: '9259'})">World Heritage Sites in Europe</a>
-            </p>
-            <p layout="column" layout-align="start stretch">
-              <strong>Map</strong>
-              <a ui-sref="main.map({c: '51.5075:-0.0748:16', heritage: '1'})">monuments nearby Tower of London</a>
-              <a ui-sref="main.map({c: '48.8583:2.2944:16', heritage: '1'})">monuments nearby the Eiffel Tower</a>
-            </p>
-            <p layout="column" layout-align="start stretch">
-              <strong>Games</strong>
-              <a ui-sref="main.game.category()">Wikidata entry – Wikimedia Commons category matching</a>
-            </p>
-          </div>
-        </div>
-        <div class="dashboard__box" layout="column" layout-align="start stretch" flex>
+        <div
+          class="dashboard__box"
+          layout="column"
+          layout-align="start stretch"
+          flex
+        >
           <h4 class="md-title">Language</h4>
-          <span>You can set language interface here. This is an early implementation, you will see search results and monuments details in first selected language.</span>
+          <span
+            >You can set language interface here. This is an early
+            implementation, you will see search results and monuments details in
+            first selected language.</span
+          >
           <p layout="row" layout-align="start start">
-            <md-chips ng-model="$ctrl.languages" flex
-                        md-max-chips="3"
-                        md-require-match="true">
+            <md-chips
+              ng-model="$ctrl.languages"
+              flex
+              md-max-chips="3"
+              md-require-match="true"
+            >
               <md-chip-template>
                 <span>
                   <span>{{ $chip.nativeName }}</span>
@@ -138,19 +209,25 @@
                 </span>
               </md-chip-template>
               <md-autocomplete
-                  md-selected-item="$ctrl.lang.selectedItem.lang"
-                  md-items="item in $ctrl.searchLang($ctrl.lang.searchText)"
-                  md-search-text="$ctrl.lang.searchText"
-                  md-item-text="item.name"
-                  ng-hide="$ctrl.languages.length > 2">
+                md-selected-item="$ctrl.lang.selectedItem.lang"
+                md-items="item in $ctrl.searchLang($ctrl.lang.searchText)"
+                md-search-text="$ctrl.lang.searchText"
+                md-item-text="item.name"
+                ng-hide="$ctrl.languages.length > 2"
+              >
                 <md-item-template>
-                  <span md-highlight-text="$ctrl.lang.searchText">{{ item.nativeName }}</span>
+                  <span md-highlight-text="$ctrl.lang.searchText">{{
+                    item.nativeName
+                  }}</span>
                   <small>({{ item.code }})</small>
                 </md-item-template>
               </md-autocomplete>
             </md-chips>
-            <md-button class="md-primary" flex="20"
-                        ng-click="$ctrl.saveUserLanguages()">
+            <md-button
+              class="md-primary"
+              flex="20"
+              ng-click="$ctrl.saveUserLanguages()"
+            >
               Save
             </md-button>
           </p>
@@ -160,18 +237,37 @@
   </md-content>
 </div>
 <footer layout="column" layout-align="center center" flex>
-  <md-content class="container small" flex
-                layout="row" layout-align="center stretch"
-                layout-xs="column" layout-align-xs="start stretch">
+  <md-content
+    class="container small"
+    flex
+    layout="row"
+    layout-align="center stretch"
+    layout-xs="column"
+    layout-align-xs="start stretch"
+  >
     <div flex="75" flex-xs="100">
-      <p class="big">&copy; 2017 <a href="//github.com/yarl">Paweł Marynowski</a> and <a href="//github.com/slaporte">Stephen LaPorte</a> // <a href="//hatnote.com/">hatnote.com</a></p>
-      <p>Monumental is a free software available under <a href="//github.com/hatnote/monumental/blob/master/LICENSE">BSD 3-Clause License</a>. </p>
-      <p><a href="//github.com/hatnote/monumental">source code</a> &bull; <a href="//phabricator.wikimedia.org/project/view/2696/">report issue</a></p>
+      <p class="big">
+        &copy; 2017-2019 <a href="//github.com/yarl">Paweł Marynowski</a> and
+        <a href="//github.com/slaporte">Stephen LaPorte</a> //
+        <a href="//hatnote.com/">hatnote.com</a>
+      </p>
+      <p>
+        Monumental is a free software available under
+        <a href="//github.com/hatnote/monumental/blob/master/LICENSE"
+          >BSD 3-Clause License</a
+        >.
+      </p>
+      <p>
+        <a href="//github.com/hatnote/monumental">source code</a> &bull;
+        <a href="//phabricator.wikimedia.org/project/view/2696/"
+          >report issue</a
+        >
+      </p>
     </div>
     <div class="text-right" flex>
       <p>
-        version <strong>{{ ::$ctrl.config.package.version }}</strong> &bull;
-        env <strong>{{ ::$ctrl.config.env.name }}</strong>
+        version <strong>{{ ::$ctrl.config.package.version }}</strong> &bull; env
+        <strong>{{ ::$ctrl.config.env.name }}</strong>
       </p>
     </div>
   </md-content>

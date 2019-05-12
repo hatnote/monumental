@@ -1,6 +1,6 @@
 {
   "name": "monumental",
-  "version": "19.04.01",
+  "version": "19.05.04",
   "private": true,
   "description": "Monumental app",
   "main": "src/index.js",
@@ -9,6 +9,7 @@
     "start": "webpack --watch --content-base src --progress --colors",
     "build": "webpack --content-base src --progress",
     "build-dev": "NODE_ENV=dev webpack --content-base src --progress",
+    "build-glam": "NODE_ENV=glam webpack --content-base src --progress",
     "test": "echo OK"
   },
   "devDependencies": {

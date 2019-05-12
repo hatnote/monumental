@@ -3,6 +3,7 @@ import _ from 'lodash';
 const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wikidata) {
   const service = {
     addCategory,
+    addClaim,
     addClaimItem,
     addClaimMonolingualText,
     addClaimString,
@@ -16,6 +17,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     getLabel,
     getUserInfo,
     removeClaim,
+    setClaim,
     setClaimItem,
     setClaimMonolingualText,
     setClaimQuantity,
@@ -23,7 +25,7 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
     setLabel,
   };
 
-  const appAPI = `${$window.__env.baseUrl}/api`;
+  const appAPI = `${$window.__env.baseUrl}/wikidata`;
 
   const defaultParams = {
     action: 'query',
@@ -217,6 +219,18 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
       });
   }
 
+  function addClaim(value) {
+    return postWikidata({
+      action: 'wbcreateclaim',
+      format: 'json',
+      entity: value.entity,
+      property: value.property,
+      snaktype: 'value',
+      value: angular.toJson(value.datavalue),
+      summary: '#monumental',
+    });
+  }
+
   function addClaimItem(value) {
     return postWikidata({
       action: 'wbcreateclaim',
@@ -285,6 +299,23 @@ const WikiService = function ($http, $httpParamSerializerJQLike, $q, $window, wi
               'numeric-id': value.value,
             },
           },
+        },
+      }),
+      summary: '#monumental',
+    });
+  }
+
+  function setClaim(value) {
+    return postWikidata({
+      action: 'wbsetclaim',
+      format: 'json',
+      claim: angular.toJson({
+        id: value.id,
+        type: 'claim',
+        mainsnak: {
+          snaktype: 'value',
+          property: value.property,
+          datavalue: value.datavalue,
         },
       }),
       summary: '#monumental',

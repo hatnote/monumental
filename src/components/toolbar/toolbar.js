@@ -53,10 +53,10 @@ function controller(
       const ids = response.map(prop => prop.value_id);
       if (ids.includes('Q56061') || ids.includes('Q5107')) {
         $state.go('main.list', { id: item.id.substring(1), heritage: 1, c: undefined });
-      } else if (ids.includes('Q811979')) {
-        $state.go('main.object', { id: item.id.substring(1) });
       } else if (ids.includes('Q1030034')) {
         $state.go('main.museum', { id: item.id.substring(1) });
+      } else if (ids.includes('Q811979')) {
+        $state.go('main.object', { id: item.id.substring(1) });
       } else {
         $state.go('main.object', { id: item.id.substring(1) });
         /*

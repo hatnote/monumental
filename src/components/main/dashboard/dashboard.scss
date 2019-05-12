@@ -1,5 +1,5 @@
-@import '../../../styles/variables';
-@import '../../../styles/responsive';
+@import "../../../styles/variables";
+@import "../../../styles/responsive";
 
 mo-dashboard {
   .dashboard {
@@ -8,28 +8,45 @@ mo-dashboard {
   }
 
   .dashboard__box {
-      margin: 5px;
-      background: white;
-      border: 1px solid $softGrey;
-      border-radius: 2px;
-      padding: 20px;
+    margin: 5px;
+    background: white;
+    border: 1px solid $softGrey;
+    border-radius: 2px;
+    padding: 20px;
 
-      .big {
-        margin-bottom: 10px;
-      }
+    .big {
+      margin-bottom: 10px;
 
-      .md-title {
+      h3 {
+        font-size: 2.5em;
         margin: 0;
-        margin-bottom: 15px;
       }
 
-      md-input-container {
-        margin-bottom: 0;
-
-        .md-errors-spacer {
-          display: none;
-        }
+      h5 {
+        margin: 10px 0;
+        font-size: 1em;
+        color: #505050;
       }
+
+      img {
+        width: 90px;
+        float: left;
+        margin-right: 20px;
+      }
+    }
+
+    .md-title {
+      margin: 0;
+      margin-bottom: 15px;
+    }
+
+    md-input-container {
+      margin-bottom: 0;
+
+      .md-errors-spacer {
+        display: none;
+      }
+    }
   }
 
   md-card {
@@ -39,7 +56,7 @@ mo-dashboard {
     border: 1px solid $softGrey;
     cursor: pointer;
 
-    @include x-small { 
+    @include x-small {
       width: 100%;
       margin: 0 0 15px 0;
     }
