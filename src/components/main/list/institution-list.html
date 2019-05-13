@@ -28,6 +28,7 @@
           </div>
           <div flex="none">
             <md-button
+              ng-if="false"
               class="md-icon-button"
               aria-label="Switch to map view"
               ng-disabled="$ctrl.map.center.zoom < 9"
@@ -37,6 +38,7 @@
               <md-tooltip>Switch to map view</md-tooltip>
             </md-button>
             <md-button
+              ng-if="false"
               class="md-icon-button md-primary"
               aria-label="Open in Wikidata"
               ng-href="//wikidata.org/wiki/{{ ::$ctrl.place.id }}"
@@ -101,7 +103,12 @@
         >
       </div>
       <div flex></div>
-      <div class="list__filter" layout="row" layout-align="center center">
+      <div
+        class="list__filter"
+        layout="row"
+        layout-align="center center"
+        ng-if="false"
+      >
         <md-input-container>
           <label>Type</label>
           <md-select ng-model="$ctrl.filter.type" ng-change="$ctrl.filterMap()">
@@ -203,7 +210,7 @@
             <md-button
               class="md-button list__action"
               aria-label="Open in new tab"
-              ui-sref="main.object({id: item.name.value_id.substring(1)})"
+              ui-sref="main.museum({id: item.name.value_id.substring(1)})"
               target="_blank"
             >
               <md-icon>open_in_new</md-icon>

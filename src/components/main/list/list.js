@@ -143,6 +143,30 @@ function controller(
     return '';
   }
 
+  function getInstitutionList() {
+    canceler.resolve();
+    canceler = $q.defer();
+
+    const query = `SELECT DISTINCT ?item ?itemLabel ?coord ?image ?admin ?adminLabel
+WHERE {
+   hint:Query hint:optimizer "None" .
+   ?item wdt:P131* wd:${id} .
+   ?item wdt:P31/wdt:P279* wd:Q1030034 .
+   ?item wdt:P625 ?coord .
+   ?item wdt:P131 ?admin .
+   OPTIONAL { ?item wdt:P18 ?image . }
+   SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs
+     .map(lang => lang.code)
+     .join(',')}" .
+    ?item rdfs:label ?itemLabel . ?admin rdfs:label ?adminLabel
+   }
+}
+ORDER BY ASC (?itemLabel)`;
+
+    request = wikidata.getSPARQL(query, { timeout: canceler.promise });
+    return request;
+  }
+
   function getList() {
     canceler.resolve();
     canceler = $q.defer();
@@ -228,7 +252,7 @@ function controller(
     }
     $state.transitionTo($state.current.name, vm.filter, { notify: false });
     vm.loading = 'map';
-    getList()
+    getInstitutionList()
       .then(data => parseList(data))
       .then(list => {
         vm.stats = createStats(list);
@@ -256,7 +280,7 @@ function controller(
         });
       })
       .then(() => setTitle())
-      .then(() => getList())
+      .then(() => getInstitutionList())
       .then(data => parseList(data))
       .then(list => {
         vm.stats = createStats(list);
