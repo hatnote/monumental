@@ -26,7 +26,10 @@ function controller($state, wikidata) {
     let id;
     const claims = vm.monument.claims;
 
-    if (claims.P276) {
+    if (claims.P159) {
+      prop = 'wdt:P159/wdt:P131';
+      id = vm.monument.id;
+    } else if (claims.P276) {
       prop = 'wdt:P276/wdt:P131';
       id = vm.monument.id;
     } else if (claims.P131) {
@@ -61,7 +64,5 @@ function controller($state, wikidata) {
 }
 
 export default () => {
-  angular
-    .module('monumental')
-    .component('moLocation', LocationComponent);
+  angular.module('monumental').component('moLocation', LocationComponent);
 };
