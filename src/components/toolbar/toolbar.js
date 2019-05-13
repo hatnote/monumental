@@ -12,6 +12,7 @@ function controller(
   $window,
   WikiService,
   wikidata,
+  langService,
 ) {
   const vm = this;
   const baseUrl = $window.__env.baseUrl;
@@ -30,7 +31,8 @@ function controller(
   vm.mobile.closeSearch = closeSearch;
   vm.mobile.openSearch = openSearch;
   vm.toggleSidebar = () => $mdSidenav('left').toggle();
-  vm.querySearch = text => wikidata.getSearch(text);
+  vm.langs = langService.getUserLanguages();
+  vm.querySearch = text => wikidata.getSearch(text, vm.langs[0].code);
 
   init();
 

@@ -1,6 +1,6 @@
 {
   "name": "monumental",
-  "version": "19.05.04",
+  "version": "19.05.06",
   "private": true,
   "description": "Monumental app",
   "main": "src/index.js",

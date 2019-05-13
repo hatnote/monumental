@@ -627,16 +627,26 @@
             center="::$ctrl.map.center"
           ></leaflet>
           <div layout="row" layout-align="center center">
-            <!--
-            <md-button class="md-primary" flex
-                        ng-href="https://www.google.com/maps?q={{$ctrl.map.markers.marker.lat}},{{$ctrl.map.markers.marker.lng}}" target="_blank">
+            <md-button
+              class="md-primary"
+              flex
+              ng-href="https://www.google.com/maps?q={{
+                $ctrl.map.markers.marker.lat
+              }},{{ $ctrl.map.markers.marker.lng }}"
+              target="_blank"
+            >
               <md-icon>map</md-icon> Show in Google Maps
             </md-button>
-            <md-button class="md-primary" flex
-                        ng-href="http://www.openstreetmap.org/#map=17/{{$ctrl.map.markers.marker.lat}}/{{$ctrl.map.markers.marker.lng}}" target="_blank">
+            <md-button
+              class="md-primary"
+              flex
+              ng-href="http://www.openstreetmap.org/#map=17/{{
+                $ctrl.map.markers.marker.lat
+              }}/{{ $ctrl.map.markers.marker.lng }}"
+              target="_blank"
+            >
               <md-icon>map</md-icon> Show in OSM.org
             </md-button>
-            -->
             <md-button
               class="md-primary"
               flex
@@ -644,7 +654,7 @@
                 $ctrl.map.markers.marker.lat.toFixed(4)
               }}:{{ $ctrl.map.markers.marker.lng.toFixed(4) }}:16' })"
             >
-              <md-icon>map</md-icon> Show all monuments nearby
+              <md-icon>map</md-icon> Show other institutions nearby
             </md-button>
           </div>
         </div>

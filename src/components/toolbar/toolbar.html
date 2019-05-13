@@ -1,9 +1,12 @@
-<md-sidenav class="md-sidenav-left"
-              md-component-id="left" md-disable-scroll-target="body" 
-              md-swipe-left="$ctrl.toggleSidebar()"
-              layout="column" layout-align="start stretch">
-  <md-list flex
-            layout="column" layout-align="start stretch">
+<md-sidenav
+  class="md-sidenav-left"
+  md-component-id="left"
+  md-disable-scroll-target="body"
+  md-swipe-left="$ctrl.toggleSidebar()"
+  layout="column"
+  layout-align="start stretch"
+>
+  <md-list flex layout="column" layout-align="start stretch">
     <md-list-item class="sidenav__header" flex="none">
       <p>{{ $ctrl.isLoggedIn.name }}</p>
     </md-list-item>
@@ -14,96 +17,130 @@
     <md-divider></md-divider>
     <md-subheader class="md-no-sticky">Actions</md-subheader>
     <md-list-item ng-if="!$ctrl.isLoggedIn" ng-click="$ctrl.login()">
-      <md-icon>vpn_key</md-icon>
-      <p>Login</p>
+      <md-icon>security</md-icon>
+      <p>Log in</p>
     </md-list-item>
     <md-list-item ng-if="$ctrl.isLoggedIn" ng-click="$ctrl.logout()">
       <md-icon>exit_to_app</md-icon>
-      <p>Logout</p>
+      <p>Log out</p>
     </md-list-item>
     <span flex></span>
   </md-list>
 </md-sidenav>
-<md-toolbar class="toolbar"
-              layout="column" layout-align="start center"
-              ng-class="isHidden ? 'toolbar--hidden' : 'toolbar--shown'" mo-toolbar-scroll>
-	<div class="md-toolbar-tools" hide-xs
-        ng-class="{ 'md-toolbar-tools-wide': ('main.list' | includedByState) || ('main.map' | includedByState) }">
-    <div flex="20">
+<md-toolbar
+  class="toolbar"
+  layout="column"
+  layout-align="start center"
+  ng-class="isHidden ? 'toolbar--hidden' : 'toolbar--shown'"
+  mo-toolbar-scroll
+>
+  <div
+    class="md-toolbar-tools"
+    hide-xs
+    ng-class="{ 'md-toolbar-tools-wide': ('main.list' | includedByState) || ('main.map' | includedByState) }"
+  >
+    <div flex="30">
       <md-button ui-sref="main.dashboard">Monumental</md-button>
     </div>
-		<md-autocomplete flex
-		    md-input-name="autocompleteField"
-        md-selected-item="$ctrl.search.selectedItem"
-        md-search-text="$ctrl.search.text"
-        md-items="item in $ctrl.querySearch($ctrl.search.text)"
-        md-selected-item-change="$ctrl.goToItem(item)"
-        md-item-text="item.label"
-        md-min-length="1"
-        placeholder="Search for monument or location"
-        ng-model-options="{ debounce: 500 }"
-        md-menu-class="autocomplete-custom-template">
+    <md-autocomplete
+      flex
+      md-input-name="autocompleteField"
+      md-selected-item="$ctrl.search.selectedItem"
+      md-search-text="$ctrl.search.text"
+      md-items="item in $ctrl.querySearch($ctrl.search.text)"
+      md-selected-item-change="$ctrl.goToItem(item)"
+      md-item-text="item.label"
+      md-min-length="1"
+      placeholder="Search for monument or location"
+      ng-model-options="{ debounce: 500 }"
+      md-menu-class="autocomplete-custom-template"
+    >
       <md-item-template>
-        <strong>{{item.label}}</strong>
-        <span>{{item.description}}</span>
+        <strong>{{ item.label }}</strong>
+        <span>{{ item.description }}</span>
       </md-item-template>
-		</md-autocomplete>
-    <div class="text-right" flex="20">
-      <md-button ng-if="$ctrl.isLoggedIn"
-                  ng-click="$ctrl.settings = !$ctrl.settings">
+    </md-autocomplete>
+    <div class="text-right" flex="30">
+      <md-button ng-href="#/#language">
+        <md-tooltip>Change interface language</md-tooltip>
+        <md-icon>language</md-icon>
+        <span>{{ $ctrl.langs[0].nativeName }}</span>
+      </md-button>
+      <md-button
+        ng-if="$ctrl.isLoggedIn"
+        ng-click="$ctrl.settings = !$ctrl.settings"
+      >
+        <md-icon>account_circle</md-icon>
         {{ $ctrl.isLoggedIn.name }}
       </md-button>
-      <md-button ng-if="!$ctrl.isLoggedIn"
-                  ng-click="$ctrl.login()">
-        <md-icon>vpn_key</md-icon>
-        <span>Login</span>
+      <md-button ng-if="!$ctrl.isLoggedIn" ng-click="$ctrl.login()">
+        <md-icon>security</md-icon>
+        <md-tooltip>Log on to start edit</md-tooltip>
+        <span>Log in</span>
       </md-button>
     </div>
-	</div>
+  </div>
 
-	<div class="md-toolbar-tools" hide-gt-xs>
+  <div class="md-toolbar-tools" hide-gt-xs>
     <div flex="none">
-      <md-button class="md-icon-button" aria-label="Menu"
-                  ng-if="!$ctrl.mobile.showSearch"
-                  ng-click="$ctrl.toggleSidebar()">
+      <md-button
+        class="md-icon-button"
+        aria-label="Menu"
+        ng-if="!$ctrl.mobile.showSearch"
+        ng-click="$ctrl.toggleSidebar()"
+      >
         <md-icon>menu</md-icon>
       </md-button>
-      <md-button class="md-icon-button" aria-label="Back"
-                  ng-if="$ctrl.mobile.showSearch"
-                  ng-click="$ctrl.mobile.showSearch = false">
+      <md-button
+        class="md-icon-button"
+        aria-label="Back"
+        ng-if="$ctrl.mobile.showSearch"
+        ng-click="$ctrl.mobile.showSearch = false"
+      >
         <md-icon>arrow_back</md-icon>
       </md-button>
     </div>
-		<md-autocomplete flex
-        md-input-id="searchField"
-		    md-input-name="autocompleteField"
-        md-selected-item="$ctrl.search.selectedItem"
-        md-search-text="$ctrl.search.text"
-        md-items="item in $ctrl.querySearch($ctrl.search.text)"
-        md-selected-item-change="$ctrl.goToItem(item)"
-        md-item-text="item.label"
-        md-min-length="1"
-        placeholder="Search for monument or location"
-        md-menu-class="autocomplete-custom-template"
-        ng-if="$ctrl.mobile.showSearch">
+    <md-autocomplete
+      flex
+      md-input-id="searchField"
+      md-input-name="autocompleteField"
+      md-selected-item="$ctrl.search.selectedItem"
+      md-search-text="$ctrl.search.text"
+      md-items="item in $ctrl.querySearch($ctrl.search.text)"
+      md-selected-item-change="$ctrl.goToItem(item)"
+      md-item-text="item.label"
+      md-min-length="1"
+      placeholder="Search for monument or location"
+      md-menu-class="autocomplete-custom-template"
+      ng-if="$ctrl.mobile.showSearch"
+    >
       <md-item-template>
-        <strong>{{item.label}}</strong>
-        <span>{{item.description}}</span>
+        <strong>{{ item.label }}</strong>
+        <span>{{ item.description }}</span>
       </md-item-template>
-		</md-autocomplete>
+    </md-autocomplete>
     <h2 md-truncate flex ng-if="!$ctrl.mobile.showSearch">Monumental</h2>
     <div ng-if="!$ctrl.mobile.showSearch" flex="none">
-      <md-button class="md-icon-button" ng-click="$ctrl.mobile.openSearch()" aria-label="Search">
+      <md-button
+        class="md-icon-button"
+        ng-click="$ctrl.mobile.openSearch()"
+        aria-label="Search"
+      >
         <md-icon>search</md-icon>
       </md-button>
     </div>
-	</div>
+  </div>
 </md-toolbar>
-<div class="toolbar__settings md-whiteframe-16dp"
-      layout="row" layout-align="center center"
-      ng-if="$ctrl.settings">
+<div
+  class="toolbar__settings md-whiteframe-16dp"
+  layout="row"
+  layout-align="center center"
+  ng-if="$ctrl.settings"
+>
   <div class="toolbar__column" layout="row" layout-align="center center" flex>
     <span flex></span>
-    <md-button ng-click="$ctrl.logout()"><md-icon>exit_to_app</md-icon> <span>Logout</span></md-button>
+    <md-button ng-click="$ctrl.logout()"
+      ><md-icon>exit_to_app</md-icon> <span>Logout</span></md-button
+    >
   </div>
 </div>

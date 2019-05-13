@@ -37,6 +37,7 @@ function controller(
   const vm = this;
   const icon = mapService.getMapIcon();
   const id = $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`;
+  console.log('ID', id);
   const langs = langService.getUserLanguages();
 
   vm.actions = {
@@ -384,7 +385,8 @@ export default () => {
       link: (scope, element, attrs) => {
         let img = null;
         const loadImage = () => {
-          element[0].src = '//upload.wikimedia.org/wikipedia/commons/f/f8/Ajax-loader%282%29.gif';
+          element[0].src =
+            'https://upload.wikimedia.org/wikipedia/commons/f/f8/Ajax-loader%282%29.gif';
           img = new Image();
           img.src = attrs.loadSrc;
           img.onload = () => {

@@ -53,6 +53,8 @@ const TextService = ($q, wikidata) => {
       'P2002',
       'P2003',
       'P2397',
+      'P3744',
+      'P457',
     ];
     return wikidata.getLabels(ids).then((data) => {
       texts = data;

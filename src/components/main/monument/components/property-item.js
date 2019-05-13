@@ -1,3 +1,8 @@
+import facebook from './../../../../images/facebook.svg';
+import instagram from './../../../../images/instagram.svg';
+import twitter from './../../../../images/twitter.svg';
+import barcode from './../../../../images/barcode.svg';
+
 const PropertyItemComponent = {
   bindings: {
     claims: '=',
@@ -23,10 +28,9 @@ const PropertyItemComponent = {
           <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'wikibase-item'">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
             <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
-                ng-if="false"
-                ng-href="//www.wikidata.org/wiki/{{ ::value.mainsnak.datavalue.value.id }}" target="_blank">
+                ng-href="https://www.wikidata.org/wiki/{{ ::value.mainsnak.datavalue.value.id }}" target="_blank">
               <md-tooltip>Show Wikidata entry</md-tooltip>
-              <md-icon md-svg-icon="assets/images/barcode.svg"></md-icon>
+              <img ng-src="{{ 'assets/images/barcode.svg' }}" width="20">
             </md-button>
           </span>
           <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'time'"
@@ -39,9 +43,13 @@ const PropertyItemComponent = {
           <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'string'">
             {{ ::value.mainsnak.datavalue.value }}
           </span>
-          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'external-id'">
+          <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'external-id' && !$ctrl.socialPrefix[$ctrl.property]">
             {{ ::value.mainsnak.datavalue.value }}
           </span>
+          <a ng-if="!$ctrl.link && value.mainsnak.datatype === 'external-id' && $ctrl.socialPrefix[$ctrl.property]"
+              href="{{ $ctrl.socialPrefix[$ctrl.property] }}{{ ::value.mainsnak.datavalue.value }}" target="_blank">
+            <img ng-src="{{ 'assets/images/' + $ctrl.socialIcons[$ctrl.property] }}" alt="{{ $ctrl.socialIcons[$ctrl.property] }}" width="20">
+          </a>
           <span ng-if="!$ctrl.link && value.mainsnak.datatype === 'quantity'">
             {{ ::(value.mainsnak.datavalue.value.amount.substring(1)) }}
           </span>
@@ -62,10 +70,36 @@ const PropertyItemComponent = {
               ng-repeat="qualifier in ::value.qualifiers">
             <span class="muted" flex="30">{{ ::($ctrl.text[qualifier[0].property][$ctrl.lang.code] || $ctrl.text[qualifier[0].property].en || qualifier[0].property) }}</span>
             <div layout="column" layout-align="start start">
-              <span ng-repeat="qualifiervalue in qualifier"
-                    ng-init="$ctrl.getFormattedTime(qualifiervalue.datavalue)">
-                {{ ::(qualifiervalue.datavalue.value.label[$ctrl.lang.code] || qualifiervalue.datavalue.value.label.en || qualifiervalue.datavalue.value.label) }}
-              </span>
+              <span ng-repeat="qualifiervalue in qualifier">
+                  <span ng-if="qualifiervalue.datavalue.type === 'wikibase-entityid'">
+                    {{ ::(qualifiervalue.datavalue.value.label[$ctrl.lang.code] || qualifiervalue.datavalue.value.label.en || qualifiervalue.datavalue.value.id) }}
+                    <md-button class="md-icon-button md-primary" aria-label="Open in Wikidata"
+                        ng-href="https://www.wikidata.org/wiki/{{ ::qualifiervalue.datavalue.value.id }}" target="_blank">
+                      <md-tooltip>Show Wikidata entry</md-tooltip>
+                      <img ng-src="{{ 'assets/images/barcode.svg' }}" width="20">
+                    </md-button>
+                  </span>
+                  <span ng-if="qualifiervalue.datavalue.type === 'time'"
+                        ng-init="$ctrl.getFormattedTime(qualifiervalue.datavalue)">
+                    {{ ::(qualifiervalue.datavalue.value.label[$ctrl.lang.code] || qualifiervalue.datavalue.value.label.en || qualifiervalue.datavalue.value.label) }}
+                  </span>
+                  <span ng-if="qualifiervalue.datavalue.type === 'monolingualtext'">
+                    {{ ::qualifiervalue.datavalue.value.text }} ({{ ::qualifiervalue.datavalue.value.language }})
+                  </span>
+                  <span ng-if="qualifiervalue.datavalue.type === 'string'">
+                    {{ ::qualifiervalue.datavalue.value }}
+                  </span>
+                  <span ng-if="qualifiervalue.datavalue.type === 'external-id'">
+                    {{ ::qualifiervalue.datavalue.value }}
+                  </span>
+                  <span ng-if="qualifiervalue.datavalue.type === 'quantity'">
+                    {{ ::(qualifiervalue.datavalue.value.amount.substring(1)) }}
+                  </span>
+                  <a ng-if="qualifiervalue.datavalue.type === 'url'"
+                      href="{{ ::qualifiervalue.datavalue.value }}" target="_blank">
+                    {{ ::qualifiervalue.datavalue.value }}
+                  </a>
+                </span>
             </div>
           </div>
           <span class="muted"
@@ -153,6 +187,18 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
     P2397: 'external-id',
   };
 
+  vm.socialIcons = {
+    P2013: 'facebook.svg',
+    P2002: 'twitter.svg',
+    P2003: 'instagram.svg',
+  };
+
+  vm.socialPrefix = {
+    P2013: 'https://facebook.com/',
+    P2002: 'https://twitter.com/',
+    P2003: 'https://instagram.com/',
+  };
+
   vm.isStringy = dataTypes[vm.property];
 
   // init
@@ -168,7 +214,7 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
   function addClaim(value) {
     const type = dataTypes[vm.property];
     const base = {
-      entity: `Q${$stateParams.id}`,
+      entity: $stateParams.id.includes('Q') ? $stateParams.id : `Q${$stateParams.id}`,
       property: vm.property,
     };
 
