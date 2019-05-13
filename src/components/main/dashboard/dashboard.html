@@ -17,30 +17,53 @@
               Crowdsource cultural heritage data around the world
             </h5>
           </div>
+
           <p>
-            Enter the name of an institution in the search box above (for
-            example, 'Louvre') to learn more or explore map by entering a
-            geographic region (for example, 'Berlin'). You can also click an
-            example provided below.
+            Welcome to Monumental GLAM – the tool to explore cultural heritage
+            institutions around the world.
           </p>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            Enter the name of an institution in the search box above (for
+            example, <i>Rijksmuseum</i>) to learn more, or explore institutions
+            by entering a geographic region (for example, <i>Berlin</i>). You
+            can also click an example item or city below.
+          </p>
+          <p>
+            The tool displays information and multimedia about cultural heritage
+            institutions gathered through Wikidata, Wikipedia and Wikimedia
+            Commons. It is a modified version of
+            <a href="https://tools.wmflabs.org/monumental/" target="_blank"
+              >Monumental</a
+            >
+            and was developed as a part of the
+            <a
+              href="https://meta.wikimedia.org/wiki/FindingGLAMs"
+              target="_blank"
+              >FindingGLAMs</a
+            >
+            project by
+            <a href="https://wikimedia.se/" target="_blank">Wikimedia Sverige</a
+            >, with the goal of encouraging new users to contribute to the
+            <a
+              href="https://meta.wikimedia.org/wiki/FindingGLAMs_Campaign"
+              target="_blank"
+              >crowdsourcing campaign</a
+            >.
           </p>
         </div>
 
         <div class="dashboard__box" flex>
           <h4 class="md-title">GLAMs nearby</h4>
           <p ng-if="!$ctrl.nearby">
-            Enable localization to see institutions nearby
+            Please enable location services to see institutions. It may take a
+            little while to load data.
           </p>
-          <p ng-if="$ctrl.nearby && !$ctrl.nearby">No GLAMs nearby</p>
-          <p ng-if="$ctrl.nearby === 'error'">Error getting GLAMs nearby</p>
+          <p ng-if="$ctrl.nearby && !$ctrl.nearby">
+            No data about institutions nearby.
+          </p>
+          <p ng-if="$ctrl.nearby === 'error'">
+            Error occured. Please enable location services to see institutions.
+          </p>
           <md-card
             ng-repeat="example in $ctrl.nearby"
             ui-sref="main.museum({id: example.id})"
@@ -68,7 +91,7 @@
           </md-card>
         </div>
 
-        <div class="dashboard__box" flex>
+        <div class="dashboard__box" flex ng-if="false">
           <h4 class="md-title">Example institutions</h4>
           <md-card
             ng-repeat="example in $ctrl.examples track by example.id"
