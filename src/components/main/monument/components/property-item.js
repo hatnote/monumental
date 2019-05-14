@@ -57,7 +57,7 @@ const PropertyItemComponent = {
               href="{{ ::value.mainsnak.datavalue.value }}" target="_blank">
             {{ ::value.mainsnak.datavalue.value }}
           </a>
-          <a ui-sref="main.object({id: value.mainsnak.datavalue.value.id.substring(1)})"
+          <a ui-sref="main.museum({id: value.mainsnak.datavalue.value.id.substring(1)})"
               ng-if="$ctrl.link === true && value.mainsnak.datatype === 'wikibase-item'">
             {{ ::($ctrl.labels[value.mainsnak.datavalue.value.id][$ctrl.lang.code] || $ctrl.labels[value.mainsnak.datavalue.value.id].en || value.mainsnak.datavalue.value.id) }}
           </a>
