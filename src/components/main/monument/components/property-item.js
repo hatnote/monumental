@@ -346,8 +346,11 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
       return WikiService.setClaim({
         ...base,
         datavalue: {
-          language: value.mainsnak.datavalue.value.language,
-          text: value.search,
+          type: 'monolingualtext',
+          value: {
+            language: value.mainsnak.datavalue.value.language,
+            text: value.search,
+          },
         },
       });
     }
@@ -355,7 +358,10 @@ function controller($q, $rootScope, $stateParams, $timeout, wikidata, WikiServic
     // rest stringy things
     return WikiService.setClaim({
       ...base,
-      datavalue: value.search,
+      datavalue: {
+        type: 'string',
+        value: value.search,
+      },
     });
   }
 }
